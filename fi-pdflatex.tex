@@ -144,7 +144,45 @@ TODO
 \end{markdown}
 \shorthandon{-}
 
-\chapter{Functional and Non-Functional Requirements}
+\chapter{Requirements Analysis}
+
+\section{Introduction}
+
+In order to develop a practical and effective cloud-based audio transcription system for time tracking, a comprehensive requirements analysis is essential. This phase establishes a clear understanding of the functionalities and constraints that the software must adhere to, ensuring alignment with user needs and business objectives. The analysis focuses on defining user roles, identifying functional and non-functional requirements, and outlining key technical considerations.
+
+The goal of this analysis is to create a structured framework that guides the development of the Smart Timesheet Application. Through discussions with potential users, stakeholders, and domain experts, the analysis highlights both explicit and implicit needs, as well as potential challenges that may arise during implementation.
+
+\section{Users}
+
+The primary users of the Smart Timesheet Application are mainly field employees. These users frequently switch between tasks and clients throughout the day. Their primary need is a quick, reliable, and intuitive method to log their working hours and task details in real-time without requiring a traditional computer interface. They benefit from hands-free audio logging that ensures accuracy and minimizes forgotten details.
+
+\section{Functional Requirements}
+
+The functional requirements define the core capabilities of the system, ensuring that it meets user expectations and performs its intended tasks efficiently.
+
+\begin{itemize} \item \textbf{Adding work records:} Users can add work records via audio recording or manually. For audio, they can record descriptions of tasks, specifying the client, project, description, and other details. The app converts the audio into a structured work record and saves it to a cloud-based database. Manual entry is also supported.
+
+\item \textbf{Review of entries:} Users can review audio recordings and manually edit work records.
+
+\item \textbf{Data Storage and Organization:} Entries are securely stored in a cloud-based database. The entries are simple to view and search.
+
+\item \textbf{User Authentication and Access Control:} Authentication is handled via Firebase Authentication, with login restricted to Microsoft accounts. Access is granted based on the user's email domain, ensuring that unauthorized domains are restricted. Data isolation ensures that users from different domains cannot view or alter each other's records.
+\end{itemize}
+
+\section{Non-Functional Requirements}
+
+Beyond core functionalities, non-functional requirements ensure that the system is reliable, secure, and user-friendly.
+
+\begin{itemize} \item \textbf{Performance and Reliability:} The transcription process does not need to be instant, but users should be notified when it is finished. Upon notification, users can review and verify the transcription. The system must handle multiple concurrent users and organizations without performance degradation. While the app does not need to be fully offline, users should be able to record audio without an active internet connection. The entry should automatically be processed and synchronized once a connection is available.
+
+\item \textbf{Usability and Accessibility:} The user interface should be intuitive and require minimal training. Voice commands and simple touch interactions should be prioritized for hands-free use. Text should be minimized for common usage, though more detailed configurations or preferences may require additional text.
+
+\item \textbf{Security and Compliance:} All data stored and transmitted must be encrypted to protect user privacy. The system should comply with GDPR and other relevant data protection regulations.
+
+\item \textbf{Scalability:} The system should support an increasing number of users and organizations.
+\end{itemize}
+
+    
 \shorthandoff{-}
 \begin{markdown}[
   citationNbsps,
@@ -158,7 +196,7 @@ TODO
   rawAttribute,
   tableCaptions,
 ]
-  % TODO: Detail the functional (e.g., features, user stories) and non-functional requirements (e.g., performance, security) for the app.
+   
 \end{markdown}
 \shorthandon{-}
 
