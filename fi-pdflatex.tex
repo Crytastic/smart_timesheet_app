@@ -122,30 +122,189 @@ The primary users of the Smart Timesheet Application are mainly field employees.
 
 \section{Functional Requirements}
 
-The functional requirements define the core capabilities of the system, ensuring that it meets user expectations and performs its intended tasks efficiently.
+The functional requirements define the core capabilities of the Smart Timesheet Application, ensuring that it meets user expectations and performs its intended tasks efficiently. These requirements specify the system's behavior in terms of services, tasks, and functions that users can perform.  
 
-\begin{itemize} \item \textbf{Adding work records:} Users can add work records via audio recording or manually. For audio, they can record descriptions of tasks, specifying the client, project, description, and other details. The app converts the audio into a structured work record and saves it to a cloud-based database. Manual entry is also supported.
+To clearly outline the expected functionality, the requirements are presented in the form of use cases. Each use case describes a specific interaction between the user and the system, defining the prerequisites, the sequence of steps, and the expected outcome.  
 
-\item \textbf{Review of entries:} Users can review audio recordings and manually edit work records.
+The use cases are not listed by priority but instead grouped at the same level of abstraction for clarity. While some use cases could be decomposed into more detailed subcases, this document keeps them at a high level to maintain readability. Detailed business logic, rules, and dependencies will be enforced through integration tests in the system’s codebase, avoiding redundant specifications in this document.  
 
-\item \textbf{Data Storage and Organization:} Entries are securely stored in a cloud-based database. The entries are simple to view and search.
+The core functional requirements of the Smart Timesheet Application revolve around efficient, voice-enabled time tracking, cloud-based data storage, and secure authentication. The application must accommodate hands-free logging while ensuring that users can review, edit, and manage their work records with minimal friction. Additionally, robust data security mechanisms must be in place to guarantee data integrity and user privacy.
 
-\item \textbf{User Authentication and Access Control:} Authentication is handled via Firebase Authentication, with login restricted to Microsoft accounts. Access is granted based on the user's email domain, ensuring that unauthorized domains are restricted. Data isolation ensures that users from different domains cannot view or alter each other's records.
-\end{itemize}
+\subsection{Adding Work Records via Audio}
+
+\textbf{Actors:} Employee  
+
+\textbf{Prerequisites:} User is authenticated  
+
+\textbf{Description:}  
+Employees can record audio descriptions of their work, specifying the client, project, and task details. The system transcribes the audio and converts it into a structured work entry.  
+
+\textbf{Steps:}  
+\begin{enumerate}
+    \item Employee initiates an audio recording in the application.
+    \item Employee verbally describes the work performed.
+    \item System uploads the recording to the cloud.
+    \item Transcription service processes the audio and converts it into text.
+    \item System structures the transcribed data into a work record.
+    \item Work entry is stored in the cloud-based database.
+    \item Employee receives a notification upon transcription completion.
+\end{enumerate}
+
+\subsection{Adding Work Records Manually}
+
+\textbf{Actors:} Employee  
+
+\textbf{Prerequisites:} User is authenticated  
+
+\textbf{Description:}  
+Employees can manually enter work records if they prefer not to use audio transcription.  
+
+\textbf{Steps:}  
+\begin{enumerate}
+    \item Employee navigates to the manual work entry interface.
+    \item Employee inputs details such as client, project, and task description.
+    \item Work entry is saved to the cloud database.
+\end{enumerate}
+
+\subsection{Reviewing and Editing Work Entries}
+
+\textbf{Actors:} Employee  
+
+\textbf{Prerequisites:} User is authenticated, work entries exist  
+
+\textbf{Description:}  
+Employees can review and edit their past work records, including both manually entered and transcribed entries.  
+
+\textbf{Steps:}  
+\begin{enumerate}
+    \item Employee accesses the work log history.
+    \item Employee selects a work entry to review.
+    \item Employee can replay the original audio recording (if available).
+    \item If necessary, employee edits the transcription or manually entered details.
+    \item Updated entry is saved to the cloud database.
+\end{enumerate}
+
+\subsection{Searching and Filtering Work Entries}
+
+\textbf{Actors:} Employee  
+
+\textbf{Prerequisites:} User is authenticated, work entries exist  
+
+\textbf{Description:}  
+Employees can search for and filter work logs based on specific criteria such as date, project, or client.  
+
+\textbf{Steps:}  
+\begin{enumerate}
+    \item Employee accesses the search and filter interface.
+    \item Employee selects criteria for filtering (e.g., date range, client, project).
+    \item System retrieves and displays the matching work entries.
+\end{enumerate}
+
+\subsection{Cloud-Based Data Storage and Organization}
+
+\textbf{Actors:} System  
+
+\textbf{Prerequisites:} Work entries exist  
+
+\textbf{Description:}  
+Work records are securely stored in a cloud-based database. Employees can access their records from any authenticated device.  
+
+\textbf{Steps:}  
+\begin{enumerate}
+    \item Work entries are saved in a structured format in the cloud.
+    \item System ensures data is organized for efficient retrieval.
+    \item Employees can easily view, sort, and access their stored records.
+\end{enumerate}
+
+\subsection{User Authentication and Access Control}
+
+\textbf{Actors:} Employee  
+
+\textbf{Prerequisites:} None  
+
+\textbf{Description:}  
+Authentication and access control ensure that only authorized users can log in and access their respective data.  
+
+\textbf{Steps:}  
+\begin{enumerate}
+    \item Employee attempts to log in via Microsoft authentication.
+    \item System verifies credentials through Firebase Authentication.
+    \item System checks the employee’s email domain.
+    \item If the domain is authorized, the employee is granted access to their records.
+    \item System ensures that employees from different domains cannot view or modify each other's records.
+\end{enumerate}
+
+\subsection{Offline Audio Logging}
+
+\textbf{Actors:} Employee  
+
+\textbf{Prerequisites:} User is authenticated, no internet connection available  
+
+\textbf{Description:}  
+Employees can record work descriptions offline, and the system will sync and process the recordings once an internet connection is available.  
+
+\textbf{Steps:}  
+\begin{enumerate}
+    \item Employee records an audio entry while offline.
+    \item System stores the recording locally on the device.
+    \item Once an internet connection is restored, the system automatically uploads and processes the recording.
+    \item Transcribed entry is added to the work log.
+\end{enumerate}
+
+\subsection{Receiving Notifications}
+
+\textbf{Actors:} Employee  
+
+\textbf{Prerequisites:} User is authenticated, relevant event occurs  
+
+\textbf{Description:}  
+Employees receive notifications when important events occur, such as transcription completion or record updates.  
+
+\textbf{Steps:}  
+\begin{enumerate}
+    \item System detects an event requiring a notification (e.g., transcription complete).
+    \item System generates a notification message.
+    \item Employee receives a push notification or email alert.
+\end{enumerate}
 
 \section{Non-Functional Requirements}
 
-Beyond core functionalities, non-functional requirements ensure that the system is reliable, secure, and user-friendly.
+While functional requirements define what the system must do, non-functional requirements ensure that the system operates effectively under real-world conditions. These requirements specify qualities such as performance, security, usability, and scalability, ensuring that the application remains reliable, efficient, and user-friendly over time.  
 
-\begin{itemize} \item \textbf{Performance and Reliability:} The transcription process does not need to be instant, but users should be notified when it is finished. Upon notification, users can review and verify the transcription. The system must handle multiple concurrent users and organizations without performance degradation. While the app does not need to be fully offline, users should be able to record audio without an active internet connection. The entry should automatically be processed and synchronized once a connection is available.
+The Smart Timesheet Application is designed to accommodate employees working in various environments, including fieldwork where hands-free operation and offline functionality may be necessary. Additionally, as a cloud-based solution, the system must provide seamless data synchronization and high availability, while ensuring that sensitive work records remain secure and private.  
 
-\item \textbf{Usability and Accessibility:} The user interface should be intuitive and require minimal training. Voice commands and simple touch interactions should be prioritized for hands-free use. Text should be minimized for common usage, though more detailed configurations or preferences may require additional text.
+The following sections outline the essential characteristics that the system must meet to provide a smooth, secure, and scalable experience.
 
-\item \textbf{Security and Compliance:} All data stored and transmitted must be encrypted to protect user privacy. The system should comply with GDPR and other relevant data protection regulations.
+\subsection{Performance and Reliability}  
+The transcription process does not need to be instant, but users must be notified upon completion so they can review and verify the results. The system must handle multiple concurrent users and organizations without performance degradation.  
 
-\item \textbf{Scalability:} The system should support an increasing number of users and organizations.
-\end{itemize}
+While a constant internet connection is not required, users must be able to record audio offline. The recorded audio should be queued and automatically processed when the device reconnects to the internet. Additionally, the system should ensure that no data is lost in case of connection interruptions.
 
+\subsection{Usability and Accessibility}  
+The user interface should be designed with simplicity and ease of use in mind, requiring minimal training. Hands-free operation should be a priority, with voice commands and simple touch interactions allowing users to log work efficiently without needing extensive manual input.  
+
+The system should also provide clear visual and auditory feedback to confirm actions. Text should be minimized for core functionality but available for advanced configurations and settings.
+
+\subsection{Security and Compliance}  
+All user data must be securely stored and transmitted using encryption. The application must comply with GDPR and other relevant data protection regulations, ensuring that users’ personal and work-related information is not exposed or misused.  
+
+Additionally, access control mechanisms must prevent unauthorized users from accessing or modifying work records.
+
+\subsection{Scalability}  
+The system must be designed to support a growing number of users and organizations. As adoption increases, performance should remain stable, and the backend infrastructure must be capable of handling increased storage and processing demands without requiring significant downtime or maintenance.
+
+\subsection{Cross-Platform Support}  
+The application must be available on both Android and iOS platforms, ensuring that employees can access and use the system regardless of their device. The mobile application should maintain consistent functionality and usability across different devices and operating system versions.
+
+\subsection{Logging and Audit Trails}  
+The system must maintain detailed audit logs for key operations, including the creation and modification of work records. Specifically, changes to work entries, authentication events, and offline-to-online data synchronization must be logged.  
+
+These logs should provide administrators and developers with insights into potential issues, user errors, or security concerns.
+
+\subsection{Failure Handling and Reporting}  
+The application must include mechanisms for detecting and reporting failures. If an entry fails to synchronize due to network issues or a transcription error, the user must be notified, and the failure must be logged for further debugging.  
+
+Complete system failures should be automatically reported to the development team, enabling proactive maintenance and issue resolution.
     
 \shorthandoff{-}
 \begin{markdown}[
@@ -165,7 +324,6 @@ Beyond core functionalities, non-functional requirements ensure that the system 
 \shorthandon{-}
 
 \chapter{Market Analysis}
-
 
 \section{Introduction}
 The need for efficient time-tracking solutions has led to the development of various tools aimed at helping businesses and employees manage work hours effectively. Many existing solutions rely on manual entry, mobile applications, or automated tracking features. However, there are still gaps in usability, accuracy, and hands-free operation, particularly for field employees who require a more seamless and automated way to log their time.
