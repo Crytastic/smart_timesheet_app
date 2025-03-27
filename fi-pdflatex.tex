@@ -327,6 +327,31 @@ These logs should provide administrators and developers with insights into poten
 The application must include mechanisms for detecting and reporting failures. If an entry fails to synchronize due to network issues or a transcription error, the user must be notified, and the failure must be logged for further debugging.  
 
 Complete system failures should be automatically reported to the development team, enabling proactive maintenance and issue resolution.
+
+\subsection{Database Support}  
+The system should efficiently handle up to a million records and a million audio files without performance degradation.  
+
+\subsection{Performance Optimization}  
+The system must be optimized for fast data loading and processing, even with large volumes of records. Voice recordings should be quickly accessible for playback, ensuring a responsive user experience.
+
+\subsection{Storage Capacity}  
+The system must efficiently manage storage for millions of short voice files of medium quality. It should automatically optimize storage usage while ensuring quick access to the files when needed.
+
+\subsection{Voice Recordings Security}  
+Voice recordings must be securely encrypted both during transmission and at rest. The system should ensure that sensitive voice data remains protected from unauthorized access or tampering.
+
+\subsection{Multilingual Support}  
+The application must support two language variants (Czech and English) for the user interface and for processing text from voice recordings. This includes ensuring that the transcription, AI models, and interface components can handle both languages seamlessly.
+
+\subsection{Testability and Logging}  
+The system must include detailed logging of user actions and error reports that facilitate testing and debugging. Logs should capture important events such as the creation and modification of records, authentication attempts, and synchronization statuses.
+
+\subsection{Data Backup}  
+The system must support automatic backup of both structured data and voice recordings on a regular basis. This ensures data integrity and recovery in case of system failures or data loss events.
+
+\subsection{UI Responsiveness}  
+The user interface must be responsive and provide a consistent user experience across devices, including smartphones, tablets, and desktops. The application should adapt seamlessly to different screen sizes and resolutions to ensure usability in both small and large devices.
+
     
 \shorthandoff{-}
 \begin{markdown}[
