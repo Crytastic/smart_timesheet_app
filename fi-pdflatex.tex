@@ -122,44 +122,49 @@ The primary users of the Smart Timesheet Application are mainly field employees.
 
 \section{Functional Requirements}
 
-The functional requirements define the core capabilities of the Smart Timesheet Application, ensuring that it meets user expectations and performs its intended tasks efficiently. These requirements specify the system's behavior in terms of services, tasks, and functions that users can perform.  
+The functional requirements define the core capabilities of the Smart Timesheet Application, ensuring that it meets user expectations and performs its intended tasks efficiently. These requirements specify the system's behavior in terms of services, tasks, and functions that users can perform.
 
-To clearly outline the expected functionality, the requirements are presented in the form of use cases. Each use case describes a specific interaction between the user and the system, defining the prerequisites, the sequence of steps, and the expected outcome.  
+This section also integrates the functional requirements as outlined by the development team at Devbalance. These include support for multiple languages, offline functionality, voice-to-text processing, and generative AI for text analysis. The integration of these elements helps ensure the application’s performance aligns with the needs of its users while supporting real-time synchronization, data accuracy, and ease of use.
 
-The use cases are not listed by priority but instead grouped at the same level of abstraction for clarity. While some use cases could be decomposed into more detailed subcases, this document keeps them at a high level to maintain readability. Detailed business logic, rules, and dependencies will be enforced through integration tests in the system’s codebase, avoiding redundant specifications in this document.  
+To clearly outline the expected functionality, the requirements are presented in the form of use cases. Each use case describes a specific interaction between the user and the system, defining the prerequisites, the sequence of steps, and the expected outcome.
 
-The core functional requirements of the Smart Timesheet Application revolve around efficient, voice-enabled time tracking, cloud-based data storage, and secure authentication. The application must accommodate hands-free logging while ensuring that users can review, edit, and manage their work records with minimal friction. Additionally, robust data security mechanisms must be in place to guarantee data integrity and user privacy.
+The use cases are not listed by priority but instead grouped at the same level of abstraction for clarity. While some use cases could be decomposed into more detailed subcases, this document keeps them at a high level to maintain readability. Detailed business logic, rules, and dependencies will be enforced through integration tests in the system’s codebase, avoiding redundant specifications in this document.
 
-\subsection{Adding Work Records via Audio}
+The core functional requirements of the Smart Timesheet Application revolve around efficient, voice-enabled time tracking, cloud-based data storage, secure authentication, and multi-language support. The application must accommodate hands-free logging while ensuring that users can review, edit, and manage their work records with minimal friction. Additionally, robust data security mechanisms must be in place to guarantee data integrity and user privacy. The system should also provide offline and online synchronization, as well as support for generative AI to analyze and summarize work entries.
 
-\textbf{Actors:} Employee  
+\subsection{Voice-to-Text Recording and Storage}
 
-\textbf{Prerequisites:} User is authenticated  
+\noindent \textbf{Actors:} Employee
 
-\textbf{Description:}  
-Employees can record audio descriptions of their work, specifying the client, project, and task details. The system transcribes the audio and converts it into a structured work entry.  
+\noindent \textbf{Prerequisites:} User is authenticated
 
-\textbf{Steps:}  
+\noindent \textbf{Description:}  
+Employees can record audio descriptions of their work in either Czech or English. The system transcribes the audio into text, uses a trained AI model to extract key information, and stores the recording in a cloud-based NoSQL database. The extracted data is parsed into a structured database entry, first saved locally and then persistently in the cloud.
+
+\noindent \textbf{Steps:}
 \begin{enumerate}
     \item Employee initiates an audio recording in the application.
-    \item Employee verbally describes the work performed.
+    \item Employee verbally describes the work performed, using either Czech or English.
+    \item The system automatically detects the language of the recording if not manually selected.
     \item System uploads the recording to the cloud.
     \item Transcription service processes the audio and converts it into text.
-    \item System structures the transcribed data into a work record.
-    \item Work entry is stored in the cloud-based database.
-    \item Employee receives a notification upon transcription completion.
+    \item AI model analyzes the transcribed text, extracting key information such as client, task, activity, and duration.
+    \item System structures the extracted data into a work record.
+    \item Work record is temporarily saved locally on the device.
+    \item Work record is uploaded to the cloud-based NoSQL database.
+    \item The employee receives a notification upon completion of the transcription and data entry.
 \end{enumerate}
 
 \subsection{Adding Work Records Manually}
 
-\textbf{Actors:} Employee  
+\noindent \textbf{Actors:} Employee
 
-\textbf{Prerequisites:} User is authenticated  
+\noindent \textbf{Prerequisites:} User is authenticated
 
-\textbf{Description:}  
-Employees can manually enter work records if they prefer not to use audio transcription.  
+\noindent \textbf{Description:}  
+Employees can manually enter work records if they prefer not to use audio transcription or if they wish to edit a previously recorded work entry.
 
-\textbf{Steps:}  
+\noindent \textbf{Steps:}
 \begin{enumerate}
     \item Employee navigates to the manual work entry interface.
     \item Employee inputs details such as client, project, and task description.
@@ -168,14 +173,14 @@ Employees can manually enter work records if they prefer not to use audio transc
 
 \subsection{Reviewing and Editing Work Entries}
 
-\textbf{Actors:} Employee  
+\noindent \textbf{Actors:} Employee
 
-\textbf{Prerequisites:} User is authenticated, work entries exist  
+\noindent \textbf{Prerequisites:} User is authenticated, work entries exist
 
-\textbf{Description:}  
-Employees can review and edit their past work records, including both manually entered and transcribed entries.  
+\noindent \textbf{Description:}  
+Employees can review and edit their past work records, including both manually entered and transcribed entries.
 
-\textbf{Steps:}  
+\noindent \textbf{Steps:}
 \begin{enumerate}
     \item Employee accesses the work log history.
     \item Employee selects a work entry to review.
@@ -184,32 +189,33 @@ Employees can review and edit their past work records, including both manually e
     \item Updated entry is saved to the cloud database.
 \end{enumerate}
 
-\subsection{Searching and Filtering Work Entries}
+\subsection{Searching, Filtering, and Sorting Work Entries}
 
-\textbf{Actors:} Employee  
+\noindent \textbf{Actors:} Employee
 
-\textbf{Prerequisites:} User is authenticated, work entries exist  
+\noindent \textbf{Prerequisites:} User is authenticated, work entries exist
 
-\textbf{Description:}  
-Employees can search for and filter work logs based on specific criteria such as date, project, or client.  
+\noindent \textbf{Description:}  
+Employees can search for and filter work logs based on specific criteria such as date, project, or client. Sorting of records is also available.
 
-\textbf{Steps:}  
+\noindent \textbf{Steps:}
 \begin{enumerate}
     \item Employee accesses the search and filter interface.
     \item Employee selects criteria for filtering (e.g., date range, client, project).
+    \item Employee selects criteria for sorting (e.g., by date, project, or client).
     \item System retrieves and displays the matching work entries.
 \end{enumerate}
 
 \subsection{Cloud-Based Data Storage and Organization}
 
-\textbf{Actors:} System  
+\noindent \textbf{Actors:} System
 
-\textbf{Prerequisites:} Work entries exist  
+\noindent \textbf{Prerequisites:} Work entries exist
 
-\textbf{Description:}  
-Work records are securely stored in a cloud-based database. Employees can access their records from any authenticated device.  
+\noindent \textbf{Description:}  
+Work records are securely stored in a cloud-based NoSQL database. Employees can access their records from any authenticated device.
 
-\textbf{Steps:}  
+\noindent \textbf{Steps:}
 \begin{enumerate}
     \item Work entries are saved in a structured format in the cloud.
     \item System ensures data is organized for efficient retrieval.
@@ -218,14 +224,14 @@ Work records are securely stored in a cloud-based database. Employees can access
 
 \subsection{User Authentication and Access Control}
 
-\textbf{Actors:} Employee  
+\noindent \textbf{Actors:} Employee
 
-\textbf{Prerequisites:} None  
+\noindent \textbf{Prerequisites:} None
 
-\textbf{Description:}  
-Authentication and access control ensure that only authorized users can log in and access their respective data.  
+\noindent \textbf{Description:}  
+Authentication and access control ensure that only authorized users can log in and access their respective data.
 
-\textbf{Steps:}  
+\noindent \textbf{Steps:}
 \begin{enumerate}
     \item Employee attempts to log in via Microsoft authentication.
     \item System verifies credentials through Firebase Authentication.
@@ -234,16 +240,16 @@ Authentication and access control ensure that only authorized users can log in a
     \item System ensures that employees from different domains cannot view or modify each other's records.
 \end{enumerate}
 
-\subsection{Offline Audio Logging}
+\subsection{Offline Audio Logging and Synchronization}
 
-\textbf{Actors:} Employee  
+\noindent \textbf{Actors:} Employee
 
-\textbf{Prerequisites:} User is authenticated, no internet connection available  
+\noindent \textbf{Prerequisites:} User is authenticated, no internet connection available
 
-\textbf{Description:}  
-Employees can record work descriptions offline, and the system will sync and process the recordings once an internet connection is available.  
+\noindent \textbf{Description:}  
+Employees can record work descriptions offline. Once an internet connection is restored, the system automatically uploads and processes the recordings, ensuring that data is synchronized across devices.
 
-\textbf{Steps:}  
+\noindent \textbf{Steps:}
 \begin{enumerate}
     \item Employee records an audio entry while offline.
     \item System stores the recording locally on the device.
@@ -253,18 +259,34 @@ Employees can record work descriptions offline, and the system will sync and pro
 
 \subsection{Receiving Notifications}
 
-\textbf{Actors:} Employee  
+\noindent \textbf{Actors:} Employee
 
-\textbf{Prerequisites:} User is authenticated, relevant event occurs  
+\noindent \textbf{Prerequisites:} User is authenticated, relevant event occurs
 
-\textbf{Description:}  
-Employees receive notifications when important events occur, such as transcription completion or record updates.  
+\noindent \textbf{Description:}  
+Employees receive notifications when important events occur, such as transcription completion or record updates.
 
-\textbf{Steps:}  
+\noindent \textbf{Steps:}
 \begin{enumerate}
     \item System detects an event requiring a notification (e.g., transcription complete).
     \item System generates a notification message.
     \item Employee receives a push notification or email alert.
+\end{enumerate}
+
+\subsection{Multilingual User Interface}
+
+\noindent \textbf{Actors:} Employee
+
+\noindent \textbf{Prerequisites:} User is authenticated
+
+\noindent \textbf{Description:}  
+Employees can switch between Czech and English for the user interface, allowing the application to support a multilingual user base.
+
+\noindent \textbf{Steps:}
+\begin{enumerate}
+    \item Employee navigates to the settings menu.
+    \item Employee selects the preferred language (Czech or English).
+    \item The user interface updates to the selected language.
 \end{enumerate}
 
 \section{Non-Functional Requirements}
