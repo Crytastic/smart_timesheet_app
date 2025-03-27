@@ -445,7 +445,43 @@ In conclusion, the system was designed with a strong emphasis on improving user 
 \end{markdown}
 \shorthandon{-}
 
-\chapter{Implementation Overview}
+\chapter{Technologies used}
+\section{Technologies Used}
+
+The Smart Timesheet Application is built using modern technologies that ensure scalability, performance, and security. The choice of technologies directly supports the functional and non-functional requirements, enabling efficient development and a seamless user experience. The key technologies used in the application include Flutter, Firebase, and Microsoft Authentication.
+
+\subsection{Flutter}
+
+Flutter is a UI framework developed by Google that allows for the development of natively compiled applications for mobile, web, and desktop from a single codebase. The Smart Timesheet Application uses Flutter to create cross-platform applications for both Android and iOS devices.
+
+Flutter utilizes the Dart programming language, which offers a rich set of features and provides strong typing, asynchronous programming, and fast performance. By using Flutter, the application is able to maintain consistent functionality and high performance across different platforms.
+
+The core advantage of Flutter lies in its hot reload feature, which allows developers to instantly see changes in the code reflected in the application without needing to restart the app. This significantly speeds up development time and improves the testing cycle.
+
+\subsection{Firebase}
+
+Firebase is a comprehensive platform for building web and mobile applications, offered by Google. It provides a set of tools that simplifies backend development, handling key tasks such as data storage, authentication, and crash reporting.
+
+\subsubsection{Firestore}
+
+Firestore is a NoSQL cloud database that is used in the Smart Timesheet Application to store work records and user data. Firestore allows for scalable and flexible storage, offering real-time synchronization of data across all devices. This is crucial for ensuring that the data is always up-to-date across different devices, especially when working offline or in poor network conditions.
+
+Data in Firestore is stored in collections of documents. Each document contains fields, where data is stored as key-value pairs. This structure allows easy querying and retrieval of user data, making it suitable for the dynamic nature of the application.
+
+\subsubsection{Firebase Storage}
+
+Firebase Storage is used for storing and serving large files, such as voice recordings. The Smart Timesheet Application uses Firebase Storage to securely store audio files that users upload as part of their work records. The integration of Firebase Storage ensures that these files are available for download and playback in a fast and secure manner.
+
+\subsubsection{Crashlytics}
+
+Firebase Crashlytics is a powerful crash reporting tool integrated into the Smart Timesheet Application to track, report, and fix crashes in real-time. Crashlytics provides detailed reports about the nature and frequency of crashes, allowing developers to quickly identify and resolve critical issues, improving the app's stability.
+
+\subsubsection{Firebase Authentication}
+
+Firebase Authentication is used to manage user sign-in and authentication within the application. The Smart Timesheet Application utilizes Microsoft authentication to allow users to sign in securely using their Microsoft credentials. This simplifies the authentication process and ensures that user accounts are managed efficiently.
+
+Firebase Authentication supports a wide range of identity providers, including email/password login, social media logins, and custom authentication methods. The flexibility of Firebase Authentication allows for easy integration of additional identity providers if required in the future, ensuring that the application remains scalable.
+
 \shorthandoff{-}
 \begin{markdown}[
   citationNbsps,
@@ -459,7 +495,6 @@ In conclusion, the system was designed with a strong emphasis on improving user 
   rawAttribute,
   tableCaptions,
 ]
-  % TODO: Overview of key technologies and architectural decisions in the development process.
 \end{markdown}
 \shorthandon{-}
 
