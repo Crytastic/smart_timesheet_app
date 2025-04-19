@@ -498,7 +498,7 @@ Firebase Authentication supports a wide range of identity providers, including e
 \end{markdown}
 \shorthandon{-}
 
-\chapter{Development Process and Challenges}
+\chapter{Implementation}
 \shorthandoff{-}
 \begin{markdown}[
   citationNbsps,
@@ -512,7 +512,34 @@ Firebase Authentication supports a wide range of identity providers, including e
   rawAttribute,
   tableCaptions,
 ]
-  % TODO: Describe the development methodology (e.g., Agile), challenges faced during development, and how they were addressed.
+
+## Versioning
+
+Versioning plays a crucial role in the management and delivery of software, particularly in collaborative and iterative development environments. It provides a structured way to track and communicate changes, enhancements, and fixes, thus facilitating better coordination among team members and stakeholders, and ensuring consistency across distributed versions of the software.
+
+In the development of the smart timesheet app, we adopted the semantic versioning standard, a widely recognized system designed to convey meaning about the underlying code with each version identifier~[@semver]. The standard uses the format `MAJOR.MINOR.PATCH`, where:
+
+- `MAJOR` version increases indicate incompatible API changes,
+- `MINOR` version increases add functionality in a backward-compatible manner, and
+- `PATCH` version increases represent backward-compatible bug fixes
+
+In our project, version numbers follow the following pattern:
+
+```
+MAJOR.MINOR.PATCH+BUILD_METADATA
+```
+
+To give a clearer example:
+```
+0.11.0+1745075692
+```
+
+The core `0.11.0` adheres to the semantic versioning scheme, while the suffix `+1745075692` serves as build metadata. This metadata, represented as a Unix timestamp, enables differentiation of individual builds down to the level of Git commits, which is particularly helpful for internal testing and continuous integration workflows. A Unix timestamp is a numeric representation of the number of seconds that have elapsed since January 1, 1970 (midnight UTC/GMT), and is commonly used in computing for time tracking~[@mdnUnixTime].
+
+The build metadata is automatically appended by a GitLab CI pipeline, which injects a timestamp or commit-based hash during the build process. This automation ensures that each distributed version can be traced back to the exact source state, facilitating debugging, auditing, and reproducibility.
+
+Development leading up to the final delivery of this thesis is considered work-in-progress. The first stable release — version `1.0.0` — is planned to coincide with the project's completion and will signify a stable, production-ready build~[@semver].
+
 \end{markdown}
 \shorthandon{-}
 
