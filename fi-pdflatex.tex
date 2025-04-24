@@ -540,6 +540,14 @@ The build metadata is automatically appended by a GitLab CI pipeline, which inje
 
 Development leading up to the final delivery of this thesis is considered work-in-progress. The first stable release — version `1.0.0` — is planned to coincide with the project's completion and will signify a stable, production-ready build~[@semver].
 
+## Prompt Engineering
+
+In the smart timesheet app, prompt engineering was critical to accurately transform transcribed audio into structured timesheet data. The challenge of supporting multiple languages, particularly English and Czech, required careful handling of transcription metadata. If the spoken language and metadata did not match, the model would attempt to transcribe and translate, leading to suboptimal results.
+
+To avoid this, we created separate optimized prompts for English and Czech. These prompts ensure accurate transcription by setting a clear language context, enabling the model to focus on transcribing rather than translating. This approach has been key to improving transcription quality and minimizing errors. The prompts were crafted according to best practices for prompt engineering, such as providing clear instructions and limiting ambiguity. For instance, when transcribing in Czech, the prompt includes a direct instruction to interpret and format the text in a specific, structured manner, minimizing the model’s cognitive load. This specificity helps in reducing errors that might arise due to incorrect translations or misunderstood context, especially in professional terms related to time tracking and work descriptions [@openaiPrompt].
+
+Furthermore, we used specific formatting to improve the model’s response consistency. By carefully choosing appropriate instructions and ensuring that the language metadata matched the transcription language, we were able to optimize the prompts for both languages. This resulted in a significant improvement in the accuracy of the data transformation process, with reduced discrepancies between spoken language and expected results.
+
 \end{markdown}
 \shorthandon{-}
 
