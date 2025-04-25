@@ -108,7 +108,7 @@ TODO
 TODO
 \end{otherlanguage}
 
-\chapter{Requirements Analysis}
+\chapter{System Requirements}
 
 \section{Introduction}
 
@@ -413,7 +413,24 @@ Several time-tracking applications currently serve businesses, each with strengt
 \end{markdown}
 \shorthandon{-}
 
-\chapter{Design}
+
+\shorthandoff{-}
+\begin{markdown}[
+  citationNbsps,
+  citations,
+  definitionLists,
+  fencedCode,
+  hashEnumerators,
+  inlineNotes,
+  notes,
+  pipeTables,
+  rawAttribute,
+  tableCaptions,
+]
+
+# Design
+
+## Overview
 
 The Smart Timesheet Application is designed to provide a scalable and efficient solution for employees to log and manage their work records using audio-based logging and manual entry. The system must handle multiple companies, ensuring that user authentication, data storage, and processing are both secure and scalable.
 
@@ -429,28 +446,44 @@ In addition to the mobile app, there is also a web-based application, which prov
 
 In conclusion, the system was designed with a strong emphasis on improving user experience, scalability, and operational efficiency. By utilizing Microsoft accounts for authentication, the application ensures secure and simplified access management, particularly important given the multi-organization use case. Cloud-based storage for data and audio recordings guarantees high availability, scalability, and seamless real-time synchronization across devices. The integration of external AI services for transcription offloads resource-intensive processing to a third party, reducing system complexity without introducing a critical backend service that would require additional maintenance and most importantly, availability management.
 
-\shorthandoff{-}
-\begin{markdown}[
-  citationNbsps,
-  citations,
-  definitionLists,
-  fencedCode,
-  hashEnumerators,
-  inlineNotes,
-  notes,
-  pipeTables,
-  rawAttribute,
-  tableCaptions,
-]
 \end{markdown}
+
+\section{System Architecture}
+
+The system architecture is designed with a clear focus on scalability, efficiency, and cross-platform functionality. After careful consideration of the system requirements, along with some prototyping, it has been decided that the core functionality will be supported by the following components.
+
+The development process has been conducted concurrently a mobile and a web interface\footnote{The web application is not a part of this thesis and has been developed by a fellow student, Bc. Ondřej Zelinka}. Although developed as separate projects, they share many common features and functionalities. Notably, the UI/UX designs have been discussed and aligned across both platforms. A shared set of supporting services ensures that both the mobile app and the web interface operate seamlessly, offering a consistent experience. These shared services include the entire Firebase stack, which provides authentication, data storage, and standardization of timesheet data formats. Furthermore, the OpenAI endpoints and associated prompts are employed as common resources for both applications and saved in Firebase storage. This design allows the user to utilize both applications simultaneously with a single account, ensuring a unified experience across platforms.
+
+\subsection{System Components Overview}
+
+The core components of the system include:
+
+\begin{itemize}
+    \item \textbf{Android/iOS Application} – A mobile application available on both Android and iOS platforms, providing users with access to the system's functionalities.
+    \item \textbf{Web Application} – Developed by a fellow student, Bc. Ondřej Zelinka, as a separate project. This web-based platform offers similar functionalities to the mobile application, allowing users to interact with the system via a web browser.
+    \item \textbf{OpenAI API}
+    \begin{itemize}
+        \item \textbf{Speech-to-Text Endpoint} – Used for transcribing audio recordings to text.
+        \item \textbf{Text-to-Timesheet Endpoint} – Converts the transcribed text into a structured timesheet format.
+    \end{itemize}
+    \item \textbf{Firebase Services}
+    \begin{itemize}
+        \item \textbf{Firebase Storage} – Used for storing audio files.
+        \item \textbf{Firestore Database} – A NoSQL database used to store static content such as prompts, activities, clients, and projects, as well as dynamic data such as timesheets.
+        \item \textbf{Firebase Authentication} – A service used for managing user authentication across both platforms.
+    \end{itemize}
+    \item \textbf{Azure App} – Provides finer control over login procedures via Microsoft accounts, as this is the primary method of authentication, as required by Devbalance.
+\end{itemize}
+
+Several additional services and supporting components are used and further discussed in the Deployment chapter. 
+
 \shorthandon{-}
 
 \chapter{Technologies used}
-\section{Technologies Used}
 
 The Smart Timesheet Application is built using modern technologies that ensure scalability, performance, and security. The choice of technologies directly supports the functional and non-functional requirements, enabling efficient development and a seamless user experience. The key technologies used in the application include Flutter, Firebase, and Microsoft Authentication.
 
-\subsection{Flutter}
+\section{Flutter}
 
 Flutter is a UI framework developed by Google that allows for the development of natively compiled applications for mobile, web, and desktop from a single codebase. The Smart Timesheet Application uses Flutter to create cross-platform applications for both Android and iOS devices.
 
@@ -458,25 +491,25 @@ Flutter utilizes the Dart programming language, which offers a rich set of featu
 
 The core advantage of Flutter lies in its hot reload feature, which allows developers to instantly see changes in the code reflected in the application without needing to restart the app. This significantly speeds up development time and improves the testing cycle.
 
-\subsection{Firebase}
+\section{Firebase}
 
 Firebase is a comprehensive platform for building web and mobile applications, offered by Google. It provides a set of tools that simplifies backend development, handling key tasks such as data storage, authentication, and crash reporting.
 
-\subsubsection{Firestore}
+\subsection{Firestore}
 
 Firestore is a NoSQL cloud database that is used in the Smart Timesheet Application to store work records and user data. Firestore allows for scalable and flexible storage, offering real-time synchronization of data across all devices. This is crucial for ensuring that the data is always up-to-date across different devices, especially when working offline or in poor network conditions.
 
 Data in Firestore is stored in collections of documents. Each document contains fields, where data is stored as key-value pairs. This structure allows easy querying and retrieval of user data, making it suitable for the dynamic nature of the application.
 
-\subsubsection{Firebase Storage}
+\subsection{Firebase Storage}
 
 Firebase Storage is used for storing and serving large files, such as voice recordings. The Smart Timesheet Application uses Firebase Storage to securely store audio files that users upload as part of their work records. The integration of Firebase Storage ensures that these files are available for download and playback in a fast and secure manner.
 
-\subsubsection{Crashlytics}
+\subsection{Crashlytics}
 
 Firebase Crashlytics is a powerful crash reporting tool integrated into the Smart Timesheet Application to track, report, and fix crashes in real-time. Crashlytics provides detailed reports about the nature and frequency of crashes, allowing developers to quickly identify and resolve critical issues, improving the app's stability.
 
-\subsubsection{Firebase Authentication}
+\subsection{Firebase Authentication}
 
 Firebase Authentication is used to manage user sign-in and authentication within the application. The Smart Timesheet Application utilizes Microsoft authentication to allow users to sign in securely using their Microsoft credentials. This simplifies the authentication process and ensures that user accounts are managed efficiently.
 
@@ -513,7 +546,33 @@ Firebase Authentication supports a wide range of identity providers, including e
   tableCaptions,
 ]
 
-## Versioning
+## Prompt Engineering
+
+In the smart timesheet app, prompt engineering was critical to accurately transform transcribed audio into structured timesheet data. The challenge of supporting multiple languages, particularly English and Czech, required careful handling of transcription metadata. If the spoken language and metadata did not match, the model would attempt to transcribe and translate, leading to suboptimal results.
+
+To avoid this, we created separate optimized prompts for English and Czech. These prompts ensure accurate transcription by setting a clear language context, enabling the model to focus on transcribing rather than translating. This approach has been key to improving transcription quality and minimizing errors. The prompts were crafted according to best practices for prompt engineering, such as providing clear instructions and limiting ambiguity. For instance, when transcribing in Czech, the prompt includes a direct instruction to interpret and format the text in a specific, structured manner, minimizing the model’s cognitive load. This specificity helps in reducing errors that might arise due to incorrect translations or misunderstood context, especially in professional terms related to time tracking and work descriptions [@openaiPrompt].
+
+Furthermore, we used specific formatting to improve the model’s response consistency. By carefully choosing appropriate instructions and ensuring that the language metadata matched the transcription language, we were able to optimize the prompts for both languages. This resulted in a significant improvement in the accuracy of the data transformation process, with reduced discrepancies between spoken language and expected results.
+
+\end{markdown}
+\shorthandon{-}
+
+\chapter{Deployment}
+\shorthandoff{-}
+\begin{markdown}[
+  citationNbsps,
+  citations,
+  definitionLists,
+  fencedCode,
+  hashEnumerators,
+  inlineNotes,
+  notes,
+  pipeTables,
+  rawAttribute,
+  tableCaptions,
+]
+
+## Version control
 
 Versioning plays a crucial role in the management and delivery of software, particularly in collaborative and iterative development environments. It provides a structured way to track and communicate changes, enhancements, and fixes, thus facilitating better coordination among team members and stakeholders, and ensuring consistency across distributed versions of the software.
 
@@ -540,13 +599,17 @@ The build metadata is automatically appended by a GitLab CI pipeline, which inje
 
 Development leading up to the final delivery of this thesis is considered work-in-progress. The first stable release — version `1.0.0` — is planned to coincide with the project's completion and will signify a stable, production-ready build~[@semver].
 
-## Prompt Engineering
+## CI/CD
 
-In the smart timesheet app, prompt engineering was critical to accurately transform transcribed audio into structured timesheet data. The challenge of supporting multiple languages, particularly English and Czech, required careful handling of transcription metadata. If the spoken language and metadata did not match, the model would attempt to transcribe and translate, leading to suboptimal results.
+TODO: Pipeline steps and responsibilities
 
-To avoid this, we created separate optimized prompts for English and Czech. These prompts ensure accurate transcription by setting a clear language context, enabling the model to focus on transcribing rather than translating. This approach has been key to improving transcription quality and minimizing errors. The prompts were crafted according to best practices for prompt engineering, such as providing clear instructions and limiting ambiguity. For instance, when transcribing in Czech, the prompt includes a direct instruction to interpret and format the text in a specific, structured manner, minimizing the model’s cognitive load. This specificity helps in reducing errors that might arise due to incorrect translations or misunderstood context, especially in professional terms related to time tracking and work descriptions [@openaiPrompt].
+## Crashlytics
 
-Furthermore, we used specific formatting to improve the model’s response consistency. By carefully choosing appropriate instructions and ensuring that the language metadata matched the transcription language, we were able to optimize the prompts for both languages. This resulted in a significant improvement in the accuracy of the data transformation process, with reduced discrepancies between spoken language and expected results.
+TODO: How logging and access to those logs is implemented
+
+## App distribution
+
+TODO: How app is distributed to testers
 
 \end{markdown}
 \shorthandon{-}
@@ -583,26 +646,8 @@ Furthermore, we used specific formatting to improve the model’s response consi
   rawAttribute,
   tableCaptions,
 ]
-  % TODO: Summarize key takeaways and suggest potential directions for future development or improvement.
-\end{markdown}
-\shorthandon{-}
 
-\chapter{Example Chapter}
-\shorthandoff{-}
-\begin{markdown}[
-  citationNbsps,
-  citations,
-  definitionLists,
-  fencedCode,
-  hashEnumerators,
-  inlineNotes,
-  notes,
-  pipeTables,
-  rawAttribute,
-  tableCaptions,
-]
-
-Here is an example of a citation to avoid warnings: ~[@borgman03, p. 123].
+TODO: What's next?
 
 \end{markdown}
 \shorthandon{-}
