@@ -564,7 +564,7 @@ This separation enhances the modularity of the code, making it easier to modify,
 
 Examples of systems that use MVC include multi-page applications and frameworks like Symfony.
 
-### Extended MVC Pattern
+### Layered Pattern
 
 The application uses an extended, layered variation of the MVC pattern. Since Flutter does not enforce architectural boundaries, maintaining this structure is entirely the developer's responsibility. The key layers are:
 
@@ -577,18 +577,99 @@ The application uses an extended, layered variation of the MVC pattern. Since Fl
 
 Organizing a Flutter project's directory structure is pivotal for maintaining scalability, readability, and ease of collaboration. While Flutter does not enforce a specific directory layout, adopting a consistent approach is essential, especially as the application grows in complexity.
 
-In this project, I've decided to use a **feature-first structure**. This approach organizes the code by features rather than technical layers ~[@flutterStateMgmt2].
+#### Feature-First Structure
 
-#### Advantages
+In a feature-first structure, the application is organized around business features, with each feature acting as a self-contained module.  
+This method is particularly suited to agile teams and large projects.
 
-- **Improved Navigation**: The feature-first structure makes it easier to navigate the codebase by grouping all files related to a specific feature together.
-- **Simplified Refactoring**: Refactoring is more straightforward because related files are encapsulated within individual features, reducing the risk of affecting unrelated parts of the codebase.
-- **Scalability**: As the application grows, new features can be added without disrupting the overall structure, which is crucial for large projects.
+\end{markdown}
+\begin{figure}[h]
+  \begin{center}
+    \begin{minipage}{.8\textwidth}
+      \begin{verbatim}
+lib/
++-- src/
+    +-- features/
+        +-- feature1/
+        |   +-- presentation/
+        |   +-- application/
+        |   +-- domain/
+        |   +-- data/
+        +-- feature2/
+        +-- feature3/
+      \end{verbatim}
+    \end{minipage}
+  \end{center}
+  \caption{Feature-first directory structure}
+  \label{fig:project_directory}
+\end{figure}
 
-#### Disadvantages
+\begin{markdown}[
+  citationNbsps,
+  citations,
+  definitionLists,
+  fencedCode,
+  hashEnumerators,
+  inlineNotes,
+  notes,
+  pipeTables,
+  rawAttribute,
+  tableCaptions,
+]
 
-- **Potential for Duplication**: Shared components between features can lead to code duplication, as each feature might contain similar files for different functionalities.
-- **Complexity in Shared Resources**: Managing common utilities or services that span multiple features requires careful planning to avoid redundancy and ensure maintainability.
+Some of the advantages of this structure are easier navigation, better scalability, and simplified refactoring.  
+However, it can introduce code duplication and challenges around shared services if not carefully managed.
+
+#### Layer-first structure
+
+An alternative approach is the layer-first structure. Here, the application is divided into distinct technical layers, like data, domain, and presentation, independent of features.
+
+
+\end{markdown}
+\begin{figure}[h]
+  \begin{center}
+    \begin{minipage}{.8\textwidth}
+      \begin{verbatim}
+lib/
++-- src/
+    +-- features/
+        +-- presentation/
+        |   +-- feature1/
+        |   +-- feature2/
+        |   +-- feature3/
+        +-- application/
+        |   +-- feature1/
+        +-- domain/
+        |   +-- feature2/
+        |   +-- feature3/
+        +-- data/
+        |   +-- feature2/
+      \end{verbatim}
+    \end{minipage}
+  \end{center}
+  \caption{Layer-first directory structure}
+  \label{fig:project_directory}
+\end{figure}
+
+\begin{markdown}[
+  citationNbsps,
+  citations,
+  definitionLists,
+  fencedCode,
+  hashEnumerators,
+  inlineNotes,
+  notes,
+  pipeTables,
+  rawAttribute,
+  tableCaptions,
+]
+
+Layer-first structures promote separation of concerns and reusability.  
+However, they can complicate refactoring efforts and might not scale as cleanly for feature-heavy applications.
+
+Detailed comparison I've based my decisions on can be found in Andrea Bizzotto's article ~[@flutterStructure].
+
+In this project, a feature-first structure is used, taking the developer management tax in exchange for better long-term maintainability.
 
 \end{markdown}
 \begin{figure}[h]
@@ -615,7 +696,7 @@ lib/
       \end{verbatim}
     \end{minipage}
   \end{center}
-  \caption{Project directory structure}
+  \caption{Timesheet app directory structure}
   \label{fig:project_directory}
 \end{figure}
 
