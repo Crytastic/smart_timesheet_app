@@ -590,10 +590,11 @@ In this project, I've decided to use a **feature-first structure**. This approac
 - **Potential for Duplication**: Shared components between features can lead to code duplication, as each feature might contain similar files for different functionalities.
 - **Complexity in Shared Resources**: Managing common utilities or services that span multiple features requires careful planning to avoid redundancy and ensure maintainability.
 
-Below is an example of how the project is structured:
-
 \end{markdown}
-\begin{verbatim}
+\begin{figure}[h]
+  \begin{center}
+    \begin{minipage}{.8\textwidth}
+      \begin{verbatim}
 lib/
 +-- src/
     +-- features/
@@ -611,7 +612,13 @@ lib/
     +-- core/
     +-- firebase_options.dart
     +-- main.dart
-\end{verbatim}
+      \end{verbatim}
+    \end{minipage}
+  \end{center}
+  \caption{Project directory structure}
+  \label{fig:project_directory}
+\end{figure}
+
 \begin{markdown}[
   citationNbsps,
   citations,
