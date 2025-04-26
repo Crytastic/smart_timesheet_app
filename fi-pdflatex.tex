@@ -546,6 +546,37 @@ Firebase Authentication supports a wide range of identity providers, including e
   tableCaptions,
 ]
 
+## Software Architecture
+
+Flutter by default does not impose strict guidelines on how code should be structured, nor does it mandate the separation of application layers. Flutter uses Dart as its primary programming language, and what would traditionally be a separate view model—often implemented in a different language—is represented here simply as a special class called a `Widget`. This approach is both an advantage and a disadvantage: it enables rapid development and keeps the technology stack minimal, but it also allows, and in some cases even encourages, poor software architecture practices.
+
+Unlike many other platforms, it is entirely possible to implement the entire business logic and all views of an application in a single `.dart` file. As a result, it is crucial for developers to be disciplined and to establish a coherent software architecture early in the development cycle.
+
+### MVC Pattern
+
+The Model-View-Controller (MVC) pattern separates a system into three distinct parts, each with a different responsibility~[@mdnMVC]:
+
+- **Model** — Contains all business logic and data.
+- **View** — Displays data to the user.
+- **Controller** — Manages the manipulation of the model.
+
+This separation enhances the modularity of the code, making it easier to modify, test, and maintain.
+
+Examples of systems that use MVC include multi-page applications and frameworks like Symfony.
+
+### Extended MVC Pattern
+
+The application uses an extended, layered variation of the MVC pattern. Since Flutter does not enforce architectural boundaries, maintaining this structure is entirely the developer's responsibility. The key layers are:
+
+- **Model** — Defines the objects and data structures used throughout the app.
+- **Service** — Contains the business logic and manages operations such as logging.
+- **Controller** — Manages application state and delegates most operations to its corresponding service. In this project, controllers are referred to as **providers** due to naming conventions associated with using `ChangeNotifier`; the controllers also manage the application's state and expose it to other components—hence the term *Provider*.
+- **View** — Defines the user interface.
+
+### State management
+
+TO DO: Stateful Widget vs ChangeNotifier library
+
 ## Prompt Engineering
 
 In the smart timesheet app, prompt engineering was critical to accurately transform transcribed audio into structured timesheet data. The challenge of supporting multiple languages, particularly English and Czech, required careful handling of transcription metadata. If the spoken language and metadata did not match, the model would attempt to transcribe and translate, leading to suboptimal results.
