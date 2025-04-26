@@ -573,6 +573,47 @@ The application uses an extended, layered variation of the MVC pattern. Since Fl
 - **Controller** — Manages application state and delegates most operations to its corresponding service. In this project, controllers are referred to as **providers** due to naming conventions associated with using `ChangeNotifier`; the controllers also manage the application's state and expose it to other components—hence the term *Provider*.
 - **View** — Defines the user interface.
 
+### Project Directory Structure
+
+Organizing a Flutter project's directory structure is pivotal for maintaining scalability, readability, and ease of collaboration. While Flutter does not enforce a specific directory layout, adopting a consistent approach is essential, especially as the application grows in complexity.
+
+In this project, I've decided to use a **feature-first structure**. This approach organizes the code by features rather than technical layers ~[@flutterStateMgmt2].
+
+#### Advantages
+
+- **Improved Navigation**: The feature-first structure makes it easier to navigate the codebase by grouping all files related to a specific feature together.
+- **Simplified Refactoring**: Refactoring is more straightforward because related files are encapsulated within individual features, reducing the risk of affecting unrelated parts of the codebase.
+- **Scalability**: As the application grows, new features can be added without disrupting the overall structure, which is crucial for large projects.
+
+#### Disadvantages
+
+- **Potential for Duplication**: Shared components between features can lead to code duplication, as each feature might contain similar files for different functionalities.
+- **Complexity in Shared Resources**: Managing common utilities or services that span multiple features requires careful planning to avoid redundancy and ensure maintainability.
+
+Below is an example of how the project is structured:
+
+\end{markdown}
+\begin{verbatim}
+lib/
++-- src/
+    +-- features/
+        +-- audio_playback/
+        |   +-- data/
+        |   +-- services/
+        |   +-- providers/
+        |   +-- ui/
+        +-- audio_recording/
+        +-- audio_transcription/
+        +-- auth/
+        +-- settings/
+        +-- work_records/
+    +-- common/
+    +-- core/
+    +-- firebase_options.dart
+    +-- main.dart
+\end{verbatim}
+\begin{markdown}
+
 ### State Management
 
 There are multiple approaches to handling state management in Flutter. In many frameworks, a specific method of state management is prescribed. However, because Flutter supports a wide range of platforms, it is not surprising that state management is largely delegated to plugins and third-party libraries~[@flutterStateMgmt].
