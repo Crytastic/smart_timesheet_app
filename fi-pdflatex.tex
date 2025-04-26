@@ -573,9 +573,19 @@ The application uses an extended, layered variation of the MVC pattern. Since Fl
 - **Controller** — Manages application state and delegates most operations to its corresponding service. In this project, controllers are referred to as **providers** due to naming conventions associated with using `ChangeNotifier`; the controllers also manage the application's state and expose it to other components—hence the term *Provider*.
 - **View** — Defines the user interface.
 
-### State management
+### State Management
 
-TO DO: Stateful Widget vs ChangeNotifier library
+There are multiple approaches to handling state management in Flutter. In many frameworks, a specific method of state management is prescribed. However, because Flutter supports a wide range of platforms, it is not surprising that state management is largely delegated to plugins and third-party libraries~[@flutterStateMgmt].
+
+Among the available options~[@flutterStateMgmt], three methods are generally considered industry standards:
+
+- `StatefulWidget`'s `setState` method^[Official documentation: https://api.flutter.dev/flutter/widgets/StatefulWidget-class.html]
+- `Provider` package^[Provider package on pub.dev: https://pub.dev/packages/provider]
+- `Riverpod` package^[Official Riverpod site: https://riverpod.dev/]
+
+In the timesheet application, the `Provider` package is used to manage all states that are, or could feasibly be, required by multiple components. The `ChangeNotifier` class provided by the package simplifies listening for changes across the application.
+
+Meanwhile, `StatefulWidget`'s `setState` is utilized whenever the state is local to a single component, typically when it only affects the current view or user interface.
 
 ## Prompt Engineering
 
