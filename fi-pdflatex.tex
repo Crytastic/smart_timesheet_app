@@ -566,12 +566,141 @@ Examples of systems that use MVC include multi-page applications and frameworks 
 
 ### Layered Pattern
 
-The application uses an extended, layered variation of the MVC pattern. Since Flutter does not enforce architectural boundaries, maintaining this structure is entirely the developer's responsibility. The key layers are:
+The application uses an extended, layered variation of the MVC pattern. Since Flutter does not enforce architectural boundaries, maintaining this structure is entirely the developer's responsibility. That allows The key layers are:
 
 - **Model** — Defines the objects and data structures used throughout the app.
 - **Service** — Contains the business logic and manages operations such as logging.
 - **Controller** — Manages application state and delegates most operations to its corresponding service. In this project, controllers are referred to as **providers** due to naming conventions associated with using `ChangeNotifier`; the controllers also manage the application's state and expose it to other components—hence the term *Provider*.
 - **View** — Defines the user interface.
+
+In some cases not all layers are utilised, particularly in cases in which no data is required, hence missing the model. In other cases there are services which do not have a dedicated controller. This is because it's not a wanted occurence for the developer to directly call these services. In such a case, a more generic controller is provided that calls multiple services internally. This allows for simpler calls in the views, as business logic is not wanted there - and neither are thick boilerplates.
+
+#### Model example
+```
+import 'package:json_annotation/json_annotation.dart';
+
+part 'client.g.dart';
+
+@JsonSerializable()
+class Client {
+  final String id;
+  final String name;
+  final String address;
+  final String dic;
+  final String ic;
+  final String email;
+  final String phone;
+
+  Client({
+    required this.id,
+    required this.name,
+    required this.address,
+    required this.dic,
+    required this.ic,
+    required this.email,
+    required this.phone,
+  });
+
+  factory Client.fromJson(Map<String, dynamic> json) => _$ClientFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ClientToJson(this);
+}
+```
+
+#### Service example
+```
+class AuthService with WidgetsBindingObserver {
+  FirebaseAuth get instance => FirebaseAuth.instance;
+
+  Stream<User?> get userStream => instance.authStateChanges();
+
+  Future<UserCredential> signInWithMicrosoft() async {
+    final provider = OAuthProvider("microsoft.com");
+    final credential = await instance.signInWithProvider(provider);
+    logger.i("Signed with Microsoft: $credential");
+    return credential;
+  }
+
+  Future<void> logout(BuildContext context) async {
+    User? user = instance.currentUser;
+    if (user != null && user.isAnonymous) {
+      _deleteAccount();
+    } else {
+      await instance.signOut();
+    }
+  }
+
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+  }
+}
+
+```
+
+#### Controller example
+```
+class AuthProvider with ChangeNotifier {
+  final _authService = GetIt.I<AuthService>();
+  bool _loggingIn = false;
+
+  bool get loggingIn => _loggingIn;
+  Stream<User?> get userStream => _authService.userStream;
+
+  AuthProvider() {
+    userStream.listen(_onAuthStateChanged);
+  }
+
+  void _onAuthStateChanged(User? user) {
+    _updateLoggingState(user);
+    notifyListeners();
+  }
+
+  void _updateLoggingState(User? user) {
+    if (user != null) {
+      _loggingIn = false;
+    }
+  }
+
+  Future<void> signInWithMicrosoft() async {
+    _loggingIn = true;
+    notifyListeners();
+    await _authService.signInWithMicrosoft();
+  }
+
+  Future<void> logout(BuildContext context) async {
+    await _authService.logout(context);
+  }
+}
+```
+
+#### View example
+```
+class LoginScreen extends StatelessWidget {
+  const LoginScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context);
+
+    return Scaffold(
+      body: Center(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SquareImageButton(
+              onPressed: () {
+                authProvider.signInWithMicrosoft();
+              },
+              imagePath: "assets/microsoft_logo.png",
+              size: 100,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+```
 
 ### Project Directory Structure
 
