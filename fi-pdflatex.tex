@@ -80,15 +80,32 @@
 \usepackage{url}      %% Hyperlinks
 \usepackage{markdown} %% Lightweight markup
 \usepackage{listings} %% Source code highlighting
+\usepackage{xcolor}
+\lstdefinelanguage{Dart}{
+  keywords={
+    abstract, as, assert, async, await, break, case, catch, class, const, continue,
+    covariant, default, deferred, do, dynamic, else, enum, export, extends, extension,
+    external, factory, false, final, finally, for, Function, get, hide, if, implements,
+    import, in, interface, is, late, library, mixin, new, null, on, operator, part,
+    required, rethrow, return, set, show, static, super, switch, sync, this, throw,
+    true, try, typedef, var, void, while, with, yield
+  },
+  sensitive=true,
+  comment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  morestring=[b]",
+  morestring=[b]',
+}
 \lstset{
-  basicstyle      = \ttfamily,
+  basicstyle      = \ttfamily,  % <-- monospace
   identifierstyle = \color{black},
-  keywordstyle    = \color{blue},
-  keywordstyle    = {[2]\color{cyan}},
-  keywordstyle    = {[3]\color{olive}},
+  keywordstyle    = \color{blue}\bfseries,
   stringstyle     = \color{teal},
   commentstyle    = \itshape\color{magenta},
   breaklines      = true,
+  columns         = flexible,          % <-- no weird spacing
+  keepspaces      = true,               % <-- keep spacing in code
+  showstringspaces= false,              % <-- hide weird markers in spaces
 }
 \usepackage{floatrow} %% Putting captions above tables
 \floatsetup[table]{capposition=top}
@@ -576,7 +593,7 @@ The application uses an extended, layered variation of the MVC pattern. Since Fl
 In some cases not all layers are utilised, particularly in cases in which no data is required, hence missing the model. In other cases there are services which do not have a dedicated controller. This is because it's not a wanted occurence for the developer to directly call these services. In such a case, a more generic controller is provided that calls multiple services internally. This allows for simpler calls in the views, as business logic is not wanted there - and neither are thick boilerplates.
 
 #### Model example
-```
+``` dart
 import 'package:json_annotation/json_annotation.dart';
 
 part 'client.g.dart';
@@ -608,7 +625,7 @@ class Client {
 ```
 
 #### Service example
-```
+``` dart
 class AuthService with WidgetsBindingObserver {
   FirebaseAuth get instance => FirebaseAuth.instance;
 
@@ -638,7 +655,7 @@ class AuthService with WidgetsBindingObserver {
 ```
 
 #### Controller example
-```
+``` dart
 class AuthProvider with ChangeNotifier {
   final _authService = GetIt.I<AuthService>();
   bool _loggingIn = false;
@@ -674,7 +691,7 @@ class AuthProvider with ChangeNotifier {
 ```
 
 #### View example
-```
+``` dart
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
 
