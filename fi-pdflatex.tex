@@ -90,6 +90,7 @@
     required, rethrow, return, set, show, static, super, switch, sync, this, throw,
     true, try, typedef, var, void, while, with, yield
   },
+  keywords=[2]{@override, @JsonSerializable, @deprecated, @protected, @required, @visibleForTesting}, % Group 2: annotations
   sensitive=true,
   comment=[l]{//},
   morecomment=[s]{/*}{*/},
@@ -100,6 +101,7 @@
   basicstyle      = \ttfamily,  % <-- monospace
   identifierstyle = \color{black},
   keywordstyle    = \color{blue}\bfseries,
+  keywordstyle=[2]\color{orange}\bfseries,
   stringstyle     = \color{teal},
   commentstyle    = \itshape\color{magenta},
   breaklines      = true,
