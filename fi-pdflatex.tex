@@ -585,16 +585,19 @@ Examples of systems that use MVC include multi-page applications and frameworks 
 
 ### Layered Pattern
 
-The application uses an extended, layered variation of the MVC pattern. Since Flutter does not enforce architectural boundaries, maintaining this structure is entirely the developer's responsibility. That allows The key layers are:
+The application uses an extended, layered variation of the MVC pattern. Since Flutter does not enforce architectural boundaries, maintaining this structure is entirely the developer's responsibility. The key layers are:
 
-- **Model** — Defines the objects and data structures used throughout the app.
-- **Service** — Contains the business logic and manages operations such as logging.
-- **Controller** — Manages application state and delegates most operations to its corresponding service. In this project, controllers are referred to as **providers** due to naming conventions associated with using `ChangeNotifier`; the controllers also manage the application's state and expose it to other components—hence the term *Provider*.
-- **View** — Defines the user interface.
+- **Model**
+- **Service**
+- **Controller**
+- **View**
 
-In some cases not all layers are utilised, particularly in cases in which no data is required, hence missing the model. In other cases there are services which do not have a dedicated controller. This is because it's not a wanted occurence for the developer to directly call these services. In such a case, a more generic controller is provided that calls multiple services internally. This allows for simpler calls in the views, as business logic is not wanted there - and neither are thick boilerplates.
+In some cases not all layers are utilised, particularly in cases in which no data is required, hence missing the model. In other cases there are services which do not have a dedicated controller. This is because it's not a wanted occurence for the developer to directly call these services. In such a case, a more generic controller is provided that calls multiple services internally. This allows for simpler calls in the views, as business logic is not wanted there - and neither are thick boilerplates. See below for further explanation of each layer.
 
-#### Model example
+#### Model layer
+
+Model defines the objects and data structures used throughout the app.
+
 ``` dart
 import 'package:json_annotation/json_annotation.dart';
 
@@ -626,7 +629,10 @@ class Client {
 }
 ```
 
-#### Service example
+#### Service layer
+
+Contains the business logic and manages operations such as logging.
+
 ``` dart
 class AuthService with WidgetsBindingObserver {
   FirebaseAuth get instance => FirebaseAuth.instance;
@@ -656,7 +662,11 @@ class AuthService with WidgetsBindingObserver {
 
 ```
 
-#### Controller example
+#### Controller layer
+
+Is the layer directly called from views. It delegates most operations to its corresponding services. In this project, controllers are referred to as **providers** due to naming conventions associated with the widespread Provider library [@providerPackage], which builds upon Flutter's `ChangeNotifier` class [@flutterChangeNotifier].  
+The controllers manage the application's state and provide it to other components—hence the term *Provider*.
+
 ``` dart
 class AuthProvider with ChangeNotifier {
   final _authService = GetIt.I<AuthService>();
@@ -692,7 +702,10 @@ class AuthProvider with ChangeNotifier {
 }
 ```
 
-#### View example
+#### View layer
+
+Defines the user interface, with limited visibility into business logic, typically interacting only with controllers.
+
 ``` dart
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
