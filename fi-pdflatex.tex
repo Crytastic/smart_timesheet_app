@@ -49,15 +49,15 @@
     date        = \the\year/\the\month/\the\day,
     university  = mu,
     faculty     = fi,
-    type        = bc,
-    department  = Department of Machine Learning and Data Processing,
+    type        = mgr,
+    department  = ,
     author      = {Bc. Maxmilián Šeffer},
     gender      = m,
     advisor     = {doc. Ing. Václav Oujezský, Ph.D.},
     title       = {Smart Timesheet App},
     TeXtitle    = {Smart Timesheet Application},
-    keywords    = {TO DO keywords},
-    TeXkeywords = {keyword1, keyword2, \ldots},
+    keywords    = {audio transcription, time tracking, mobile application, cloud computing, voice recognition, natural language processing, generative AI, user experience, offline functionality, multilingual support},
+    TeXkeywords = {audio transcription, time tracking, mobile application, cloud computing, voice recognition, natural language processing, generative AI, multilingual support, \ldots},
     abstract    = {%
         This thesis explores the potential of audio transcription technology to simplify time tracking for employees working in the field. The goal is to develop a cloud-based application that allows employees to log their working hours by recording audio descriptions of their tasks, specifying the client and project. This recorded speech is then transcribed into text and converted into structured database entries. The research evaluates the reliability and practicality of this approach in real-world conditions.
         
@@ -875,7 +875,6 @@ lib/
 ]
 
 ### State Management
-
 There are multiple approaches to handling state management in Flutter. In many frameworks, a specific method of state management is prescribed. However, because Flutter supports a wide range of platforms, it is not surprising that state management is largely delegated to plugins and third-party libraries~[@flutterStateMgmt].
 
 Among the available options~[@flutterStateMgmt], three methods are generally considered industry standards:
@@ -884,12 +883,84 @@ Among the available options~[@flutterStateMgmt], three methods are generally con
 - `Provider` package^[Provider package on pub.dev: https://pub.dev/packages/provider]
 - `Riverpod` package^[Official Riverpod site: https://riverpod.dev/]
 
-In the timesheet application, the `Provider` package is used to manage all states that are, or could feasibly be, required by multiple components. The `ChangeNotifier` class provided by the package simplifies listening for changes across the application.
+In the timesheet application, the Provider package manages states that are or may feasibly be shared across multiple components. The ChangeNotifier class simplifies the process of defining listeners and updating them using notifyListeners().
 
-Meanwhile, `StatefulWidget`'s `setState` is utilized whenever the state is local to a single component, typically when it only affects the current view or user interface.
+Meanwhile, `StatefulWidget`'s `setState` is utilized whenever the state is local to a single component, typically when it only affects the current view or user interface. See below for examples on how these state management approaches are used.
+
+``` dart
+/// Metadata provider serves as a common entry point
+/// for data that is identical to all work records
+/// Thanks to this, we can save many needless and slow calls to Firebase
+class MetadataProvider with ChangeNotifier {
+  final ClientsService _clientsService = ClientsService();
+  final ActivitiesService _activitiesService = ActivitiesService();
+  final ProjectsService _projectsService = ProjectsService();
+
+  List<Client> _clients = [];
+  List<Activity> _activities = [];
+  List<Project> _projects = [];
+
+  MetadataProvider() {
+    _loadMetadata();
+  }
+
+  Future<void> _loadMetadata() async {
+    try {
+      _isLoading = true;
+      _hasError = false;
+      notifyListeners();
+
+      final clients = await _clientsService.getAllClients();
+      final activities = await _activitiesService.getAllActivities();
+      final projects = await _projectsService.getAllProjects();
+
+      _clients = clients;
+      _activities = activities;
+      _projects = projects;
+    }
+  }
+}
+```
+
+``` dart
+class EditWorkRecordScreen extends StatefulWidget {
+  final TimesheetService timesheetService;
+  final Timesheet? timesheet;
+
+  const EditWorkRecordScreen({
+    super.key,
+    required this.timesheetService,
+    this.timesheet,
+  });
+
+  @override
+  State<EditWorkRecordScreen> createState() => _EditWorkRecordScreenState();
+}
+
+class _EditWorkRecordScreenState extends State<EditWorkRecordScreen> {
+  late TextEditingController _descriptionController;
+  Client? _selectedClient;
+  late MetadataProvider _metadataProvider;
+
+  @override
+  void initState() {
+    super.initState();
+    _descriptionController =
+        TextEditingController(text: widget.timesheet?.description ?? '');
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _metadataProvider = Provider.of<MetadataProvider>(context, listen: true);
+    _selectedClient = _metadataProvider.clients.firstWhereOrNull(
+      (c) => c.id == widget.timesheet?.client,
+    );
+  }
+}
+```
 
 ## Prompt Engineering
-
 In the smart timesheet app, prompt engineering was critical to accurately transform transcribed audio into structured timesheet data. The challenge of supporting multiple languages, particularly English and Czech, required careful handling of transcription metadata. If the spoken language and metadata did not match, the model would attempt to transcribe and translate, leading to suboptimal results.
 
 To avoid this, we created separate optimized prompts for English and Czech. These prompts ensure accurate transcription by setting a clear language context, enabling the model to focus on transcribing rather than translating. This approach has been key to improving transcription quality and minimizing errors. The prompts were crafted according to best practices for prompt engineering, such as providing clear instructions and limiting ambiguity. For instance, when transcribing in Czech, the prompt includes a direct instruction to interpret and format the text in a specific, structured manner, minimizing the model’s cognitive load. This specificity helps in reducing errors that might arise due to incorrect translations or misunderstood context, especially in professional terms related to time tracking and work descriptions [@openaiPrompt].
@@ -913,6 +984,23 @@ Furthermore, we used specific formatting to improve the model’s response consi
   rawAttribute,
   tableCaptions,
 ]
+
+In the software development lifecycle, after the application is developed and thoroughly tested, the next step is deployment. This chapter outlines how the Android app, developed as part of this thesis, is prepared for deployment and the technologies used to support the process.
+
+The app uses a CI/CD pipeline built on GitLab, to automate the help with the development process.  While the CI/CD pipeline automates some continuous integration steps, the actual deployment to Google Play and/or Firebase App Distribution is a manual step.
+
+## CI/CD
+
+In modern software development, **Continuous Integration (CI)** and **Continuous Deployment (CD)** are essential practices[@gitlabCI]. CI ensures that code changes are automatically integrated, tested, and built, while CD extends this to automate the deployment process.
+
+For this project, the CI/CD pipeline is managed via **GitLab** and automates several stages of the development process:
+
+- **Lint**: Ensures code quality and style guidelines are followed.
+- **Version control**: Automatically updates version information in the `pubspec.yaml` file.
+- **Test**: Runs unit tests to verify functionality and catch errors early.
+- **Build**: Compiles the Android app into a release APK.
+
+Although deployment to **Google Play** and **Firebase App Distribution** is not fully automated, the pipeline prepares the app for deployment by automating the build, testing, and versioning processes. Once the build is completed, APK from build artefacts can be used to release the new version.
 
 ## Version control
 
@@ -940,10 +1028,6 @@ The core `0.11.0` adheres to the semantic versioning scheme, while the suffix `+
 The build metadata is automatically appended by a GitLab CI pipeline, which injects a timestamp or commit-based hash during the build process. This automation ensures that each distributed version can be traced back to the exact source state, facilitating debugging, auditing, and reproducibility.
 
 Development leading up to the final delivery of this thesis is considered work-in-progress. The first stable release — version `1.0.0` — is planned to coincide with the project's completion and will signify a stable, production-ready build~[@semver].
-
-## CI/CD
-
-TODO: Pipeline steps and responsibilities
 
 ## Crashlytics
 
