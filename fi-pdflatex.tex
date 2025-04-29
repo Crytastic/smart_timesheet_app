@@ -1031,7 +1031,31 @@ Development leading up to the final delivery of this thesis is considered work-i
 
 ## Crashlytics
 
-TODO: How logging and access to those logs is implemented
+To ensure application stability and improve maintainability, the Smart Timesheet Application integrates **Firebase Crashlytics** for real-time crash reporting and error logging. This system enables developers to detect, analyze, and respond to runtime issues as they occur in production environments, significantly reducing debugging time and enhancing the end-user experience.
+
+### Integration with Firebase Crashlytics
+
+Firebase Crashlytics is a lightweight, real-time crash reporter that helps track, prioritize, and fix stability issues. The integration in this application follows the official Firebase guidelines for Flutter [@firebaseCrashlyticsStart]. It includes setup in the application’s initialization logic to capture both Flutter and platform-level errors.
+
+The following function configures Flutter’s error handling to forward uncaught exceptions to Crashlytics:
+
+```dart
+/// Setup to send fatal crashes to Firebase Crashlytics
+void setupErrorRecording() {
+  FlutterError.onError = (FlutterErrorDetails details) {
+    logger.e('Recording error: ${details.exception}');
+    FirebaseCrashlytics.instance.recordFlutterFatalError(details);
+  };
+}
+```
+
+This setup ensures that all uncaught Flutter framework errors are reported to Firebase Crashlytics and simultaneously logged locally for immediate visibility during development.
+
+In addition to fatal crash reporting, Crashlytics supports the logging of non-fatal exceptions and custom diagnostic messages. This allows developers to capture useful context about the application’s state, even when errors do not cause a crash. Crashlytics is primarily a convenience tool that simplifies monitoring and post-mortem analysis in production environments.
+
+To further support debugging, an in-app logging system is implemented. It collects diagnostic messages throughout the session and is designed to pass the accumulated logs to Crashlytics automatically in the event of a fatal error.
+
+A hidden developer screen—accessible by tapping on the app version number (as is common practice), displays all locally collected logs. This allows testers or users to manually inspect and share logs with developers, even if no exception was caught by the Flutter crash handler.
 
 ## App distribution
 
