@@ -1057,9 +1057,15 @@ To further support debugging, an in-app logging system is implemented. It collec
 
 A hidden developer screen—accessible by tapping on the app version number (as is common practice), displays all locally collected logs. This allows testers or users to manually inspect and share logs with developers, even if no exception was caught by the Flutter crash handler.
 
-## App distribution
+## App Distribution
 
-TODO: How app is distributed to testers
+To facilitate real-world testing during development, the application was distributed using **Firebase App Distribution**, a service within the Firebase suite that simplifies sharing pre-release builds of Android apps with testers.
+
+Firebase App Distribution allows developers to quickly release versions of the app to selected testers without going through the full Google Play release process. This makes it ideal for iterative development, bug tracking, and gathering feedback in short cycles.
+
+Over the course of development, approximately 20 builds of the app were distributed to testers. These builds included incremental updates based on test feedback, bug fixes, and newly implemented features. Testers received updates via email or Firebase App Tester, where they could install the APK directly onto their devices. Testing of the iOS version has been limited - only by the developer.ss
+
+This method ensured efficient feedback loops via the App Tester app, which allows users to conveniently provide feedback directly to the developer.
 
 \end{markdown}
 \shorthandon{-}
