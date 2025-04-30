@@ -1051,9 +1051,28 @@ void setupErrorRecording() {
 
 This setup ensures that all uncaught Flutter framework errors are reported to Firebase Crashlytics and simultaneously logged locally for immediate visibility during development.
 
-In addition to fatal crash reporting, Crashlytics supports the logging of non-fatal exceptions and custom diagnostic messages. This allows developers to capture useful context about the application’s state, even when errors do not cause a crash. Crashlytics is primarily a convenience tool that simplifies monitoring and post-mortem analysis in production environments.
+In addition to exception reporting, Crashlytics supports the logging of custom messages. This allows developers to capture useful context about the application’s state, even when errors do not cause a crash. Crashlytics is primarily a convenience tool that simplifies monitoring and post-mortem analysis in production environments - it does not by any means replace common logging practices.
 
-To further support debugging, an in-app logging system is implemented. It collects diagnostic messages throughout the session and is designed to pass the accumulated logs to Crashlytics automatically in the event of a fatal error.
+To take advantage of both Crashlytics and common logging practices, an in-app logging system is implemented. It collects diagnostic messages throughout the session and is designed to pass the accumulated logs to Crashlytics automatically in the event of an exceptions error. Other information, such as the user identifier (if one is signed in) is logged as well. See below to see how logging is setup using the singleton pattern.
+
+``` dart
+import 'package:logger/logger.dart';
+import 'package:smart_timesheet_app_mobile/common/crashlytics_output.dart';
+
+Logger get logger => Log.instance;
+
+class Log extends Logger {
+  Log._()
+      : super(
+          output: MultiOutput([
+            ConsoleOutput(),
+            CrashlyticsOutput(),
+          ]),
+        );
+
+  static final instance = Log._();
+}
+```
 
 A hidden developer screen—accessible by tapping on the app version number (as is common practice), displays all locally collected logs. This allows testers or users to manually inspect and share logs with developers, even if no exception was caught by the Flutter crash handler.
 
