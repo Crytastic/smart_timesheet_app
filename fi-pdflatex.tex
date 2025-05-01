@@ -1070,7 +1070,31 @@ Interestingly, the lowest deviation was observed at a temperature setting of 0.5
   \label{tab:temperature_summary}
 \end{table}
 
-\chapter{Deployment}
+Figure \ref{fig:user_prompt_template_en} shows the english version of user prompt template used in the application. Some parts are naturally dynamic and each request differs. Clients, activites and projects are pre-defined. Text to be processed is provided from response to the audio transcription request.
+
+\begin{figure}[H]
+\centering
+\begin{minipage}{\textwidth}
+\begin{lstlisting}
+Transform the text given below into a CSV row semicolon separated in this exact format: CLIENT;ACTIVITY;PROJECT;TIME SPENT;WORK DESCRIPTION
+
+Instructions for the transformation:
+* Always try to fill out all attributes. If it is not possible to extract from the text, use a generic option if available. If not, use "N/A"
+* Use only following values in the CLIENT field: {clients}
+* Use only following values in the ACTIVITY field: {activities}
+* Use only following values in the PROJECT field: {projects}
+* Convert the described work duration into hours and minutes
+* The time format for TIME SPENT field is HH:MM (HOURS:MINUTES)
+* Summarize the task into a WORK DESCRIPTION field, maximum 5 words. Make sure the description makes sense and is grammatically correct.
+* Do not include any additional explanations or text in the output
+
+Text to process: {transcribed_text}
+\end{lstlisting}
+\caption{English version of the user prompt template used in the application}
+\label{fig:user_prompt_template_en}
+\end{minipage}
+\end{figure}
+
 \shorthandoff{-}
 \begin{markdown}[
   citationNbsps,
@@ -1084,6 +1108,8 @@ Interestingly, the lowest deviation was observed at a temperature setting of 0.5
   rawAttribute,
   tableCaptions,
 ]
+
+# Deployment
 
 In the software development lifecycle, after the application is developed and thoroughly tested, the next step is deployment. This chapter outlines how the Android app, developed as part of this thesis, is prepared for deployment and the technologies used to support the process.
 
