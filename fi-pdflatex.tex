@@ -110,6 +110,8 @@
   showstringspaces= false,              % <-- hide weird markers in spaces
 }
 \usepackage{floatrow} %% Putting captions above tables
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
 \floatsetup[table]{capposition=top}
 \usepackage[babel]{csquotes} %% Context-sensitive quotation marks
 
@@ -967,8 +969,104 @@ To avoid this, we created separate optimized prompts for English and Czech. Thes
 
 Furthermore, we used specific formatting to improve the model’s response consistency. By carefully choosing appropriate instructions and ensuring that the language metadata matched the transcription language, we were able to optimize the prompts for both languages. This resulted in a significant improvement in the accuracy of the data transformation process, with reduced discrepancies between spoken language and expected results.
 
+### Prompt optimization
+
+During the development of the timesheet transcription and extraction system, particular attention was paid to prompt optimisation. While transcription using OpenAI's whisper-1 model produced satisfactory results from the start, extracting structured information from the transcription — specifically client, project, activity, duration, and description — required more nuanced tuning of prompts [@openaiPrompt].
+
+To address this challenge systematically, a Python-based testing suite called timesheet_models_tester was developed. Take note this is not the primary result of the thesis, rather an optimisation tool. Nevertheless, the code is provided as na attachement. This framework automates the process of evaluating prompt effectiveness by comparing model-generated outputs with annotated ground-truth data. Each test case consists of an audio file and a corresponding expected output (annotations), which together define what the ideal model response should be.
+
+The suite processes each audio input through transcription, followed by structured prompt-based extraction. The model's responses are then compared to the expected results using the SequenceMatcher class from Python’s standard difflib module [@pythonDifflib]. This class computes a similarity score between sequences, which is particularly useful for evaluating how closely the model's output matches the annotated ground truth.
+
+SequenceMatcher operates by finding the longest contiguous matching subsequence between two inputs, excluding so-called “junk” elements. It calculates a similarity ratio ranging from 0 to 1, where values closer to 1 indicate stronger similarity. For instance, a ratio above 0.6 typically implies a reasonably good match. This allows us to quantify the accuracy of the extracted values in a way that tolerates minor textual deviations, such as synonyms or rephrased fragments, while still penalising semantically incorrect predictions.
+
+This metric is applied field-by-field for each timesheet attribute, and an overall accuracy score is computed as the average of the individual field scores. This setup allowed me to figure out a configuration that produces the best results and after testing and extraction of results it has been implemented in the smart timesheet application.
+
+#### Temperature and model behaviour
+
+A significant part of the prompt optimisation effort focused on selecting the right temperature setting. Temperature is a crucial parameter in the behavior of large language models, including those provided by OpenAI. It directly influences the randomness or determinism of the model's responses.
+
+In simple terms, temperature controls how creative or conservative the model is when generating text. Lower values (closer to 0.0) make the model more deterministic — it tends to return the most likely and predictable output. Higher values (up to 1.0 or beyond) encourage more randomness and variation, allowing for more diverse or creative completions but also increasing the likelihood of less relevant or inconsistent outputs.
+
+For tasks requiring precise structure and reliability — such as extracting well-defined fields from a transcript — lower temperatures are generally preferred. However, overly low temperatures may also reduce the model's ability to generalize to slightly ambiguous or unconventional input phrasings. Conversely, higher temperatures may help the model interpret more loosely defined prompts, but at the cost of consistency and factual accuracy.
+
+In this project, a range of temperature values was tested using the timesheet_models_tester framework. These ranged from 1.0 (high randomness) to 0.0 (fully deterministic), with intermediate steps at 0.75, 0.5, and 0.25. This allowed for a systematic evaluation of how temperature impacts both extraction accuracy and response stability.
+
 \end{markdown}
 \shorthandon{-}
+
+\begin{figure}[ht]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[
+            width=0.8\textwidth,
+            height=7cm,
+            grid=both,
+            xlabel={Temperature},
+            ylabel={Average Accuracy (\%)},
+            ymin=70, ymax=85,
+            xtick={0.0, 0.25, 0.5, 0.75, 1.0},
+            ytick={70, 75, 80, 85},
+            title={Average accuracy over 8 runs with gpt-3.5-turbo},
+            mark size=2pt,
+            every axis plot/.append style={thick},
+        ]
+        \addplot[
+            color=blue,
+            mark=o,
+        ] coordinates {
+            (1.0, 78.3)
+            (0.75, 77.3275)
+            (0.5, 78.1825)
+            (0.25, 80.5575)
+            (0.0, 79.55)
+        };
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Relationship between model temperature and average end-to-end (audio to database entry) accuracy of timesheet extraction.}
+    \label{fig:temp_vs_accuracy}
+\end{figure}
+
+\shorthandoff{-}
+\begin{markdown}[
+  citationNbsps,
+  citations,
+  definitionLists,
+  fencedCode,
+  hashEnumerators,
+  inlineNotes,
+  notes,
+  pipeTables,
+  rawAttribute,
+  tableCaptions,
+]
+
+Fine-tuning this parameter helped strike a balance between robustness and precision, ensuring that the model could handle varied transcription inputs without deviating too far from the expected timesheet format [@openaiTemp].
+
+\end{markdown}
+\shorthandon{-}
+
+Given the nature of requests made to the endpoints, it was expected the lowest temperature settings at 0.0 to 0.1, i.e. the most deterministic one, would have the best overall results. This was not the case, as can be seen in the Figure \ref{fig:temp_vs_accuracy} and Table \ref{tab:temperature_summary}. Upon investigating the results, the reason is the following: Quite often the user would not mention all of necessary information - very often the activity and/or the project. These are both chosen from a pre-defined long list of options so it's no surprise the user doesn't exactly specify. Now the low requests with low temperature would often produce an "N/A" If the attribute was not explicitly mentioned. This is OK behaviour, but in many cases, from a human point of view at the very least, it was possible to guess the correct option based on the description of the task. For example, If the user mentioned in the recording that he was working with databases, it's feasible the project could fit into the "Storage" category. While the higher tempereture requests would differ across multiple runs, the guess would sometimes be correct. Choosing too high of a temperature caused the responses to always try to fit into some option rather than choosing a more generic one. That behaviour would often overflow in choosing seemingly random options just for the sake of choosing one.
+
+Temperature of around 0.25 was chosen to be the most reliable one - it guessed correctly often enough, but it's guesses weren't too rash or random. This provided the highest overall accuracy of 80.56\% and a reasonable RSD of 3.44\%. The results can be seen in Table \ref{tab:temperature_summary}.
+
+Interestingly, the lowest deviation was observed at a temperature setting of 0.5. This may be attributed to its proximity to the default value of 0.6, suggesting that the model could be better optimized for this range on OpenAI's side.
+
+\begin{table}[h]
+  \centering
+  \begin{tabularx}{\textwidth}{lXXX}
+    \toprule
+    \textbf{Temperature} & \textbf{Average Accuracy (\%)} & \textbf{Standard Deviation} & \textbf{RSD (\%)} \\
+    \midrule
+    1.00  & 78.30 & 4.51 & 5.76 \\
+    0.75  & 77.33 & 4.38 & 5.67 \\
+    0.50  & 78.18 & 2.04 & 2.62 \\
+    0.25  & 80.56 & 2.77 & 3.44 \\
+    0.00  & 79.55 & 2.38 & 2.99 \\
+    \bottomrule
+  \end{tabularx}
+  \caption{Summary of average accuracy, standard deviation, and relative standard deviation for various temperature settings.}
+  \label{tab:temperature_summary}
+\end{table}
 
 \chapter{Deployment}
 \shorthandoff{-}
