@@ -1215,24 +1215,6 @@ This method ensured efficient feedback loops via the App Tester app, which allow
 \end{markdown}
 \shorthandon{-}
 
-\chapter{Testing and Validation}
-\shorthandoff{-}
-\begin{markdown}[
-  citationNbsps,
-  citations,
-  definitionLists,
-  fencedCode,
-  hashEnumerators,
-  inlineNotes,
-  notes,
-  pipeTables,
-  rawAttribute,
-  tableCaptions,
-]
-  % TODO: Document testing phases, including unit tests, integration tests, and user feedback.
-\end{markdown}
-\shorthandon{-}
-
 \chapter{Conclusion and Future Work}
 \shorthandoff{-}
 \begin{markdown}[
@@ -1248,13 +1230,21 @@ This method ensured efficient feedback loops via the App Tester app, which allow
   tableCaptions,
 ]
 
-TODO: What's next?
+This thesis aimed to develop an application for logging work hours, initially created in collaboration with the company DevBalance. The goal of the project was to build an application that could effectively track work hours, provide insights, and be deployed as a service to other companies. The system was designed to meet the needs of the company by offering a robust, scalable solution. Throughout the development process, we ensured that the application was intuitive for users, reliable, and capable of handling multiple concurrent users.
+
+While the project successfully achieved its objectives, and the app was implemented as planned, the collaboration with DevBalance will not extend beyond the scope of this thesis. Although the app was originally intended to be a product offered by DevBalance to other businesses as a subscription service, the company has decided to discontinue this direction. As a result, the application is now fully open-source and will be made available to the public for free.
+
+Moving forward, the app will be adapted for a broader user base. The original, company-focused version will be replaced by a more user-centric model. This version will be tailored to individual users or small teams, and plans are in place to deploy it on Google Play for easy access.
+
+The application was developed using Flutter, which allowed for a consistent experience across multiple platforms. The backend is powered by cloud technologies, ensuring scalability and reliability for the app’s users. The deployment was carried out using Firebase, which provided a robust infrastructure for managing data and user interactions.
+
+In conclusion, the work presented in this thesis provides a fully functional work hour logging application that is now open-source and used in production by a small number of users. While the original business goal of the project was to create a commercially viable product, the shift to an open-source model provides opportunities for the broader community to benefit from and contribute to the app.
 
 \end{markdown}
 \shorthandon{-}
 
 \appendix %% Start the appendices.
-\chapter{Appplication Source Code}
+\chapter{Application Source Code}
 A ZIP archive is provided with this thesis containing a snapshot of the application repository as it stood at the conclusion of this work. The project adheres to a standard Flutter project structure and was developed entirely from scratch. The entire codebase represents my original work.
 
 It is possible to build and run the application separately, but will require the interested to setup and configure the following components:
