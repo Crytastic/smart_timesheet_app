@@ -1254,7 +1254,108 @@ TODO: What's next?
 \shorthandon{-}
 
 \appendix %% Start the appendices.
-\chapter{Appendix A: Additional Information}
-TODO appendices
+\chapter{Appplication Source Code}
+A ZIP archive is provided with this thesis containing a snapshot of the application repository as it stood at the conclusion of this work. The project adheres to a standard Flutter project structure and was developed entirely from scratch. The entire codebase represents my original work.
+
+It is possible to build and run the application separately, but will require the interested to setup and configure the following components:
+\begin{itemize}
+  \item OpenAI API key
+  \item Android and/or iOS Firebase project
+  \item Microsoft Azure App Registration (optional, only required If the developer wishes to have control over who logs in)
+\end{itemize}
+
+\chapter{Prompt Optimization Testing Script Source Code}
+Additionaly to the application source code, a ZIP archive of the repository is included that contains the Python script used for prompt optimization. The repository also contains annotated audio recordings used during testing. The source code is also available in a public GitHub repository\footnote{
+\url{https://github.com/Crytastic/timesheet_models_tester}
+}.
+
+\chapter{Screenshots of the Application}
+
+\begin{center}
+\begin{minipage}{0.45\textwidth}
+  \begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{assets/login_screen.png}
+    \caption{Login screen of the application}
+    \label{fig:login_screen}
+  \end{figure}
+\end{minipage}
+\hspace{0.05\textwidth}
+\begin{minipage}{0.45\textwidth}
+  \begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{assets/developer_screen.png}
+    \caption{Hidden developer screen}
+    \label{fig:developer_screen}
+  \end{figure}
+\end{minipage}
+\end{center}
+
+\vspace{1em}
+
+\begin{center}
+\begin{minipage}{0.45\textwidth}
+  \begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{assets/recording_screen.png}
+    \caption{Recording interface}
+    \label{fig:recording_screen}
+  \end{figure}
+\end{minipage}
+\hspace{0.05\textwidth}
+\begin{minipage}{0.45\textwidth}
+  \begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{assets/records_screen.png}
+    \caption{Overview of recorded entries}
+    \label{fig:records_screen}
+  \end{figure}
+\end{minipage}
+\end{center}
+
+\vspace{1em}
+
+\begin{center}
+\begin{minipage}{0.45\textwidth}
+  \begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{assets/edit_record.png}
+    \caption{Editing a record}
+    \label{fig:edit_record}
+  \end{figure}
+\end{minipage}
+\hspace{0.05\textwidth}
+\begin{minipage}{0.45\textwidth}
+  \begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{assets/filter_records_by.png}
+    \caption{Filtering records by criteria}
+    \label{fig:filter_records}
+  \end{figure}
+\end{minipage}
+\end{center}
+
+\vspace{1em}
+
+\begin{center}
+\begin{minipage}{0.45\textwidth}
+  \begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{assets/group_records_by.png}
+    \caption{Grouping records by attributes}
+    \label{fig:group_records}
+  \end{figure}
+\end{minipage}
+\hspace{0.05\textwidth}
+\begin{minipage}{0.45\textwidth}
+  \begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{assets/settings_screen.png}
+    \caption{Settings screen}
+    \label{fig:settings_screen}
+  \end{figure}
+\end{minipage}
+\end{center}
+
 
 \end{document}
