@@ -123,19 +123,26 @@
 %% headings and a table of contents entry, we must add them manually:
 \markright{\textsc{Introduction}}
 \addcontentsline{toc}{chapter}{Introduction}
-TODO
+With the rising complexity of modern work environments and the increasing mobility of employees, efficient and accurate work logging has become more important than ever. While there is a wide variety of work logging solutions currently available—ranging from personal time trackers to enterprise-grade software—many of these tools fall short in addressing the needs of companies with a large number of clients and field employees. In such cases, workers often handle multiple clients and tasks per day and only log their hours at the end of their shifts. This practice can lead to incomplete or inaccurate records, as employees may forget details or fail to log time to the minute, which may later impact client invoicing or internal reporting.
 
-\begin{otherlanguage}{czech}
-TODO
-\end{otherlanguage}
+A promising solution to this problem is to streamline the logging process by making it more natural and frictionless for employees. One widely adopted approach is to allow users to record audio notes describing their work, which they can review later. However, the current state of such solutions often still requires manual intervention to transcribe and input the data into structured formats.
+
+This thesis proposes an enhancement to the conventional audio-note logging systems by integrating automatic speech transcription and converting the transcribed content directly into structured database entries. The objective is to minimize user effort and maximize the accuracy and immediacy of work logging.
+
+The goal of this thesis is two-folds:
+\begin{itemize}
+    \item To design and implement a standalone mobile application that supports standard work and time logging functionalities, along with the capability to record audio descriptions of work and automatically convert them into database entries. The application will be developed in collaboration with the company DevBalance, and will be tailored to suit company-wide deployment.
+    \item To evaluate whether using transcription services and chat-based AI models is a viable approach for this use case. This includes assessing their performance in terms of transcription speed, accuracy of data extraction, and the overall cost implications of using such technologies.
+\end{itemize}
+
+By leveraging AI-based tools, this project aims to offer a practical, user-friendly solution that improves the accuracy and efficiency of work logging.
+
 
 \chapter{System Requirements}
 
-\section{Introduction}
-
 In order to develop a practical and effective cloud-based audio transcription system for time tracking, a comprehensive requirements analysis is essential. This phase establishes a clear understanding of the functionalities and constraints that the software must adhere to, ensuring alignment with user needs and business objectives. The analysis focuses on defining user roles, identifying functional and non-functional requirements, and outlining key technical considerations.
 
-The goal of this analysis is to create a structured framework that guides the development of the Smart Timesheet Application. Through discussions with potential users, stakeholders, and domain experts, the analysis highlights both explicit and implicit needs, as well as potential challenges that may arise during implementation.
+The goal of this analysis is to create some sort of structure that guides the development of the Smart Timesheet Application. Through discussions with potential users, the analysis highlights both explicit and implicit needs, as well as potential challenges that may arise during implementation.
 
 \section{Users}
 
@@ -962,18 +969,17 @@ class _EditWorkRecordScreenState extends State<EditWorkRecordScreen> {
 }
 ```
 
-## Prompt Engineering
-In the smart timesheet app, prompt engineering was critical to accurately transform transcribed audio into structured timesheet data. The challenge of supporting multiple languages, particularly English and Czech, required careful handling of transcription metadata. If the spoken language and metadata did not match, the model would attempt to transcribe and translate, leading to suboptimal results.
+## Audio recording to database entry conversion
 
-To avoid this, we created separate optimized prompts for English and Czech. These prompts ensure accurate transcription by setting a clear language context, enabling the model to focus on transcribing rather than translating. This approach has been key to improving transcription quality and minimizing errors. The prompts were crafted according to best practices for prompt engineering, such as providing clear instructions and limiting ambiguity. For instance, when transcribing in Czech, the prompt includes a direct instruction to interpret and format the text in a specific, structured manner, minimizing the model’s cognitive load. This specificity helps in reducing errors that might arise due to incorrect translations or misunderstood context, especially in professional terms related to time tracking and work descriptions [@openaiPrompt].
+After the user records audio and describes the work he has done, there are several steps to convert that into a work record:
+- Save audio to Firebase Storage
+- Transcribe the audio into text
+- Convert transcribed text to a Timesheet
+- Create a work record and save to Firestore Database
 
-Furthermore, we used specific formatting to improve the model’s response consistency. By carefully choosing appropriate instructions and ensuring that the language metadata matched the transcription language, we were able to optimize the prompts for both languages. This resulted in a significant improvement in the accuracy of the data transformation process, with reduced discrepancies between spoken language and expected results.
+### How conversion is evaluated
 
-### Prompt optimization
-
-During the development of the timesheet transcription and extraction system, particular attention was paid to prompt optimisation. While transcription using OpenAI's whisper-1 model produced satisfactory results from the start, extracting structured information from the transcription — specifically client, project, activity, duration, and description — required more nuanced tuning of prompts [@openaiPrompt].
-
-To address this challenge systematically, a Python-based testing suite called timesheet_models_tester was developed. Take note this is not the primary result of the thesis, rather an optimisation tool. Nevertheless, the code is provided as na attachement. This framework automates the process of evaluating prompt effectiveness by comparing model-generated outputs with annotated ground-truth data. Each test case consists of an audio file and a corresponding expected output (annotations), which together define what the ideal model response should be.
+To address this challenge systematically, a Python-based testing suite called `timesheet_models_tester` was developed. Take note this is not the primary result of the thesis, rather an optimisation tool. Nevertheless, the code is provided as an attachement. This script automates the process of evaluating prompt effectiveness by comparing model-generated outputs with annotated ground-truth data. Each test case consists of an audio file and a corresponding expected output (annotations), which together define what the ideal model response should be.
 
 The audio recordings used are recorded by different people using different microphones. The length and quality of the recordings differs greatly, as does the level of detail provided. Some go quite in depth and are explicit on what project the work has been part of, some do not mention it at all. Most do have the information for which client the work has been done and how long the employee has worked for - these two attributes are key to creating a work record, as in a real world scenario, these will determine how much money the client should pay. The incompleteness is by design - as it was found out during testing, it's quite a common occurence for the user to forget to mention some critical piece of information.
 
@@ -981,9 +987,43 @@ The suite processes each audio input through transcription, followed by structur
 
 SequenceMatcher operates by finding the longest contiguous matching subsequence between two inputs, excluding so-called “junk” elements. It calculates a similarity ratio ranging from 0 to 1, where values closer to 1 indicate stronger similarity. For instance, a ratio above 0.6 typically implies a reasonably good match. This allows us to quantify the accuracy of the extracted values in a way that tolerates minor textual deviations, such as synonyms or rephrased fragments, while still penalising semantically incorrect predictions.
 
-This metric is applied field-by-field for each timesheet attribute, and an overall accuracy score is computed as the average of the individual field scores. This setup allowed me to figure out a configuration that produces the best results and after testing and extraction of results it has been implemented in the smart timesheet application.
+This metric is applied field-by-field for each timesheet attribute, and an overall accuracy score is computed as the average of the individual field scores. This score is further referred to as *end-to-end accuracy*.
 
-#### Temperature and model behaviour
+### Optimizing Transcription Requests
+
+For our transcription functionality, we evaluated different models available via the OpenAI API, specifically `whisper-1` and `gpt-4o-transcribe`. The goal was to identify a solution that balances accuracy, language support, and performance for our use case.
+
+The `whisper-1` model demonstrated reasonably accurate results for English audio transcriptions out of the box. However, its performance with Czech audio was less consistent. While most outputs were legible, grammatical inaccuracies were occasionally present, especially in more complex or noisy recordings. It should be noted that poor audio quality significantly impacted transcription accuracy—though in such cases, even annotating the audio for testing was difficult.
+
+Given that the application is primarily intended for Czech-speaking users, this presented a potential usability concern. To address this, we evaluated `gpt-4o-transcribe` , which offered significantly improved performance in Czech, while maintaining strong English transcription capabilities. The model consistently produced well-structured output with fewer grammatical errors across various audio conditions.
+
+However, `gpt-4o-transcribe` model would always attempt to clean up the transcription too much and transforming unknown words (for example names of companies) into very similar czech words. The transcription would be overall better and more understandable to the human eye, but upon testing it was found out that this less word-for-word behaviour actually hurts the end-to-end accuracy for conversion to database entries.
+
+In terms of processing time, both models performed similarly in our tests. 
+
+Despite the superior quality of `gpt-4o-transcribe`, we opted to use `whisper-1` for the final release due to its lower operational cost and better end-to-end accuracy.
+
+Overall, model selection for audio-to-text transcription should consider the target user language, audio quality, and cost-performance trade-offs.
+
+### Optimizing text-to-timesheet prompts
+
+In the smart timesheet app, prompt engineering was critical to accurately transform transcribed audio into structured timesheet data. The challenge of supporting multiple languages, particularly English and Czech, required careful handling of transcription metadata. If the spoken language and metadata did not match, the model would attempt to transcribe and translate, leading to suboptimal results.
+
+To avoid this, we created separate optimized prompts for English and Czech. These prompts ensure accurate transcription by setting a clear language context, enabling the model to focus on transcribing rather than translating. This approach has been key to improving transcription quality and minimizing errors. The prompts were crafted according to best practices for prompt engineering, such as providing clear instructions and limiting ambiguity. For instance, when transcribing in Czech, the prompt includes a direct instruction to interpret and format the text in a specific, structured manner, minimizing the model’s cognitive load. This specificity helps in reducing errors that might arise due to incorrect translations or misunderstood context, especially in professional terms related to time tracking and work descriptions [@openaiPrompt].
+
+Furthermore, we used specific formatting to improve the model’s response consistency. By carefully choosing appropriate instructions and ensuring that the language metadata matched the transcription language, we were able to optimize the prompts for both languages. This resulted in a significant improvement in the accuracy of the data transformation process, with reduced discrepancies between spoken language and expected results.
+
+For the initial stages of development, the `gpt-3.5-turbo` model was used. In a later phase of the development cycle, this model was designated as legacy (though it remains accessible via the API). Its intended replacement is the `gpt-4o-mini` model. Preliminary testing with `gpt-4o-mini` indicated a slight reduction in end-to-end accuracy; however, the overall impact was not significant.
+
+A detailed analysis of attribute-level accuracy revealed that the primary discrepancy stemmed from differences in how textual descriptions were generated. This variation is inherently subjective, as descriptions are not selected from predefined categories (unlike attributes such as client or project), but are instead written freely by the annotators of the test data.
+
+Given that prompt and temperature optimization had already been completed for `gpt-3.5-turbo`, it was chosen for the final version. Nonetheless, there are plans to transition to `gpt-4o-mini` in the future, as it offers comparable performance with lower associated costs.
+
+#### Prompt optimization
+
+During the development of the timesheet transcription and extraction system, particular attention was paid to prompt optimization. While transcription using OpenAI's whisper-1 model produced usable results from the start, extracting structured information from the transcription — specifically client, project, activity, duration, and description — required more nuanced tuning of prompts [@openaiPrompt].
+
+#### Temperature optimization
 
 A significant part of the prompt optimisation effort focused on selecting the right temperature setting. Temperature is a crucial parameter in the behavior of large language models, including those provided by OpenAI. It directly influences the randomness or determinism of the model's responses.
 
