@@ -80,6 +80,9 @@
 \usepackage{url}      %% Hyperlinks
 \usepackage{markdown} %% Lightweight markup
 \usepackage{listings} %% Source code highlighting
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows}
+\tikzstyle{arrow} = [thick,->,>=stealth]
 \usepackage{xcolor}
 \lstdefinelanguage{Dart}{
   keywords={
@@ -125,7 +128,7 @@
 \addcontentsline{toc}{chapter}{Introduction}
 With the rising complexity of modern work environments and the increasing mobility of employees, efficient and accurate work logging has become more important than ever. While there is a wide variety of work logging solutions currently available—ranging from personal time trackers to enterprise-grade software—many of these tools fall short in addressing the needs of companies with a large number of clients and field employees. In such cases, workers often handle multiple clients and tasks per day and only log their hours at the end of their shifts. This practice can lead to incomplete or inaccurate records, as employees may forget details or fail to log time to the minute, which may later impact client invoicing or internal reporting.
 
-A promising solution to this problem is to streamline the logging process by making it more natural and frictionless for employees. One widely adopted approach is to allow users to record audio notes describing their work, which they can review later. However, the current state of such solutions often still requires manual intervention to transcribe and input the data into structured formats.
+A promising solution to this problem is to make it more natural and frictionless for employees. One widely adopted approach is to allow users to record audio notes describing their work, which they can review later. However, the current state of such solutions often still requires manual intervention to transcribe and input the data into structured formats.
 
 This thesis proposes an enhancement to the conventional audio-note logging systems by integrating automatic speech transcription and converting the transcribed content directly into structured database entries. The objective is to minimize user effort and maximize the accuracy and immediacy of work logging.
 
@@ -136,7 +139,6 @@ The goal of this thesis is two-folds:
 \end{itemize}
 
 By leveraging AI-based tools, this project aims to offer a practical, user-friendly solution that improves the accuracy and efficiency of work logging.
-
 
 \chapter{System Requirements}
 
@@ -502,6 +504,13 @@ The core components of the system include:
     \end{itemize}
     \item \textbf{Azure App} – Provides finer control over login procedures via Microsoft accounts, as this is the primary method of authentication, as required by Devbalance.
 \end{itemize}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{assets/diagrams/timesheet_app_component_diagram.drawio.png}
+    \caption{High level component diagram of the Timesheet Application and all external services}
+    \label{fig:timesheet_app_architecture}
+\end{figure}
 
 Several additional services and supporting components are used and further discussed in the Deployment chapter. 
 
@@ -1000,6 +1009,55 @@ Given that the application is primarily intended for Czech-speaking users, this 
 However, `gpt-4o-transcribe` model would always attempt to clean up the transcription too much and transforming unknown words (for example names of companies) into very similar czech words. The transcription would be overall better and more understandable to the human eye, but upon testing it was found out that this less word-for-word behaviour actually hurts the end-to-end accuracy for conversion to database entries.
 
 In terms of processing time, both models performed similarly in our tests. 
+
+\end{markdown}
+\shorthandon{-}
+
+\begin{table}[h]
+\centering
+\caption{Comparison of transcription models evaluated for the needs of the Timesheet Application}
+\label{tab:transcription_models}
+
+\begin{table}[h]
+\centering
+\caption{Comparison of transcription models evaluated for the needs of the Timesheet Application}
+\label{tab:transcription_models}
+\begin{tabularx}{\textwidth}{|X|X|X|}
+\hline
+\textbf{Criterion} & \textbf{whisper-1} & \textbf{gpt-4o-transcribe} \\
+\hline
+\textbf{Czech support} & Occasional grammatical issues & Fluent output at cost of accuracy \\
+\hline
+\textbf{English support} & High accuracy & High accuracy \\
+\hline
+\textbf{Unusual words} & Preserves original wording & Normalizes unknown words incorrectly \\
+\hline
+\textbf{Human readability} & Adequate, occasionally less fluid & Very readable and well-formed \\
+\hline
+\textbf{Accuracy} & Higher due to more literal transcription & Lower due to over-cleaning of transcription \\
+\hline
+\textbf{Processing speed} & Fast & Fast \\
+\hline
+\textbf{Operational cost} & Lower & Higher \\
+\hline
+\end{tabularx}
+\end{table}
+
+\end{table}
+
+\shorthandoff{-}
+\begin{markdown}[
+  citationNbsps,
+  citations,
+  definitionLists,
+  fencedCode,
+  hashEnumerators,
+  inlineNotes,
+  notes,
+  pipeTables,
+  rawAttribute,
+  tableCaptions,
+]
 
 Despite the superior quality of `gpt-4o-transcribe`, we opted to use `whisper-1` for the final release due to its lower operational cost and better end-to-end accuracy.
 
