@@ -54,8 +54,8 @@
     author      = {Bc. Maxmilián Šeffer},
     gender      = m,
     advisor     = {doc. Ing. Václav Oujezský, Ph.D.},
-    title       = {Smart Timesheet App},
-    TeXtitle    = {Smart Timesheet Application},
+    title       = {Voice Work Record Application},
+    TeXtitle    = {Voice Work Record Application},
     keywords    = {audio transcription, time tracking, mobile application, cloud computing, voice recognition, natural language processing, generative AI, user experience, offline functionality, multilingual support},
     TeXkeywords = {audio transcription, time tracking, mobile application, cloud computing, voice recognition, natural language processing, generative AI, multilingual support, \ldots},
     abstract    = {%
@@ -144,15 +144,15 @@ By leveraging AI-based tools, this project aims to offer a practical, user-frien
 
 In order to develop a practical and effective cloud-based audio transcription system for time tracking, a comprehensive requirements analysis is essential. This phase establishes a clear understanding of the functionalities and constraints that the software must adhere to, ensuring alignment with user needs and business objectives. The analysis focuses on defining user roles, identifying functional and non-functional requirements, and outlining key technical considerations.
 
-The goal of this analysis is to create some sort of structure that guides the development of the Smart Timesheet Application. Through discussions with potential users, the analysis highlights both explicit and implicit needs, as well as potential challenges that may arise during implementation.
+The goal of this analysis is to create some sort of structure that guides the development of the Voice Work Record Application. Through discussions with potential users, the analysis highlights both explicit and implicit needs, as well as potential challenges that may arise during implementation.
 
 \section{Users}
 
-The primary users of the Smart Timesheet Application are mainly field employees. These users frequently switch between tasks and clients throughout the day. Their primary need is a quick, reliable, and intuitive method to log their working hours and task details in real-time without requiring a traditional computer interface. They benefit from hands-free audio logging that ensures accuracy and minimizes forgotten details.
+The primary users of the Voice Work Record Application are mainly field employees. These users frequently switch between tasks and clients throughout the day. Their primary need is a quick, reliable, and intuitive method to log their working hours and task details in real-time without requiring a traditional computer interface. They benefit from hands-free audio logging that ensures accuracy and minimizes forgotten details.
 
 \section{Functional Requirements}
 
-The functional requirements define the core capabilities of the Smart Timesheet Application, ensuring that it meets user expectations and performs its intended tasks efficiently. These requirements specify the system's behavior in terms of services, tasks, and functions that users can perform.
+The functional requirements define the core capabilities of the Voice Work Record Application, ensuring that it meets user expectations and performs its intended tasks efficiently. These requirements specify the system's behavior in terms of services, tasks, and functions that users can perform.
 
 This section also integrates the functional requirements as outlined by the development team at Devbalance. These include support for multiple languages, offline functionality, voice-to-text processing, and generative AI for text analysis. The integration of these elements helps ensure the application’s performance aligns with the needs of its users while supporting real-time synchronization, data accuracy, and ease of use.
 
@@ -160,7 +160,7 @@ To clearly outline the expected functionality, the requirements are presented in
 
 The use cases are not listed by priority but instead grouped at the same level of abstraction for clarity. While some use cases could be decomposed into more detailed subcases, this document keeps them at a high level to maintain readability. Detailed business logic, rules, and dependencies will be enforced through integration tests in the system’s codebase, avoiding redundant specifications in this document.
 
-The core functional requirements of the Smart Timesheet Application revolve around efficient, voice-enabled time tracking, cloud-based data storage, secure authentication, and multi-language support. The application must accommodate hands-free logging while ensuring that users can review, edit, and manage their work records with minimal friction. Additionally, robust data security mechanisms must be in place to guarantee data integrity and user privacy. The system should also provide offline and online synchronization, as well as support for generative AI to analyze and summarize work entries.
+The core functional requirements of the Voice Work Record Application revolve around efficient, voice-enabled time tracking, cloud-based data storage, secure authentication, and multi-language support. The application must accommodate hands-free logging while ensuring that users can review, edit, and manage their work records with minimal friction. Additionally, robust data security mechanisms must be in place to guarantee data integrity and user privacy. The system should also provide offline and online synchronization, as well as support for generative AI to analyze and summarize work entries.
 
 \subsection{Voice-to-Text Recording and Storage}
 
@@ -323,7 +323,7 @@ Employees can switch between Czech and English for the user interface, allowing 
 
 While functional requirements define what the system must do, non-functional requirements ensure that the system operates effectively under real-world conditions. These requirements specify qualities such as performance, security, usability, and scalability, ensuring that the application remains reliable, efficient, and user-friendly over time.  
 
-The Smart Timesheet Application is designed to accommodate employees working in various environments, including fieldwork where hands-free operation and offline functionality may be necessary. Additionally, as a cloud-based solution, the system must provide seamless data synchronization and high availability, while ensuring that sensitive work records remain secure and private.  
+The Voice Work Record Application is designed to accommodate employees working in various environments, including fieldwork where hands-free operation and offline functionality may be necessary. Additionally, as a cloud-based solution, the system must provide seamless data synchronization and high availability, while ensuring that sensitive work records remain secure and private.  
 
 The following sections outline the essential characteristics that the system must meet to provide a smooth, secure, and scalable experience.
 
@@ -462,7 +462,7 @@ Several time-tracking applications currently serve businesses, each with strengt
 
 ## Overview
 
-The Smart Timesheet Application is designed to provide a scalable and efficient solution for employees to log and manage their work records using audio-based logging and manual entry. The system must handle multiple companies, ensuring that user authentication, data storage, and processing are both secure and scalable.
+The Voice Work Record Application is designed to provide a scalable and efficient solution for employees to log and manage their work records using audio-based logging and manual entry. The system must handle multiple companies, ensuring that user authentication, data storage, and processing are both secure and scalable.
 
 A fundamental design decision was to offload authentication and user management to Microsoft accounts. Since the application is expected to be used across different companies, managing user accounts internally would introduce unnecessary complexity. By leveraging Microsoft's identity management services, authentication and access control are handled externally, ensuring a seamless and secure login experience while eliminating the need for manual account management.
 
@@ -518,11 +518,11 @@ Several additional services and supporting components are used and further discu
 
 \chapter{Technologies used}
 
-The Smart Timesheet Application is built using modern technologies that ensure scalability, performance, and security. The choice of technologies directly supports the functional and non-functional requirements, enabling efficient development and a seamless user experience. The key technologies used in the application include Flutter, Firebase, and Microsoft Authentication.
+The Voice Work Record Application is built using modern technologies that ensure scalability, performance, and security. The choice of technologies directly supports the functional and non-functional requirements, enabling efficient development and a seamless user experience. The key technologies used in the application include Flutter, Firebase, and Microsoft Authentication.
 
 \section{Flutter}
 
-Flutter is a UI framework developed by Google that allows for the development of natively compiled applications for mobile, web, and desktop from a single codebase. The Smart Timesheet Application uses Flutter to create cross-platform applications for both Android and iOS devices.
+Flutter is a UI framework developed by Google that allows for the development of natively compiled applications for mobile, web, and desktop from a single codebase. The Voice Work Record Application uses Flutter to create cross-platform applications for both Android and iOS devices.
 
 Flutter utilizes the Dart programming language, which offers a rich set of features and provides strong typing, asynchronous programming, and fast performance. By using Flutter, the application is able to maintain consistent functionality and high performance across different platforms.
 
@@ -534,21 +534,21 @@ Firebase is a comprehensive platform for building web and mobile applications, o
 
 \subsection{Firestore}
 
-Firestore is a NoSQL cloud database that is used in the Smart Timesheet Application to store work records and user data. Firestore allows for scalable and flexible storage, offering real-time synchronization of data across all devices. This is crucial for ensuring that the data is always up-to-date across different devices, especially when working offline or in poor network conditions.
+Firestore is a NoSQL cloud database that is used in the Voice Work Record Application to store work records and user data. Firestore allows for scalable and flexible storage, offering real-time synchronization of data across all devices. This is crucial for ensuring that the data is always up-to-date across different devices, especially when working offline or in poor network conditions.
 
 Data in Firestore is stored in collections of documents. Each document contains fields, where data is stored as key-value pairs. This structure allows easy querying and retrieval of user data, making it suitable for the dynamic nature of the application.
 
 \subsection{Firebase Storage}
 
-Firebase Storage is used for storing and serving large files, such as voice recordings. The Smart Timesheet Application uses Firebase Storage to securely store audio files that users upload as part of their work records. The integration of Firebase Storage ensures that these files are available for download and playback in a fast and secure manner.
+Firebase Storage is used for storing and serving large files, such as voice recordings. The Voice Work Record Application uses Firebase Storage to securely store audio files that users upload as part of their work records. The integration of Firebase Storage ensures that these files are available for download and playback in a fast and secure manner.
 
 \subsection{Crashlytics}
 
-Firebase Crashlytics is a powerful crash reporting tool integrated into the Smart Timesheet Application to track, report, and fix crashes in real-time. Crashlytics provides detailed reports about the nature and frequency of crashes, allowing developers to quickly identify and resolve critical issues, improving the app's stability.
+Firebase Crashlytics is a powerful crash reporting tool integrated into the Voice Work Record Application to track, report, and fix crashes in real-time. Crashlytics provides detailed reports about the nature and frequency of crashes, allowing developers to quickly identify and resolve critical issues, improving the app's stability.
 
 \subsection{Firebase Authentication}
 
-Firebase Authentication is used to manage user sign-in and authentication within the application. The Smart Timesheet Application utilizes Microsoft authentication to allow users to sign in securely using their Microsoft credentials. This simplifies the authentication process and ensures that user accounts are managed efficiently.
+Firebase Authentication is used to manage user sign-in and authentication within the application. The Voice Work Record Application utilizes Microsoft authentication to allow users to sign in securely using their Microsoft credentials. This simplifies the authentication process and ensures that user accounts are managed efficiently.
 
 Firebase Authentication supports a wide range of identity providers, including email/password login, social media logins, and custom authentication methods. The flexibility of Firebase Authentication allows for easy integration of additional identity providers if required in the future, ensuring that the application remains scalable.
 
@@ -1288,7 +1288,7 @@ Development leading up to the final delivery of this thesis is considered work-i
 
 ## Crashlytics
 
-To ensure application stability and improve maintainability, the Smart Timesheet Application integrates **Firebase Crashlytics** for real-time crash reporting and error logging. This system enables developers to detect, analyze, and respond to runtime issues as they occur in production environments, significantly reducing debugging time and enhancing the end-user experience.
+To ensure application stability and improve maintainability, the Voice Work Record Application integrates **Firebase Crashlytics** for real-time crash reporting and error logging. This system enables developers to detect, analyze, and respond to runtime issues as they occur in production environments, significantly reducing debugging time and enhancing the end-user experience.
 
 ### Integration with Firebase Crashlytics
 
