@@ -1068,6 +1068,46 @@ For the initial stages of development, the `gpt-3.5-turbo` model was used. In a 
 
 A detailed analysis of attribute-level accuracy revealed that the primary discrepancy stemmed from differences in how textual descriptions were generated. This variation is inherently subjective, as descriptions are not selected from predefined categories (unlike attributes such as client or project), but are instead written freely by the annotators of the test data.
 
+\end{markdown}
+\shorthandon{-}
+
+\begin{table}[h]
+\centering
+\begin{tabularx}{\textwidth}{|X|X|X|}
+\hline
+\textbf{Criterion} & \textbf{gpt-3.5-turbo} & \textbf{gpt-4o-mini} \\
+\hline
+\textbf{Attribute extraction accuracy} & Slightly higher & Slightly lower \\
+\hline
+\textbf{Ambiguous input} & Conservative; more likely to return "N/A" & More likely to guess based on weak hints \\
+\hline
+\textbf{Description generation} & More consistent & Greater variation in phrasing \\
+\hline
+\textbf{Performance variability at optimal temperature} & Low & Slightly higher \\
+\hline
+\textbf{Operational cost} & Higher & Lower \\
+\hline
+\textbf{Future viability} & Legacy & Intended successor \\
+\hline
+\end{tabularx}
+\caption{Comparison of language models used for text-to-timesheet transformation}
+\label{tab:text_to_timesheet_models}
+\end{table}
+
+\shorthandoff{-}
+\begin{markdown}[
+  citationNbsps,
+  citations,
+  definitionLists,
+  fencedCode,
+  hashEnumerators,
+  inlineNotes,
+  notes,
+  pipeTables,
+  rawAttribute,
+  tableCaptions,
+]
+
 Given that prompt and temperature optimization had already been completed for `gpt-3.5-turbo`, it was chosen for the final version. Nonetheless, there are plans to transition to `gpt-4o-mini` in the future, as it offers comparable performance with lower associated costs.
 
 #### Prompt optimization
