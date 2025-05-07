@@ -126,19 +126,19 @@
 %% headings and a table of contents entry, we must add them manually:
 \markright{\textsc{Introduction}}
 \addcontentsline{toc}{chapter}{Introduction}
-With the rising complexity of modern work environments and the increasing mobility of employees, efficient and accurate work logging has become more important than ever. While there is a wide variety of work logging solutions currently available—ranging from personal time trackers to enterprise-grade software—many of these tools fall short in addressing the needs of companies with a large number of clients and field employees. In such cases, workers often handle multiple clients and tasks per day and only log their hours at the end of their shifts. This practice can lead to incomplete or inaccurate records, as employees may forget details or fail to log time to the minute, which may later impact client invoicing or internal reporting.
+All work environments require some form of work logging. For smaller companies a simple solution is sufficient. This could range from a paper notebook for employees to write in, to a simple web application or an Excel table. However, many companies have a large number of clients, different projects and employees. There is a wide variety of work logging solutions currently available – ranging from personal time trackers to enterprise-grade software. For generic use cases, work logging is a solved problem. Still, many of these tools fail to address the needs of companies with a large number of clients and field employees. In such cases, workers can handle multiple clients and tasks per day and only log their hours at the end of their shifts. This practice can lead to incomplete or inaccurate records, as employees may forget details or fail to log time accurately, which may later impact client invoicing or internal reporting.
 
-A promising solution to this problem is to make it more natural and frictionless for employees. One widely adopted approach is to allow users to record audio notes describing their work, which they can review later. However, the current state of such solutions often still requires manual intervention to transcribe and input the data into structured formats.
+In the past few years, there has been a significant rise of generative AI text models and transcription services. AI text APIs have become better quality, as well as  much faster and affordable. The thesis will attempt to integrate this technology into a work logging solution to simplify it for employees and concurrently provide more accurate data for employers.
 
-This thesis proposes an enhancement to the conventional audio-note logging systems by integrating automatic speech transcription and converting the transcribed content directly into structured database entries. The objective is to minimize user effort and maximize the accuracy and immediacy of work logging.
+One already used and widely adopted approach is to allow users to record audio notes describing their work, which they can review later. However, the current state of such solutions often still requires manual intervention to¨input the data (such as time and work description) into structured formats.
+
+This thesis proposes an enhancement to conventional audio-logging systems by integrating automatic speech transcription and converting the transcribed content directly into structured database entries. The objective is to minimize user effort and maximize the accuracy and immediacy of work logging.
 
 The goal of this thesis is two-folds:
 \begin{itemize}
     \item To design and implement a standalone mobile application that supports standard work and time logging functionalities, along with the capability to record audio descriptions of work and automatically convert them into database entries. The application will be developed in collaboration with the company DevBalance, and will be tailored to suit company-wide deployment.
-    \item To evaluate whether using transcription services and chat-based AI models is a viable approach for this use case. This includes assessing their performance in terms of transcription speed, accuracy of data extraction, and the overall cost implications of using such technologies.
+    \item To evaluate whether using transcription services and chat-based AI models is a viable approach for this use case. This includes evaluating their performance in terms of transcription speed, precision of data extraction, and the overall cost implications of using such technologies.
 \end{itemize}
-
-By leveraging AI-based tools, this project aims to offer a practical, user-friendly solution that improves the accuracy and efficiency of work logging.
 
 \chapter{System Requirements}
 
