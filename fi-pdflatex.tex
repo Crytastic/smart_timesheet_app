@@ -142,119 +142,100 @@ The goal of this thesis is two-folds:
 
 \chapter{System Requirements}
 
-In order to develop a practical and effective cloud-based audio transcription system for time tracking, a comprehensive requirements analysis is essential. This phase establishes a clear understanding of the functionalities and constraints that the software must adhere to, ensuring alignment with user needs and business objectives. The analysis focuses on defining user roles, identifying functional and non-functional requirements, and outlining key technical considerations.
+Before building a useful audio transcription system for time tracking, it’s important to start with a solid requirements analysis. This step helps everyone involved get on the same page about what the system should do, how well it should do it, and any limits it needs to work within. As Wiegers and Beatty explain, defining both functional and non-functional requirements early on helps make sure the software meets user needs and supports business goals \cite{wiegers13}. It also makes it easier to set priorities, stay on track with the project scope, and handle any changes that come up. Some of the key things to focus on during this stage include talking to stakeholders, outlining user scenarios, setting quality expectations, and understanding where and how the system will be used.
 
-The goal of this analysis is to create some sort of structure that guides the development of the Voice Work Record Application. Through discussions with potential users, the analysis highlights both explicit and implicit needs, as well as potential challenges that may arise during implementation.
+The goal of this analysis is to create some sort of structure that guides the development of the Voice Work Record Application – further referred to simply as the \textit{the app}. The system requirements were set through discussions with DevBalance consultant and this thesis's advisor. The analysis highlights both explicit and implicit needs, as well as potential challenges that may arise during implementation.
 
 \section{Users}
 
-The primary users of the Voice Work Record Application are mainly field employees. These users frequently switch between tasks and clients throughout the day. Their primary need is a quick, reliable, and intuitive method to log their working hours and task details in real-time without requiring a traditional computer interface. They benefit from hands-free audio logging that ensures accuracy and minimizes forgotten details.
+The primary users of the Voice Work Record Application are field employees. These users frequently switch between tasks and clients throughout the day. Their primary need is a quick, reliable, and intuitive method to log their working hours and task details in real-time. They benefit from hands-free audio logging that ensures accuracy and minimizes forgotten details. Of course, the application should not prevent creating and adjusting work records manually, it is simply perceived that employees working in an office for a single client will not benefit from the intended voice-recording approach.
 
 \section{Functional Requirements}
 
-The functional requirements define the core capabilities of the Voice Work Record Application, ensuring that it meets user expectations and performs its intended tasks efficiently. These requirements specify the system's behavior in terms of services, tasks, and functions that users can perform.
+The functional requirements define the core capabilities of the Voice Work Record Application, ensuring that it meets user expectations and performs its intended tasks efficiently. These requirements specify the system's behavior in terms of tasks that users can perform.
 
-This section also integrates the functional requirements as outlined by the development team at Devbalance. These include support for multiple languages, offline functionality, voice-to-text processing, and generative AI for text analysis. The integration of these elements helps ensure the application’s performance aligns with the needs of its users while supporting real-time synchronization, data accuracy, and ease of use.
+This section also integrates the functional requirements as outlined by DevBalance. These include support for multiple languages, voice-to-text processing, and generative AI for creating short descriptions.
 
-To clearly outline the expected functionality, the requirements are presented in the form of use cases. Each use case describes a specific interaction between the user and the system, defining the prerequisites, the sequence of steps, and the expected outcome.
+To clearly outline the expected functionality, the requirements are presented in the form of use cases. Each use case describes a specific interaction between the user and the system, defines the prerequisites, the sequence of steps, and the expected outcome. Some use cases could be decomposed into more detailed sub-cases; the following overview keeps them at a high level to maintain readability.
 
-The use cases are not listed by priority but instead grouped at the same level of abstraction for clarity. While some use cases could be decomposed into more detailed subcases, this document keeps them at a high level to maintain readability. Detailed business logic, rules, and dependencies will be enforced through integration tests in the system’s codebase, avoiding redundant specifications in this document.
-
-The core functional requirements of the Voice Work Record Application revolve around efficient, voice-enabled time tracking, cloud-based data storage, secure authentication, and multi-language support. The application must accommodate hands-free logging while ensuring that users can review, edit, and manage their work records with minimal friction. Additionally, robust data security mechanisms must be in place to guarantee data integrity and user privacy. The system should also provide offline and online synchronization, as well as support for generative AI to analyze and summarize work entries.
+The core functional requirements of the Voice Work Record Application revolve around efficient, voice-enabled time tracking, cloud-based data storage, secure authentication, and multi-language support. The application must accommodate hands-free logging while ensuring that users can review, edit, and manage their work records with minimal friction. Additionally, data security mechanisms must be in place to guarantee data integrity and user privacy. The system is not meant to be used purely in an offline environment, but then again it should not be synchronously dependent on an internet connection – some degree of offline use should be allowed.
 
 \subsection{Voice-to-Text Recording and Storage}
 
-\noindent \textbf{Actors:} Employee
-
-\noindent \textbf{Prerequisites:} User is authenticated
+\noindent \textbf{Prerequisites:} User is authenticated, stable internet connection
 
 \noindent \textbf{Description:}  
-Employees can record audio descriptions of their work in either Czech or English. The system transcribes the audio into text, uses a trained AI model to extract key information, and stores the recording in a cloud-based NoSQL database. The extracted data is parsed into a structured database entry, first saved locally and then persistently in the cloud.
+Employees can record audio descriptions of their work in either Czech or English. The system transcribes the audio into text, uses a trained AI model to extract key information, and stores the recording in a cloud-based environment. The extracted data is parsed into a structured database entry, first saved locally and then persistently in the cloud.
 
 \noindent \textbf{Steps:}
 \begin{enumerate}
-    \item Employee initiates an audio recording in the application.
-    \item Employee verbally describes the work performed, using either Czech or English.
-    \item The system automatically detects the language of the recording if not manually selected.
-    \item System uploads the recording to the cloud.
+    \item User navigates to the new recording screen.
+    \item User initiates an audio recording in the application.
+    \item User verbally describes the work performed, using either Czech or English.
+    \item System uploads the audio recording to the cloud.
     \item Transcription service processes the audio and converts it into text.
-    \item AI model analyzes the transcribed text, extracting key information such as client, task, activity, and duration.
+    \item AI model analyzes the transcribed text, extracting key information such as client, activity, project and work duration.
     \item System structures the extracted data into a work record.
     \item Work record is temporarily saved locally on the device.
-    \item Work record is uploaded to the cloud-based NoSQL database.
+    \item Work record is uploaded to a cloud-based environment.
     \item The employee receives a notification upon completion of the transcription and data entry.
 \end{enumerate}
 
 \subsection{Adding Work Records Manually}
 
-\noindent \textbf{Actors:} Employee
-
-\noindent \textbf{Prerequisites:} User is authenticated
+\noindent \textbf{Prerequisites:} User is authenticated, stable internet connection
 
 \noindent \textbf{Description:}  
-Employees can manually enter work records if they prefer not to use audio transcription or if they wish to edit a previously recorded work entry.
+Employees can manually enter work records if they prefer not to describe the work verbally.
 
 \noindent \textbf{Steps:}
 \begin{enumerate}
-    \item Employee navigates to the manual work entry interface.
-    \item Employee inputs details such as client, project, and task description.
-    \item Work entry is saved to the cloud database.
+    \item User navigates to the new recording screen.
+    \item User initiates manual work record entry.
+    \item User inputs details such as client, activity, project, task description and duration of work.
+    \item Work record is uploaded to a cloud-based environment.
 \end{enumerate}
 
 \subsection{Reviewing and Editing Work Entries}
 
-\noindent \textbf{Actors:} Employee
-
-\noindent \textbf{Prerequisites:} User is authenticated, work entries exist
+\noindent \textbf{Prerequisites:} User is authenticated, work entries exist, stable internet connection (unless previously viewed)
 
 \noindent \textbf{Description:}  
 Employees can review and edit their past work records, including both manually entered and transcribed entries.
 
 \noindent \textbf{Steps:}
 \begin{enumerate}
-    \item Employee accesses the work log history.
-    \item Employee selects a work entry to review.
-    \item Employee can replay the original audio recording (if available).
-    \item If necessary, employee edits the transcription or manually entered details.
-    \item Updated entry is saved to the cloud database.
+    \item User navigates to the screen with past work records.
+    \item User selects a work entry to review.
+    \item User can replay the original audio recording (if available).
+    \item User can see the full transcription of the audio recording (if available).
+    \item User can edit the work record. Specifically, the client, activity, project, task description, duration of work. User is not allowed to adjust neither the audio recording and the literal transcription.
+    \item Work record is uploaded to a cloud-based environment.
 \end{enumerate}
 
 \subsection{Searching, Filtering, and Sorting Work Entries}
 
-\noindent \textbf{Actors:} Employee
-
-\noindent \textbf{Prerequisites:} User is authenticated, work entries exist
+\noindent \textbf{Prerequisites:} User is authenticated, work entries exist, stable internet connection
 
 \noindent \textbf{Description:}  
-Employees can search for and filter work logs based on specific criteria such as date, project, or client. Sorting of records is also available.
+Employees can search for and filter work logs based on the following criteria:
+\begin{itemize}
+    \item Date
+    \item Project
+    \item Client
+    \item Activity
+\end{itemize}
 
 \noindent \textbf{Steps:}
 \begin{enumerate}
-    \item Employee accesses the search and filter interface.
-    \item Employee selects criteria for filtering (e.g., date range, client, project).
-    \item Employee selects criteria for sorting (e.g., by date, project, or client).
-    \item System retrieves and displays the matching work entries.
-\end{enumerate}
-
-\subsection{Cloud-Based Data Storage and Organization}
-
-\noindent \textbf{Actors:} System
-
-\noindent \textbf{Prerequisites:} Work entries exist
-
-\noindent \textbf{Description:}  
-Work records are securely stored in a cloud-based NoSQL database. Employees can access their records from any authenticated device.
-
-\noindent \textbf{Steps:}
-\begin{enumerate}
-    \item Work entries are saved in a structured format in the cloud.
-    \item System ensures data is organized for efficient retrieval.
-    \item Employees can easily view, sort, and access their stored records.
+    \item User navigates to the screen with past work records.
+    \item User pushes the search and filter buttons.
+    \item User selects criteria for filtering
+    \item User selects criteria for sorting
+    \item Matching work entries are displayed, together with sums of worked hours according to selected group by settings. Work entries in different groups are also visually separated. 
 \end{enumerate}
 
 \subsection{User Authentication and Access Control}
-
-\noindent \textbf{Actors:} Employee
 
 \noindent \textbf{Prerequisites:} None
 
@@ -263,10 +244,10 @@ Authentication and access control ensure that only authorized users can log in a
 
 \noindent \textbf{Steps:}
 \begin{enumerate}
-    \item Employee attempts to log in via Microsoft authentication.
-    \item System verifies credentials through Firebase Authentication.
-    \item System checks the employee’s email domain.
-    \item If the domain is authorized, the employee is granted access to their records.
+    \item User attempts to log in via Microsoft authentication.
+    \item User's credentials are verified through Firebase Authentication.
+    \item Employee’s email domain is verified.
+    \item If the domain is authorized, the employee is granted access to his/her past work records only – not to work records of any other employee.
     \item System ensures that employees from different domains cannot view or modify each other's records.
 \end{enumerate}
 
@@ -279,44 +260,57 @@ Authentication and access control ensure that only authorized users can log in a
 \noindent \textbf{Description:}  
 Employees can record work descriptions offline. Once an internet connection is restored, the system automatically uploads and processes the recordings, ensuring that data is synchronized across devices.
 
+From the user perspective, the steps are identical to when internet connection is available, hence the simplified steps.
+
 \noindent \textbf{Steps:}
 \begin{enumerate}
     \item Employee records an audio entry while offline.
     \item System stores the recording locally on the device.
-    \item Once an internet connection is restored, the system automatically uploads and processes the recording.
-    \item Transcribed entry is added to the work log.
+    \item In a reasonable time frame, once internet connection is restored, the system automatically uploads and processes the recording.
+    \item Work record is uploaded to a cloud-based environment.
 \end{enumerate}
 
 \subsection{Receiving Notifications}
 
-\noindent \textbf{Actors:} Employee
-
 \noindent \textbf{Prerequisites:} User is authenticated, relevant event occurs
 
 \noindent \textbf{Description:}  
-Employees receive notifications when important events occur, such as transcription completion or record updates.
+Employees receive notifications when important events occur, such as transcription completion or record updates. Notification allows the user to directly open the work record, inspect it, and confirm its correctness (or immediately fix incorrect attributes).
 
 \noindent \textbf{Steps:}
 \begin{enumerate}
     \item System detects an event requiring a notification (e.g., transcription complete).
     \item System generates a notification message.
-    \item Employee receives a push notification or email alert.
+    \item User receives an in-app notification.
+    \item User can directly open, inspect and edit the work record.
 \end{enumerate}
 
-\subsection{Multilingual User Interface}
-
-\noindent \textbf{Actors:} Employee
+\subsection{Setting User Interface Language}
 
 \noindent \textbf{Prerequisites:} User is authenticated
 
 \noindent \textbf{Description:}  
-Employees can switch between Czech and English for the user interface, allowing the application to support a multilingual user base.
+Users can switch between Czech and English for the user interface, allowing the application to support a multilingual user base.
 
 \noindent \textbf{Steps:}
 \begin{enumerate}
-    \item Employee navigates to the settings menu.
-    \item Employee selects the preferred language (Czech or English).
+    \item User navigates to the settings menu.
+    \item User selects the preferred language (Czech or English).
     \item The user interface updates to the selected language.
+\end{enumerate}
+
+\subsection{Setting User Interface Theme}
+
+\noindent \textbf{Prerequisites:} User is authenticated
+
+\noindent \textbf{Description:}  
+Users can adjust common quality of life preferences, such as theme of the application.
+
+\noindent \textbf{Steps:}
+\begin{enumerate}
+    \item User navigates to the settings menu.
+    \item User selects the preferred theme (light or dark).
+    \item The user interface updates to reflect the selected theme.
 \end{enumerate}
 
 \section{Non-Functional Requirements}
