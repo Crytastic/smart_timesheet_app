@@ -317,22 +317,22 @@ Users can adjust common quality of life preferences, such as theme of the applic
 
 While functional requirements define what the system must do, non-functional requirements ensure that the system operates effectively under real-world conditions. These requirements specify qualities such as performance, security, usability, and scalability, ensuring that the application remains reliable, efficient, and user-friendly over time.  
 
-The Voice Work Record Application is designed to accommodate employees working in various environments, including fieldwork where hands-free operation and offline functionality may be necessary. Additionally, as a cloud-based solution, the system must provide seamless data synchronization and high availability, while ensuring that sensitive work records remain secure and private.  
+It has been decided fairly early on that the Voice Work Record Application will be at its core a cloud-based solution. One of the requirements being the need for seamless data synchronization and high availability, while ensuring that sensitive work records remain secure and private. With a desktop-optimized web interface being developed concurrently with this mobile interface, it is essential that the user has the option to switch between the interfaces seamlessly should the need arise.
 
 The following sections outline the essential characteristics that the system must meet to provide a smooth, secure, and scalable experience.
 
 \subsection{Performance and Reliability}  
-The transcription process does not need to be instant, but users must be notified upon completion so they can review and verify the results. The system must handle multiple concurrent users and organizations without performance degradation.  
+The transcription process does not need to be instant, but users should be notified upon completion so they can review and verify the results. The system must handle multiple concurrent users and organizations without performance degradation.
 
 While a constant internet connection is not required, users must be able to record audio offline. The recorded audio should be queued and automatically processed when the device reconnects to the internet. Additionally, the system should ensure that no data is lost in case of connection interruptions.
 
 \subsection{Usability and Accessibility}  
-The user interface should be designed with simplicity and ease of use in mind, requiring minimal training. Hands-free operation should be a priority, with voice commands and simple touch interactions allowing users to log work efficiently without needing extensive manual input.  
+The user interface should be designed with simplicity and ease of use in mind, requiring minimal training. Hands-free operation should be a priority, with a very small number of interactions needed to initialize audio recording and create new work records. Simple touch interactions should allow users to log work efficiently without needing extensive manual input.
 
-The system should also provide clear visual and auditory feedback to confirm actions. Text should be minimized for core functionality but available for advanced configurations and settings.
+The system should also provide clear visual feedback to confirm actions. Text should be minimized for core functionality but available for further information on how to use the system - should the user request it.
 
 \subsection{Security and Compliance}  
-All user data must be securely stored and transmitted using encryption. The application must comply with GDPR and other relevant data protection regulations, ensuring that users’ personal and work-related information is not exposed or misused.  
+All user data must be securely stored and transmitted using encryption. The application must ensure to a reasonable degree that users’ personal and work-related information is not exposed or misused. A reasonable degree is mentioned due to existing plans to use third-party authentication that might not be GDPR compliant (Firebase Authentication, for example, has US only servers).
 
 Additionally, access control mechanisms must prevent unauthorized users from accessing or modifying work records.
 
@@ -340,26 +340,24 @@ Additionally, access control mechanisms must prevent unauthorized users from acc
 The system must be designed to support a growing number of users and organizations. As adoption increases, performance should remain stable, and the backend infrastructure must be capable of handling increased storage and processing demands without requiring significant downtime or maintenance.
 
 \subsection{Cross-Platform Support}  
-The application must be available on both Android and iOS platforms, ensuring that employees can access and use the system regardless of their device. The mobile application should maintain consistent functionality and usability across different devices and operating system versions.
+The application must be available on both Android and iOS\footnote{DevBalance does not plan to provide an Apple Developer Subscription during the development and testing phases. Therefore, it is considered sufficient for the final version to be tested internally by the developer, with no need to distribute it to testers for the time being.} platforms, ensuring that employees can access and use the system regardless of their device. The mobile application should maintain consistent functionality and usability across different devices and operating system versions.
 
-\subsection{Logging and Audit Trails}  
-The system must maintain detailed audit logs for key operations, including the creation and modification of work records. Specifically, changes to work entries, authentication events, and offline-to-online data synchronization must be logged.  
-
-These logs should provide administrators and developers with insights into potential issues, user errors, or security concerns.
+\subsection{Logging}  
+The system must maintain detailed logs for key operations, including the creation and modification of work records. Specifically, changes to work records and calling external services such as authentication events must be logged.
 
 \subsection{Failure Handling and Reporting}  
-The application must include mechanisms for detecting and reporting failures. If an entry fails to synchronize due to network issues or a transcription error, the user must be notified, and the failure must be logged for further debugging.  
+The application must include mechanisms for detecting and reporting failures. If fatal issue occurs, and the failure must be logged for further debugging.  
 
-Complete system failures should be automatically reported to the development team, enabling proactive maintenance and issue resolution.
+A proper feedback loop should be established to automatically report to the development team, enabling proactive maintenance and issue resolution. The logs mentioned above should provide developers with enough insights into potential issues, user errors, or security concerns.
 
 \subsection{Database Support}  
-The system should efficiently handle up to a million records and a million audio files without performance degradation.  
+The system should efficiently handle up to a million records and a million audio files without significant performance degradation.  
 
 \subsection{Performance Optimization}  
 The system must be optimized for fast data loading and processing, even with large volumes of records. Voice recordings should be quickly accessible for playback, ensuring a responsive user experience.
 
 \subsection{Storage Capacity}  
-The system must efficiently manage storage for millions of short voice files of medium quality. It should automatically optimize storage usage while ensuring quick access to the files when needed.
+The system must efficiently manage storage for millions of short voice files of sufficient quality. It should automatically optimize storage usage while ensuring quick access to the files when needed.
 
 \subsection{Voice Recordings Security}  
 Voice recordings must be securely encrypted both during transmission and at rest. The system should ensure that sensitive voice data remains protected from unauthorized access or tampering.
@@ -367,15 +365,8 @@ Voice recordings must be securely encrypted both during transmission and at rest
 \subsection{Multilingual Support}  
 The application must support two language variants (Czech and English) for the user interface and for processing text from voice recordings. This includes ensuring that the transcription, AI models, and interface components can handle both languages seamlessly.
 
-\subsection{Testability and Logging}  
-The system must include detailed logging of user actions and error reports that facilitate testing and debugging. Logs should capture important events such as the creation and modification of records, authentication attempts, and synchronization statuses.
-
-\subsection{Data Backup}  
-The system must support automatic backup of both structured data and voice recordings on a regular basis. This ensures data integrity and recovery in case of system failures or data loss events.
-
 \subsection{UI Responsiveness}  
-The user interface must be responsive and provide a consistent user experience across devices, including smartphones, tablets, and desktops. The application should adapt seamlessly to different screen sizes and resolutions to ensure usability in both small and large devices.
-
+The user interface must be responsive and provide a consistent user experience across smartphones and tablets. The application should adapt seamlessly to different screen sizes and resolutions to ensure usability in both small and large devices.
     
 \shorthandoff{-}
 \begin{markdown}[
@@ -397,46 +388,24 @@ The user interface must be responsive and provide a consistent user experience a
 \chapter{Market Analysis}
 
 \section{Introduction}
-The need for efficient time-tracking solutions has led to the development of various tools aimed at helping businesses and employees manage work hours effectively. Many existing solutions rely on manual entry, mobile applications, or automated tracking features. However, there are still gaps in usability, accuracy, and hands-free operation, particularly for field employees who require a more seamless and automated way to log their time.
+The need for efficient time-tracking solutions has led to the development of various tools aimed at helping businesses and employees manage work hours effectively. Many existing solutions rely on manual entry. However, there are still gaps in usability, accuracy, and more of a hands-free operation, particularly for field employees who require a more seamless and automated way to log their time. In this chapter we will take a look at mobile applications that come close to our use case. In doing so, strengths and weaknesses of these solutions will be analyzed to either avoid or use some of those patterns in the Voice Work Record Application.
 
 \section{Existing Solutions}
 
-Several time-tracking applications currently serve businesses, each with strengths and limitations:
+The solutions chosen for analysis are the most prominent mobile applications. Some are more catered towards busine   ss, some more towards individuals. All of the following were used by the developer for a week each to log hours in a day job using Android 15, coincidentally one of the target platforms.
 
 \begin{itemize}
-\item \textbf{Clockify}: A widely used time-tracking tool that provides manual entry, timers, and integration with various project management tools. While powerful, it requires manual input or interaction with a timer, which may not be ideal for field employees who need a hands-free option.
-\item \textbf{Toggl Track}: Offers intuitive time tracking with automation features, but still relies on user interaction to start and stop time logs. It lacks built-in voice transcription for work entry.
-\item \textbf{Hubstaff}: Includes GPS tracking and automated timesheets, making it useful for remote teams, but does not focus on voice-based logging.
-\item \textbf{TSheets by QuickBooks}: Provides detailed time-tracking features and payroll integration but requires manual input or GPS tracking, with no emphasis on voice-based automation.
+\item \textbf{Clockify}: A widely used time-tracking tool that provides manual entry, timers, and integration with various project management tools. It's powerful in terms of reporting capabilities as well and catered more toward individual use. It features very good user experience and overall fleshed out UI.
+\item \textbf{Toggl Track}: Offers intuitive time tracking with automation features, but still relies on user interaction to start and stop time logs. It lacks built-in voice transcription for work entry. Some issues with 3rd party authentication were discovered.
+\item \textbf{Hubstaff}: Off the bat Hubstaff does not include any 3rd party authentication and only allows Hubstaff specific user accounts. The user experience is not as clean as other solutions, but it's catered more towards businesses, in a similar way as the intended purpose of the Voice Work Record App. Includes GPS tracking and partly automated timesheets, but does not focus on voice-based logging. The setup of business owner and team members is however very strong and a well established design.
+\item \textbf{TSheets by QuickBooks}: Similar to Hubstaff the set of features caters towards businesses. Provides detailed time-tracking features and payroll integration but requires manual input or GPS tracking, with no emphasis on voice-based automation.
 \end{itemize}
 
 \section{Strengths and weaknesses of existing solutions}
 
-\begin{itemize}  
-    \item \textbf{Strengths:} Most existing solutions provide cloud-based tracking, integrations with payroll and project management tools, and mobile accessibility. In addition, these applications are often highly optimized and feature rich, ensuring a streamlined user experience. However, many of their most valuable features are restricted behind paywalls, necessitating costly subscriptions. Moreover, businesses frequently lack control over the application's functionality and long-term availability, making them dependent on third-party providers. Organizations require a time-tracking solution that offers reliability and stability without the risk of unexpected feature limitations, forced upgrades, or service discontinuation.  
+Most existing solutions provide cloud-based tracking, some even integrations with payroll and project management tools. In addition, these applications are often highly optimized and feature rich, ensuring a great user experience. However, many of their most valuable features are restricted behind paywalls, necessitating costly subscriptions. Moreover, businesses frequently lack control over the application's functionality and long-term availability, making them dependent on third-party providers. Organizations require a time-tracking solution that offers reliability and stability without the risk of unexpected feature limitations, forced upgrades, or service discontinuation. 
 
-    Another significant limitation is the absence of dedicated audio-to-work-entry functionality in existing solutions. Although some applications permit audio attachments as supplementary notes, they do not provide automated transcription or structured conversion of voice recordings into work entries. As a result, users must rely on manual data entry or timers, which may be inefficient for field employees who require a seamless and hands-free method of logging work hours.  
-
-    \item \textbf{Weaknesses:} The majority of existing solutions rely on manual input, timers, or GPS tracking, which may be impractical for employees working in dynamic field environments. Although some applications incorporate voice-based logging, these implementations are generally limited to note taking rather than full transcription and structured work entry generation. Consequently, such solutions function more as auxiliary documentation tools rather than complete work-logging systems, failing to address the specific needs of professionals who require accurate and automated time tracking.
-
-\end{itemize}
-
-\shorthandoff{-}
-\begin{markdown}[
-  citationNbsps,
-  citations,
-  definitionLists,
-  fencedCode,
-  hashEnumerators,
-  inlineNotes,
-  notes,
-  pipeTables,
-  rawAttribute,
-  tableCaptions,
-]
-\end{markdown}
-\shorthandon{-}
-
+The majority of existing solutions rely on manual input, timers, or GPS tracking, which may be impractical for employees working in dynamic field environments. Although some applications incorporate voice-based logging, these implementations are generally limited to note taking rather than full transcription and structured work entry generation. Consequently, such solutions function more as auxiliary documentation tools rather than complete work-logging systems. According to my personal testing, all of the above work very well for what they are and usually provide a very strong set of features. They simply lack audio transcription. The Voice Work Record Application does not aim to provide the same amount or more features as the above mentioned, it's seen simply as an alternative solution for those whose needs are not met by current, most common approaches.
 
 \shorthandoff{-}
 \begin{markdown}[
