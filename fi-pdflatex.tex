@@ -445,13 +445,13 @@ In conclusion, the system was designed with a strong emphasis on improving user 
 
 \section{System Architecture}
 
-The system architecture is designed with a clear focus on scalability, efficiency, and cross-platform functionality. After careful consideration of the system requirements, along with some prototyping, it has been decided that the core functionality will be supported by the following components.
+During the implementation part of the thesis, a web interface\footnote{The web application is not a part of this thesis and has been developed by a fellow student, Bc. Ondřej Zelinka} has been developed concurrently with the mobile application. Although developed as separate projects, they share many common features and functionalities. Notably, the UI/UX designs have been discussed and aligned across both platforms. A shared set of supporting services ensures that both the mobile app and the web interface operate seamlessly, offering a consistent experience. These shared services include the entire Firebase stack, which provides authentication, data storage, and standardization of timesheet data formats. Furthermore, the OpenAI endpoints and associated prompts are employed as common resources for both applications and saved in Firebase storage. This design allows the user to utilize both applications simultaneously with a single account, ensuring a unified experience across platforms.
 
-The development process has been conducted concurrently a mobile and a web interface\footnote{The web application is not a part of this thesis and has been developed by a fellow student, Bc. Ondřej Zelinka}. Although developed as separate projects, they share many common features and functionalities. Notably, the UI/UX designs have been discussed and aligned across both platforms. A shared set of supporting services ensures that both the mobile app and the web interface operate seamlessly, offering a consistent experience. These shared services include the entire Firebase stack, which provides authentication, data storage, and standardization of timesheet data formats. Furthermore, the OpenAI endpoints and associated prompts are employed as common resources for both applications and saved in Firebase storage. This design allows the user to utilize both applications simultaneously with a single account, ensuring a unified experience across platforms.
+The system architecture is designed with a clear focus on scalability, efficiency, and cross-platform functionality. After careful consideration of the system requirements, along with some prototyping, it has been decided that the core functionality will be supported by the following components.
 
 \subsection{System Components Overview}
 
-The core components of the system include:
+After careful consideration of the system requirements, along with some prototyping, it has been decided that the core functionality will be supported by the following components.
 
 \begin{itemize}
     \item \textbf{Android/iOS Application} – A mobile application available on both Android and iOS platforms, providing users with access to the system's functionalities.
@@ -477,7 +477,7 @@ The core components of the system include:
     \label{fig:timesheet_app_architecture}
 \end{figure}
 
-Several additional services and supporting components are used and further discussed in the Deployment chapter. 
+Several additional services and supporting components are used and further discussed in the Deployment chapter at page \pageref{chap:deployment}.
 
 \shorthandon{-}
 
@@ -1191,6 +1191,8 @@ Text to process: {transcribed_text}
 \end{minipage}
 \end{figure}
 
+\chapter{Deployment}
+\label{chap:deployment}
 \shorthandoff{-}
 \begin{markdown}[
   citationNbsps,
@@ -1204,8 +1206,6 @@ Text to process: {transcribed_text}
   rawAttribute,
   tableCaptions,
 ]
-
-# Deployment
 
 In the software development lifecycle, after the application is developed and thoroughly tested, the next step is deployment. This chapter outlines how the Android app, developed as part of this thesis, is prepared for deployment and the technologies used to support the process.
 
