@@ -101,7 +101,8 @@
   morestring=[b]',
 }
 \lstset{
-  basicstyle      = \ttfamily,  % <-- monospace
+  basicstyle      = \ttfamily\small,  % <-- monospace
+  frame           = single
   identifierstyle = \color{black},
   keywordstyle    = \color{blue}\bfseries,
   keywordstyle=[2]\color{orange}\bfseries,
@@ -473,54 +474,112 @@ After careful consideration of the system requirements, along with some prototyp
 \begin{figure}[ht]
     \centering
     \includegraphics[width=\textwidth]{assets/diagrams/timesheet_app_component_diagram.drawio.png}
-    \caption{High level component diagram of the Timesheet Application and all external services}
+    \caption{High level component diagram of the Voice Work Record Application and all external services}
     \label{fig:timesheet_app_architecture}
 \end{figure}
 
 Several additional services and supporting components are used and further discussed in the Deployment chapter at page \pageref{chap:deployment}.
 
-\shorthandon{-}
+\subsection{Entities Overview}
 
-\chapter{Technologies used}
+There are in essence two places that persistently store data.
 
-The Voice Work Record Application is built using modern technologies that ensure scalability, performance, and security. The choice of technologies directly supports the functional and non-functional requirements, enabling efficient development and a seamless user experience. The key technologies used in the application include Flutter, Firebase, and Microsoft Authentication.
+\begin{itemize}
+    \item \textbf{Firestore Database} — a NoSQL database at its core, accessed through Firebase’s API, which provides a convenient interface along with built-in caching mechanisms to reduce the number of actual and expensive (both in terms of time and finances) reads and writes to the cloud. The database stores documents for timesheets, activities, projects, clients, and prompts. Among these, only timesheets are really considered live data and are updated very frequently. See \ref{fig:entity_diagram} for details on all entities. Note the relationships are omitted by design, as a NoSQL database does not enforce relational constraints or schemas in the traditional sense and keeping the entries valid is up to the implementation.
+    
+    \item \textbf{Firebase Storage} — used to store audio recordings. Similar to Firestore, it offers an abstraction layer that allows developers to organize files into folder-like structures. In our case, separated by generated owner IDs.
+\end{itemize}
 
-\section{Flutter}
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{assets/diagrams/entity-relationship-diagram.drawio.png}
+    \caption{Persistent entities in Firestore Database}
+    \label{fig:entity_diagram}
+\end{figure}
 
-Flutter is a UI framework developed by Google that allows for the development of natively compiled applications for mobile, web, and desktop from a single codebase. The Voice Work Record Application uses Flutter to create cross-platform applications for both Android and iOS devices.
-
-Flutter utilizes the Dart programming language, which offers a rich set of features and provides strong typing, asynchronous programming, and fast performance. By using Flutter, the application is able to maintain consistent functionality and high performance across different platforms.
-
-The core advantage of Flutter lies in its hot reload feature, which allows developers to instantly see changes in the code reflected in the application without needing to restart the app. This significantly speeds up development time and improves the testing cycle.
-
-\section{Firebase}
-
-Firebase is a comprehensive platform for building web and mobile applications, offered by Google. It provides a set of tools that simplifies backend development, handling key tasks such as data storage, authentication, and crash reporting.
-
-\subsection{Firestore}
-
-Firestore is a NoSQL cloud database that is used in the Voice Work Record Application to store work records and user data. Firestore allows for scalable and flexible storage, offering real-time synchronization of data across all devices. This is crucial for ensuring that the data is always up-to-date across different devices, especially when working offline or in poor network conditions.
-
-Data in Firestore is stored in collections of documents. Each document contains fields, where data is stored as key-value pairs. This structure allows easy querying and retrieval of user data, making it suitable for the dynamic nature of the application.
-
-\subsection{Firebase Storage}
-
-Firebase Storage is used for storing and serving large files, such as voice recordings. The Voice Work Record Application uses Firebase Storage to securely store audio files that users upload as part of their work records. The integration of Firebase Storage ensures that these files are available for download and playback in a fast and secure manner.
-
-\subsection{Crashlytics}
-
-Firebase Crashlytics is a powerful crash reporting tool integrated into the Voice Work Record Application to track, report, and fix crashes in real-time. Crashlytics provides detailed reports about the nature and frequency of crashes, allowing developers to quickly identify and resolve critical issues, improving the app's stability.
-
-\subsection{Firebase Authentication}
-
-Firebase Authentication is used to manage user sign-in and authentication within the application. The Voice Work Record Application utilizes Microsoft authentication to allow users to sign in securely using their Microsoft credentials. This simplifies the authentication process and ensures that user accounts are managed efficiently.
-
-Firebase Authentication supports a wide range of identity providers, including email/password login, social media logins, and custom authentication methods. The flexibility of Firebase Authentication allows for easy integration of additional identity providers if required in the future, ensuring that the application remains scalable.
+Access to both storage systems is restricted on the application side. Additionally, a set of security rules in Firebase ensures that no user can access data that does not belong to them. See below for an example of Firestore security rules
 
 \shorthandoff{-}
 \begin{markdown}[
   citationNbsps,
   citations,
+  definitionLists,
+  fencedCode,
+  hashEnumerators,
+  inlineNotes,
+  notes,
+  pipeTables,
+  rawAttribute,
+  tableCaptions,
+]
+
+```
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+		match /{document=**} {
+      allow read, write: if request.auth != null;
+    }
+    
+    match /timeSheets/{timesheetId} {
+      allow read, write: if request.auth.uid == resource.data.ownerId;
+    }
+  }
+}
+```
+
+\end{markdown}
+
+\shorthandon{-}
+
+\chapter{Technologies used}
+
+The choice of technologies directly supports the functional and non-functional requirements, enabling efficient development and a seamless user experience. The key technologies used in the application include Flutter framework for building the front-end application and Firebase for persistent storage, authentication, logging and app distribution.
+
+\section{Flutter}
+
+Flutter is a UI framework developed by Google that allows for the development of natively compiled applications for mobile, web, and desktop from a single codebase \cite{flutterGithub}. The Voice Work Record Application uses Flutter to create cross-platform applications primarily for Android and iOS, though the framework allows to expand on this should the need arise.
+
+The programming language of choice is Dart, which provides strong typing, asynchronous programming, and fast performance. Dart is not the strongest languages (read as "richest set of features") available – for example, there is no support for true multiple inheritance, unchecked exceptions, macros or any kind of compile-time metaprogramming really. Function and operator overloading is also very limited. Some of these might be an attempt to simplify the language for readability, but most of it is a trade-off, that would compilation into a wide range of different devices. I believe a programming language with a richer set of features would just give too many vectors and possible issues when trying to compile to different languages.
+
+By using Flutter, the application is able to maintain consistent functionality and high performance across different platforms.
+
+The core advantage of Flutter are following:
+\begin{itemize}
+    \item \textbf{Development speed:} Is unparalleled due to how simple building UI is and how well the hot reload feature works. It allows developers to instantly see changes in the code reflected in the application without needing to restart the app.
+    \item \textbf{Unified language for UI and logic:} Dart is used consistently across both the user interface and business logic layers. While Dart may not be the most powerful language for computationally intensive backend tasks, this is not a limitation in our case, as such workloads are handled by third-party services. This uniformity simplifies both the learning curve and code readability.
+    \item \textbf{Good runtime performance:} Flutter applications generally demonstrate strong performance out of the box. In most scenarios, little to no manual optimization is necessary unless the application has highly specific or extreme performance requirements.
+\end{itemize}
+
+\section{Firebase}
+
+Firebase is a comprehensive platform for building web and mobile applications, offered by Google. It's well optimized for usage with Flutter and provides a set of tools that simplifies backend development, handling key tasks such as data storage, authentication, and crash reporting.
+
+\subsection{Firestore}
+
+Firestore\footnote{Firestore documentation: https://firebase.google.com/docs/firestore} is a NoSQL cloud database that is used in the Voice Work Record Application to store work records and user data. Firestore allows for scalable and flexible storage, offering real-time synchronization of data across all devices. This is crucial for ensuring that the data is always up-to-date across different devices, especially when working offline or in poor network conditions.
+
+Data in Firestore is stored in collections of documents. Each document contains fields, where data is stored as key-value pairs.
+
+\subsection{Firebase Storage}
+
+Firebase Storage\footnote{Storage documentation: https://firebase.google.com/docs/storage} is used for storing and serving large files, such as voice recordings. The Voice Work Record Application uses Firebase Storage to securely store audio files that users upload as part of their work records. The integration of Firebase Storage ensures that these files are available for download and playback in a fast and secure manner.
+
+\subsection{Crashlytics}
+
+Crashlytics\footnote{Crashlytics documentation: https://firebase.google.com/docs/crashlytics} is a powerful crash reporting tool integrated into the Voice Work Record Application to track, report, and fix crashes in real-time. Crashlytics provides detailed reports about the nature and frequency of crashes, allowing developers to quickly identify and resolve critical issues, improving the app's stability.
+
+\subsection{Firebase Authentication}
+
+Firebase Authentication\footnote{Authentication documentation: https://firebase.google.com/docs/auth} is used to manage user sign-in and authentication within the application. The Voice Work Record Application utilizes Microsoft authentication to allow users to sign in securely using their Microsoft credentials. This simplifies the authentication process and ensures that user accounts are managed efficiently.
+
+Firebase Authentication supports a wide range of identity providers, including email/password login, social media logins, and custom authentication methods. The flexibility of Firebase Authentication allows for easy integration of additional identity providers if required in the future.
+
+\shorthandoff{-}
+\begin{markdown}[
+  citationNbsps,
+  citations, 
   definitionLists,
   fencedCode,
   hashEnumerators,
@@ -556,15 +615,17 @@ Unlike many other platforms, it is entirely possible to implement the entire bus
 
 ### MVC Pattern
 
-The Model-View-Controller (MVC) pattern separates a system into three distinct parts, each with a different responsibility~[@mdnMVC]:
+The Model-View-Controller (MVC) pattern is a foundational architectural pattern for user interface design, originally developed by Trygve Reenskaug for the Smalltalk platform in the late 1970s and later popularized across numerous frameworks and platforms [@fowlerPEAA].
 
-- **Model** — Contains all business logic and data.
-- **View** — Displays data to the user.
-- **Controller** — Manages the manipulation of the model.
+MVC divides the user interface into three distinct roles [@mdnMVC]:
 
-This separation enhances the modularity of the code, making it easier to modify, test, and maintain.
+- **Model** — Represents the underlying domain data and business logic. It is a non-visual component and ideally independent of any user interface elements. In many systems, this corresponds to domain models or transaction scripts, provided they contain no UI-related logic.
+- **View** — Handles the visual representation of the model. It is responsible for presenting data to the user in various forms, such as GUI elements or HTML pages, but does not itself modify the data.
+- **Controller** — Receives user input, manipulates the model accordingly, and updates the view. It effectively acts as an intermediary between the user's actions and the system's internal state.
 
-Examples of systems that use MVC include multi-page applications and frameworks like Symfony.
+This separation enhances modularity and testability. In particular, the separation of presentation and model is one of the most fundamental heuristics of sound software design. It allows the same business logic to be reused across multiple interface types—such as graphical interfaces, web front ends, or APIs—without altering the model code. Furthermore, models, being non-visual, are significantly easier to test than views, enabling better automated testing and cleaner development practices.
+
+Another key benefit of this separation is directional dependency: the presentation depends on the model, but the model remains completely unaware of the presentation. This simplifies the model’s design and enables greater flexibility when introducing new views or presentation styles.
 
 ### Layered Pattern
 
@@ -575,7 +636,7 @@ The application uses an extended, layered variation of the MVC pattern. Since Fl
 - **Controller**
 - **View**
 
-In some cases not all layers are utilised, particularly in cases in which no data is required, hence missing the model. In other cases there are services which do not have a dedicated controller. This is because it's not a wanted occurence for the developer to directly call these services. In such a case, a more generic controller is provided that calls multiple services internally. This allows for simpler calls in the views, as business logic is not wanted there - and neither are thick boilerplates. See below for further explanation of each layer.
+In some cases not all layers are utilised, particularly in cases in which no data is required, hence missing the model. In other cases there are services which do not have a dedicated controller. This is because it's not a wanted occurence for the developer to directly call these services. In such a case, a more generic controller is provided that calls multiple services internally. This allows for simpler calls in the views, as business logic is unwanted there - and neither are thick boilerplates. See below for further explanation and examples of each layer.
 
 #### Model layer
 
@@ -811,7 +872,7 @@ lib/
 Layer-first structures promote separation of concerns and reusability.  
 However, they can complicate refactoring efforts and might not scale as cleanly for feature-heavy applications.
 
-Detailed comparison I've based my decisions on can be found in Andrea Bizzotto's article ~[@flutterStructure].
+Detailed comparison I've based my decisions on can be found in Andrea Bizzotto's article [@flutterStructure].
 
 In this project, a feature-first structure is used, taking the developer management tax in exchange for better long-term maintainability.
 
@@ -858,17 +919,17 @@ lib/
 ]
 
 ### State Management
-There are multiple approaches to handling state management in Flutter. In many frameworks, a specific method of state management is prescribed. However, because Flutter supports a wide range of platforms, it is not surprising that state management is largely delegated to plugins and third-party libraries~[@flutterStateMgmt].
+There are multiple approaches to handling state management in Flutter. In many frameworks, a specific method of state management is prescribed. However, because Flutter supports a wide range of platforms, it is not surprising that state management is largely delegated to plugins and third-party libraries [@flutterStateMgmt].
 
-Among the available options~[@flutterStateMgmt], three methods are generally considered industry standards:
+Among the available options [@flutterStateMgmt], three methods are generally considered industry standards:
 
-- `StatefulWidget`'s `setState` method^[Official documentation: https://api.flutter.dev/flutter/widgets/StatefulWidget-class.html]
+- `StatefulWidget`'s `setState` method^[Official `StatefulWidget` documentation: https://api.flutter.dev/flutter/widgets/StatefulWidget-class.html]
 - `Provider` package^[Provider package on pub.dev: https://pub.dev/packages/provider]
 - `Riverpod` package^[Official Riverpod site: https://riverpod.dev/]
 
-In the timesheet application, the Provider package manages states that are or may feasibly be shared across multiple components. The ChangeNotifier class simplifies the process of defining listeners and updating them using notifyListeners().
+In the Voice Record Application, the Provider package manages states that are or may feasibly be shared across multiple components. The `ChangeNotifier` class simplifies the process of defining listeners and updating them using `notifyListeners()`.
 
-Meanwhile, `StatefulWidget`'s `setState` is utilized whenever the state is local to a single component, typically when it only affects the current view or user interface. See below for examples on how these state management approaches are used.
+Meanwhile, `StatefulWidget`'s `setState()` is utilized whenever the state is local to a single component, typically when it only affects the current view or user interface. See below for examples on how these state management approaches are used.
 
 ``` dart
 /// Metadata provider serves as a common entry point
@@ -946,39 +1007,46 @@ class _EditWorkRecordScreenState extends State<EditWorkRecordScreen> {
 ## Audio recording to database entry conversion
 
 After the user records audio and describes the work he has done, there are several steps to convert that into a work record:
-- Save audio to Firebase Storage
-- Transcribe the audio into text
-- Convert transcribed text to a Timesheet
-- Create a work record and save to Firestore Database
+1. Save audio to Firebase Storage
+2. Transcribe the audio into text
+3. Convert transcribed text to a Timesheet
+4. Create a work record and save to Firestore Database
 
 ### How conversion is evaluated
 
-To address this challenge systematically, a Python-based testing suite called `timesheet_models_tester` was developed. Take note this is not the primary result of the thesis, rather an optimisation tool. Nevertheless, the code is provided as an attachement. This script automates the process of evaluating prompt effectiveness by comparing model-generated outputs with annotated ground-truth data. Each test case consists of an audio file and a corresponding expected output (annotations), which together define what the ideal model response should be.
+To address this challenge systematically, a Python-based testing suite called `timesheet_models_tester` was developed. Take note this is not the primary result of the thesis, rather an optimization tool. Nevertheless, the code is provided as an attachement. This script automates the process of evaluating prompt effectiveness by comparing model-generated outputs with annotated ground-truth data. Each test case consists of an audio file and a corresponding expected output (annotations), which together define what the ideal model response should be.
 
-The audio recordings used are recorded by different people using different microphones. The length and quality of the recordings differs greatly, as does the level of detail provided. Some go quite in depth and are explicit on what project the work has been part of, some do not mention it at all. Most do have the information for which client the work has been done and how long the employee has worked for - these two attributes are key to creating a work record, as in a real world scenario, these will determine how much money the client should pay. The incompleteness is by design - as it was found out during testing, it's quite a common occurence for the user to forget to mention some critical piece of information.
+The audio recordings used are recorded by different people using different microphones. The length and quality of the recordings differs greatly, as does the level of detail provided. Some go quite in depth and are explicit on what project the work has been part of, some do not mention it at all. Most do have the information for which client the work has been done and how long the employee has worked for - these two attributes are key to creating a work record, as in a real world scenario, these will determine how much money the client should pay. The incompleteness is by design - as it was found out during testing, it's quite a common occurrence for the user to forget to mention some critical piece of information.
 
-The suite processes each audio input through transcription, followed by structured prompt-based extraction. The model's responses are then compared to the expected results using the SequenceMatcher class from Python’s standard difflib module [@pythonDifflib]. This class computes a similarity score between sequences, which is particularly useful for evaluating how closely the model's output matches the annotated ground truth.
+The suite processes each audio input through transcription, followed by structured prompt-based extraction. The model's responses are then compared to the expected results using the `SequenceMatcher` class from Python’s standard `difflib` module [@pythonDifflib]. This class computes a similarity score between sequences, which is particularly useful for evaluating how closely the model's output matches the annotated ground truth.
 
-SequenceMatcher operates by finding the longest contiguous matching subsequence between two inputs, excluding so-called “junk” elements. It calculates a similarity ratio ranging from 0 to 1, where values closer to 1 indicate stronger similarity. For instance, a ratio above 0.6 typically implies a reasonably good match. This allows us to quantify the accuracy of the extracted values in a way that tolerates minor textual deviations, such as synonyms or rephrased fragments, while still penalising semantically incorrect predictions.
+`SequenceMatcher` operates by finding the longest contiguous matching subsequence between two inputs, excluding so-called “junk” elements [^sequencematcher],. It calculates a similarity ratio ranging from 0 to 1, where values closer to 1 indicate stronger similarity. For instance, a ratio above 0.6 typically implies a reasonably good match. This allows us to quantify the accuracy of the extracted values in a way that tolerates minor textual deviations, such as synonyms or rephrased fragments, while still penalizing semantically incorrect predictions.
 
-This metric is applied field-by-field for each timesheet attribute, and an overall accuracy score is computed as the average of the individual field scores. This score is further referred to as *end-to-end accuracy*.
+This metric is applied field-by-field for each Timesheet attribute, and an overall accuracy score is computed as the average of the individual field scores. This score is further referred to as *end-to-end accuracy*.
+
+[^sequencematcher]: `SequenceMatcher` documentation
+    
+    https://docs.python.org/3/library/difflib.html#difflib.SequenceMatcher
 
 ### Optimizing Transcription Requests
 
-For our transcription functionality, we evaluated different models available via the OpenAI API, specifically `whisper-1` and `gpt-4o-transcribe`. The goal was to identify a solution that balances accuracy, language support, and performance for our use case.
+For our transcription functionality, we evaluated different models available via the OpenAI API, specifically `whisper-1`[^whisper-1] and `gpt-4o-transcribe`[^gpt-4o-transcribe]. The goal was to identify a solution that balances accuracy, language support, and performance for our use case.
 
 The `whisper-1` model demonstrated reasonably accurate results for English audio transcriptions out of the box. However, its performance with Czech audio was less consistent. While most outputs were legible, grammatical inaccuracies were occasionally present, especially in more complex or noisy recordings. It should be noted that poor audio quality significantly impacted transcription accuracy—though in such cases, even annotating the audio for testing was difficult.
 
 Given that the application is primarily intended for Czech-speaking users, this presented a potential usability concern. To address this, we evaluated `gpt-4o-transcribe` , which offered significantly improved performance in Czech, while maintaining strong English transcription capabilities. The model consistently produced well-structured output with fewer grammatical errors across various audio conditions.
 
-However, `gpt-4o-transcribe` model would always attempt to clean up the transcription too much and transforming unknown words (for example names of companies) into very similar czech words. The transcription would be overall better and more understandable to the human eye, but upon testing it was found out that this less word-for-word behaviour actually hurts the end-to-end accuracy for conversion to database entries.
+However, `gpt-4o-transcribe` model would always attempt to clean up the transcription too much and transform unknown words (for example names of companies) into similar Czech words. The transcription would be overall better and more understandable to the human eye, but upon testing it was found out that this less word-for-word behaviour actually hurts the end-to-end accuracy for conversion to database entries.
 
 In terms of processing time, both models performed similarly in our tests. 
+
+[^whisper-1]: https://platform.openai.com/docs/models/whisper-1
+[^gpt-4o-transcribe]: https://platform.openai.com/docs/models/gpt-4o-transcribe
 
 \end{markdown}
 \shorthandon{-}
 
-\begin{table}[h]
+\begin{table}[H]
 \centering
 \begin{tabularx}{\textwidth}{|X|X|X|}
 \hline
@@ -1029,14 +1097,17 @@ To avoid this, we created separate optimized prompts for English and Czech. Thes
 
 Furthermore, we used specific formatting to improve the model’s response consistency. By carefully choosing appropriate instructions and ensuring that the language metadata matched the transcription language, we were able to optimize the prompts for both languages. This resulted in a significant improvement in the accuracy of the data transformation process, with reduced discrepancies between spoken language and expected results.
 
-For the initial stages of development, the `gpt-3.5-turbo` model was used. In a later phase of the development cycle, this model was designated as legacy (though it remains accessible via the API). Its intended replacement is the `gpt-4o-mini` model. Preliminary testing with `gpt-4o-mini` indicated a slight reduction in end-to-end accuracy; however, the overall impact was not significant.
+For the initial stages of development, the `gpt-3.5-turbo`[^gpt-3.5-turbo] model was used. In a later phase of the development cycle, this model was designated as legacy (though it remains accessible via the API). Its intended replacement is the `gpt-4o-mini`[^gpt-4o-mini] model. Preliminary testing with `gpt-4o-mini` indicated a slight reduction in end-to-end accuracy; however, the overall impact was not significant.
 
-A detailed analysis of attribute-level accuracy revealed that the primary discrepancy stemmed from differences in how textual descriptions were generated. This variation is inherently subjective, as descriptions are not selected from predefined categories (unlike attributes such as client or project), but are instead written freely by the annotators of the test data.
+A detailed analysis of attribute-level accuracy revealed that the primary discrepancy stemmed from differences in how textual descriptions were generated. This variation is inherently subjective, as descriptions are not selected from predefined categories (unlike attributes such as client or project), but are instead written freely by the annotator of the test data.
+
+[^gpt-3.5-turbo]: https://platform.openai.com/docs/models/whisper-1
+[^gpt-4o-mini]: https://platform.openai.com/docs/models/gpt-4o-transcribe
 
 \end{markdown}
 \shorthandon{-}
 
-\begin{table}[h]
+\begin{table}[H]
 \centering
 \begin{tabularx}{\textwidth}{|X|X|X|}
 \hline
@@ -1077,7 +1148,7 @@ Given that prompt and temperature optimization had already been completed for `g
 
 #### Prompt optimization
 
-During the development of the timesheet transcription and extraction system, particular attention was paid to prompt optimization. While transcription using OpenAI's whisper-1 model produced usable results from the start, extracting structured information from the transcription — specifically client, project, activity, duration, and description — required more nuanced tuning of prompts [@openaiPrompt].
+During the development of the timesheet transcription and extraction system, particular attention was paid to prompt optimization. While transcription using OpenAI's `whisper-1` model produced usable results from the start, extracting structured information from the transcription — specifically client, project, activity, duration, and description — required more nuanced tuning of prompts [@openaiPrompt].
 
 #### Temperature optimization
 
@@ -1087,7 +1158,7 @@ In simple terms, temperature controls how creative or conservative the model is 
 
 For tasks requiring precise structure and reliability — such as extracting well-defined fields from a transcript — lower temperatures are generally preferred. However, overly low temperatures may also reduce the model's ability to generalize to slightly ambiguous or unconventional input phrasings. Conversely, higher temperatures may help the model interpret more loosely defined prompts, but at the cost of consistency and factual accuracy.
 
-In this project, a range of temperature values was tested using the timesheet_models_tester framework. These ranged from 1.0 (high randomness) to 0.0 (fully deterministic), with intermediate steps at 0.75, 0.5, and 0.25. This allowed for a systematic evaluation of how temperature impacts both extraction accuracy and response stability.
+In this project, a range of temperature values was tested using the `timesheet_models_tester` script. These ranged from 1.0 (high randomness) to 0.0 (fully deterministic), with intermediate steps at 0.75, 0.5, and 0.25. This allowed for a systematic evaluation of how temperature impacts both extraction accuracy and response stability.
 
 \end{markdown}
 \shorthandon{-}
@@ -1149,7 +1220,7 @@ Temperature of around 0.25 was chosen to be the most reliable one - it guessed c
 
 Interestingly, the lowest deviation was observed at a temperature setting of 0.5. This may be attributed to its proximity to the default value of 0.6, suggesting that the model could be better optimized for this range on OpenAI's side.
 
-\begin{table}[h]
+\begin{table}[H]
   \centering
   \begin{tabularx}{\textwidth}{lXXX}
     \toprule
@@ -1247,9 +1318,9 @@ To give a clearer example:
 
 The core `0.11.0` adheres to the semantic versioning scheme, while the suffix `+1745075692` serves as build metadata. This metadata, represented as a Unix timestamp, enables differentiation of individual builds down to the level of Git commits, which is particularly helpful for internal testing and continuous integration workflows. A Unix timestamp is a numeric representation of the number of seconds that have elapsed since January 1, 1970 (midnight UTC/GMT), and is commonly used in computing for time tracking~[@mdnUnixTime].
 
-The build metadata is automatically appended by a GitLab CI pipeline, which injects a timestamp or commit-based hash during the build process. This automation ensures that each distributed version can be traced back to the exact source state, facilitating debugging, auditing, and reproducibility.
+The build metadata is automatically appended by a GitLab CI pipeline, which injects a timestamp. This automation ensures that each distributed version can be traced back to the exact source state, facilitating debugging, auditing, and reproducibility.
 
-Development leading up to the final delivery of this thesis is considered work-in-progress. The first stable release — version `1.0.0` — is planned to coincide with the project's completion and will signify a stable, production-ready build~[@semver].
+Development leading up to the final delivery of this thesis is considered work-in-progress. The first stable release — version `1.0.0` — is planned to coincide with the project's completion and will signify a stable, production-ready build [@semver].
 
 ## Crashlytics
 
@@ -1257,7 +1328,7 @@ To ensure application stability and improve maintainability, the Voice Work Reco
 
 ### Integration with Firebase Crashlytics
 
-Firebase Crashlytics is a lightweight, real-time crash reporter that helps track, prioritize, and fix stability issues. The integration in this application follows the official Firebase guidelines for Flutter [@firebaseCrashlyticsStart]. It includes setup in the application’s initialization logic to capture both Flutter and platform-level errors.
+Firebase Crashlytics is a real-time crash reporter that helps track, prioritize, and fix stability issues. The integration in this application follows the official Firebase guidelines for Flutter [@firebaseCrashlyticsStart]. It includes setup in the application’s initialization logic to capture both Flutter and platform-level errors.
 
 The following function configures Flutter’s error handling to forward uncaught exceptions to Crashlytics:
 
@@ -1330,11 +1401,15 @@ This thesis aimed to develop an application for logging work hours, initially cr
 
 While the project successfully achieved its objectives, and the app was implemented as planned, the collaboration with DevBalance will not extend beyond the scope of this thesis. Although the app was originally intended to be a product offered by DevBalance to other businesses as a subscription service, the company has decided to discontinue this direction. As a result, the application is now fully open-source and will be made available to the public for free.
 
-Moving forward, the app will be adapted for a broader user base. The original, company-focused version will be replaced by a more user-centric model. This version will be tailored to individual users or small teams, and plans are in place to deploy it on Google Play for easy access.
+Moving forward, the app will be adapted for a broader user base. The company-focused version will stay, but the business model will be adjusted to simplify registration and usage by multiple companies or small teams. Plans are in place to deploy it on Google Play for easy access.
 
 The application was developed using Flutter, which allowed for a consistent experience across multiple platforms. The backend is powered by cloud technologies, ensuring scalability and reliability for the app’s users. The deployment was carried out using Firebase, which provided a robust infrastructure for managing data and user interactions.
 
-In conclusion, the work presented in this thesis provides a fully functional work hour logging application that is now open-source and used in production by a small number of users. While the original business goal of the project was to create a commercially viable product, the shift to an open-source model provides opportunities for the broader community to benefit from and contribute to the app.
+Not to say the implementation is without challenges. Namely, low test coverage and limited testability of certain classes. The UI/UX is well-developed, but would benefit from broader user testing to identify potential issues and improvements.
+
+In conclusion, the work presented in this thesis provides a fully functional time logging application that is now open-source and used in production by a small number of users. It shows without a doubt that the outlined transcription use case is a valid one but does not, like all AI solutions, guarantee 100\% correctness in all cases.
+
+While the original business goal of the project was to create a commercially viable product, the shift to an open-source model provides opportunities for the broader community to benefit from and contribute to the app.
 
 \end{markdown}
 \shorthandon{-}
