@@ -144,13 +144,13 @@ This thesis proposes an enhancement to conventional audio-logging systems by int
 
 The goal of this thesis is two-folds:
 \begin{itemize}
-    \item To design and implement a standalone mobile application that supports standard work and time logging functionalities, along with the capability to record audio descriptions of work and automatically convert them into database entries. The application will be developed in collaboration with the company DevBalance, and will be tailored to suit company-wide deployment.
+    \item To design and implement a standalone mobile application that supports standard work and time logging functionalities, along with the capability to record audio descriptions of work and automatically convert them into database entries. The application will be developed in collaboration with the company DevBalance s.r.o. (further only referred to as DevBalance), and will be tailored to suit company-wide deployment.
     \item To evaluate whether using transcription services and chat-based AI models is a viable approach for this use case. This includes evaluating their performance in terms of transcription speed, precision of data extraction, and the overall cost implications of using such technologies.
 \end{itemize}
 
 \chapter{System Requirements}
 
-Before building a useful audio transcription system for time tracking, it’s important to start with a solid requirements analysis. This step helps everyone involved get on the same page about what the system should do, how well it should do it, and any limits it needs to work within. As Wiegers and Beatty explain, defining both functional and non-functional requirements early on helps make sure the software meets user needs and supports business goals \cite{wiegers13}. It also makes it easier to set priorities, stay on track with the project scope, and handle any changes that come up. Some of the key things to focus on during this stage include talking to stakeholders, outlining user scenarios, setting quality expectations, and understanding where and how the system will be used.
+Before building a useful audio transcription application for time tracking, it’s important to start with a solid requirements analysis. This step helps everyone involved get on the same page about what the system should do, how well it should do it, and any limits it needs to work within. As Wiegers and Beatty explain, defining both functional and non-functional requirements early on helps make sure the software meets user needs and supports business goals \cite{wiegers13}. It also makes it easier to set priorities, stay on track with the project scope, and handle any changes that come up. Some of the key things to focus on during this stage include talking to stakeholders, outlining user scenarios, setting quality expectations, and understanding where and how the system will be used.
 
 The goal of this analysis is to create some sort of structure that guides the development of the Voice Work Record Application – further referred to simply as the \textit{the app}. The system requirements were set through discussions with DevBalance consultant and this thesis's advisor. The analysis highlights both explicit and implicit needs, as well as potential challenges that may arise during implementation.
 
@@ -173,7 +173,7 @@ The core functional requirements of the Voice Work Record Application revolve ar
 \noindent \textbf{Prerequisites:} User is authenticated, stable internet connection
 
 \noindent \textbf{Description:}  
-Employees can record audio descriptions of their work in either Czech or English. The system transcribes the audio into text, uses a trained AI model to extract key information, and stores the recording in a cloud-based environment. The extracted data is parsed into a structured database entry, first saved locally and then persistently in the cloud.
+Employees can record audio descriptions of their work in either Czech or English. The system transcribes the audio into text, uses a trained \gls{AI} model to extract key information, and stores the recording in a cloud-based environment. The extracted data is parsed into a structured database entry, first saved locally and then persistently in the cloud.
 
 \noindent \textbf{Steps:}
 \begin{enumerate}
@@ -340,7 +340,7 @@ The user interface should be designed with simplicity and ease of use in mind, r
 The system should also provide clear visual feedback to confirm actions. Text should be minimized for core functionality but available for further information on how to use the system - should the user request it.
 
 \subsection{Security and Compliance}  
-All user data must be securely stored and transmitted using encryption. The application must ensure to a reasonable degree that users’ personal and work-related information is not exposed or misused. A reasonable degree is mentioned due to existing plans to use third-party authentication that might not be GDPR compliant (Firebase Authentication, for example, has US only servers).
+All user data must be securely stored and transmitted using encryption. The application must ensure to a reasonable degree that users’ personal and work-related information is not exposed or misused. A reasonable degree is mentioned due to existing plans to use third-party authentication that might not be GDPR compliant (Firebase Authentication, for example, has \gls{US} only servers).
 
 Additionally, access control mechanisms must prevent unauthorized users from accessing or modifying work records.
 
@@ -373,7 +373,7 @@ Voice recordings must be securely encrypted both during transmission and at rest
 \subsection{Multilingual Support}  
 The application must support two language variants (Czech and English) for the user interface and for processing text from voice recordings. This includes ensuring that the transcription, AI models, and interface components can handle both languages seamlessly.
 
-\subsection{UI Responsiveness}  
+\subsection{\gls{UI} Responsiveness}  
 The user interface must be responsive and provide a consistent user experience across smartphones and tablets. The application should adapt seamlessly to different screen sizes and resolutions to ensure usability in both small and large devices.
     
 \shorthandoff{-}
@@ -400,7 +400,7 @@ The need for efficient time-tracking solutions has led to the development of var
 
 \section{Existing Solutions}
 
-The solutions chosen for analysis are the most prominent mobile applications. Some are more catered towards busine   ss, some more towards individuals. All of the following were used by the developer for a week each to log hours in a day job using Android 15, coincidentally one of the target platforms.
+The solutions chosen for analysis are the most prominent mobile applications. Some cater towards business, some more towards individuals. All of the following were used by the developer for a week each to log hours in a day job using Android 15, coincidentally one of the target platforms.
 
 \begin{itemize}
 \item \textbf{Clockify}: A widely used time-tracking tool that provides manual entry, timers, and integration with various project management tools. It's powerful in terms of reporting capabilities as well and catered more toward individual use. It features very good user experience and overall fleshed out UI.
@@ -908,7 +908,7 @@ lib/
       \end{verbatim}
     \end{minipage}
   \end{center}
-  \caption{Timesheet app directory structure}
+  \caption{Voice Record App directory structure}
   \label{fig:project_directory_timesheet}
 \end{figure}
 
