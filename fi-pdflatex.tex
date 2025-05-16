@@ -64,7 +64,7 @@
         In addition to automated transcription, the application provides features for replaying audio recordings, manually editing and managing entries, and exporting data for managerial review. By simplifying the logging process, the solution aims to minimize forgetfulness of employees and improve accuracy of work record while offering employees an efficient way to track their work.
     },
     thanks      = {%
-      I would like to thank doc. Ing. Václav Oujezský, Ph.D., for his guidance and leadership throughout this thesis. My thanks also go to Bc. Ondřej Zelinka, with whom I collaborated as he was working simultaneously on a web version of the front-end. I am also grateful to Roman Kalous for his support and cooperation on behalf of the company.
+      I would like to thank doc. Ing. Václav Oujezský, Ph.D., for his guidance and leadership throughout this thesis. My thanks also go to Bc. Ondřej Zelinka, with whom I collaborated as he was working simultaneously on a web version of the front-end. I am also grateful to Ing. Roman Kalous, PhD for his support and cooperation on behalf of the company.
     },
     bib         = example.bib,
     %% Remove the following line to use the JVS 2018 faculty logo.
@@ -72,7 +72,13 @@
 }
 \usepackage{makeidx}      %% The `makeidx` package contains
 \makeindex                %% helper commands for index typesetting.
+
 %% These additional packages are used within the document:
+\usepackage[acronym]{glossaries}          %% The `glossaries` package
+\renewcommand*\glspostdescription{\hfill} %% contains helper commands
+\loadglsentries{example-terms-abbrs.tex}  %% for typesetting glossaries
+\makenoidxglossaries                      %% and lists of abbreviations.
+
 \usepackage{paralist} %% Compact list environments
 \usepackage{amsmath}  %% Mathematics
 \usepackage{amsthm}
@@ -102,16 +108,16 @@
 }
 \lstset{
   basicstyle      = \ttfamily\small,  % <-- monospace
-  frame           = single
+  frame           = lines
   identifierstyle = \color{black},
   keywordstyle    = \color{blue}\bfseries,
-  keywordstyle=[2]\color{orange}\bfseries,
+  keywordstyle    = {[2]\color{orange}\bfseries}, 
   stringstyle     = \color{teal},
   commentstyle    = \itshape\color{magenta},
   breaklines      = true,
-  columns         = flexible,          % <-- no weird spacing
-  keepspaces      = true,               % <-- keep spacing in code
-  showstringspaces= false,              % <-- hide weird markers in spaces
+  %columns         = flexible,          % <-- no weird spacing
+  %keepspaces      = true,               % <-- keep spacing in code
+  %showstringspaces= false,              % <-- hide weird markers in spaces
 }
 \usepackage{floatrow} %% Putting captions above tables
 \usepackage{pgfplots}
@@ -120,6 +126,7 @@
 \usepackage[babel]{csquotes} %% Context-sensitive quotation marks
 
 \begin{document}
+\printnoidxglossary[type=\acronymtype, title=List of Abbreviations]
 %% The \chapter* command can be used to produce unnumbered chapters:
 \chapter*{Introduction}
 %% Unlike \chapter, \chapter* does not update the headings and does not
@@ -127,9 +134,9 @@
 %% headings and a table of contents entry, we must add them manually:
 \markright{\textsc{Introduction}}
 \addcontentsline{toc}{chapter}{Introduction}
-All work environments require some form of work logging. For smaller companies a simple solution is sufficient. This could range from a paper notebook for employees to write in, to a simple web application or an Excel table. However, many companies have a large number of clients, different projects and employees. There is a wide variety of work logging solutions currently available – ranging from personal time trackers to enterprise-grade software. For generic use cases, work logging is a solved problem. Still, many of these tools fail to address the needs of companies with a large number of clients and field employees. In such cases, workers can handle multiple clients and tasks per day and only log their hours at the end of their shifts. This practice can lead to incomplete or inaccurate records, as employees may forget details or fail to log time accurately, which may later impact client invoicing or internal reporting.
+All work environments require some form of work records evidence. For smaller companies a simple solution is sufficient. This could range from a paper notebook for employees to write in, to a simple web application or an Excel table. However, many companies have a large number of clients, different projects and employees. There is a wide variety of work logging solutions currently available – ranging from personal time trackers to enterprise-grade software. For generic use cases, work logging is a solved problem. Still, many of these tools fail to address the needs of companies with a large number of clients and field employees. In such cases, workers can handle multiple clients and tasks per day and only log their hours at the end of their shifts. This practice can lead to incomplete or inaccurate records, as employees may forget details or fail to log time accurately, which may later impact client invoicing or internal reporting.
 
-In the past few years, there has been a significant rise of generative AI text models and transcription services. AI text APIs have become better quality, as well as  much faster and affordable. The thesis will attempt to integrate this technology into a work logging solution to simplify it for employees and concurrently provide more accurate data for employers.
+In the past few years, there has been a significant rise of generative AI text models and transcription services. AI text \gls{API}s have become better quality, as well as  much faster and affordable. The thesis will attempt to integrate this technology into a work logging solution to simplify it for employees and concurrently provide more accurate data for employers.
 
 One already used and widely adopted approach is to allow users to record audio notes describing their work, which they can review later. However, the current state of such solutions often still requires manual intervention to input the data (such as time and work description) into structured formats.
 
