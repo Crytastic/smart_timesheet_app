@@ -32,6 +32,15 @@
 %% The following section sets up the locales used in the thesis.
 \usepackage[resetfonts]{cmap} %% We need to load the T2A font encoding
 \usepackage[T1,T2A]{fontenc}  %% to use the Cyrillic fonts with Russian texts.
+
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks,
+    linkcolor={black!50!black},
+    citecolor={black!50!black},
+    urlcolor={black!80!black}
+}
+
 \usepackage[
   main=english, %% By using `czech` or `slovak` as the main locale
                 %% instead of `english`, you can typeset the thesis
@@ -142,6 +151,8 @@
 \usepackage{algorithm}
 \usepackage{algpseudocode}
 
+\usepackage{placeins}
+
 \begin{document}
 \printnoidxglossary[type=\acronymtype, title=List of Abbreviations]
 %% The \chapter* command can be used to produce unnumbered chapters:
@@ -153,7 +164,7 @@
 \addcontentsline{toc}{chapter}{Introduction}
 All work environments require some form of work records evidence. For smaller companies a simple solution is sufficient. This could range from a paper notebook for employees to write in, to a simple web application or an Excel table. However, many companies have a large number of clients, different projects and employees. There is a wide variety of work logging solutions currently available – ranging from personal time trackers to enterprise-grade software. For generic use cases, work logging is a solved problem. Still, many of these tools fail to address the needs of companies with a large number of clients and field employees. In such cases, workers can handle multiple clients and tasks per day and only log their hours at the end of their shifts. This practice can lead to incomplete or inaccurate records, as employees may forget details or fail to log time accurately, which may later impact client invoicing or internal reporting.
 
-In the past few years, there has been a significant rise of generative \gls{AI} text models and transcription services. \gls{AI} text \gls{API}s have become better quality, as well as  much faster and affordable. The thesis will attempt to integrate this technology into a work logging solution to simplify it for employees and concurrently provide more accurate data for employers.
+In the past few years, there has been a significant rise of generative \gls{AI} text models and transcription services. \gls{AI} text \acrshort{API}s have become better quality, as well as  much faster and affordable. The thesis will attempt to integrate this technology into a work logging solution to simplify it for employees and concurrently provide more accurate data for employers.
 
 One already used and widely adopted approach is to allow users to record audio notes describing their work, which they can review later. The current state of such solutions often still requires manual intervention to input the data (such as time and work description) into structured formats.
 
@@ -925,9 +936,12 @@ After the user records audio and describes the work he has done, there are sever
 \begin{enumerate}
   \item Save audio to Firebase Storage
   \item Transcribe the audio into text
-  \item Convert transcribed text to a Timesheet
+  \item Convert transcribed text into a structured format suitable for parsing -- Relevant information needs to be extracted, such as client, project, time duration and a concise work description.
+  \item Parse structured text into a Timesheet
   \item Create a work record and save to Firestore Database
 \end{enumerate}
+
+While each individual step is relatively straightforward and can be performed with a reasonable degree of reliability, each also introduces potential sources of error -- such as inaccurate transcription, improper text conversion, or failures during parsing. Therefore, a more systematic and robust approach is necessary to ensure the overall integrity of the process.
 
 \subsection{How conversion is evaluated}
 
@@ -939,8 +953,7 @@ The suite processes each audio input through transcription, followed by structur
 
 \texttt{SequenceMatcher} operates by finding the longest contiguous matching subsequence between two inputs, excluding so-called “junk” elements\footnote{\texttt{SequenceMatcher} documentation: \url{https://docs.python.org/3/library/difflib.html\#difflib.SequenceMatcher}}. It calculates a similarity ratio ranging from 0 to 1, where values closer to 1 indicate stronger similarity. For instance, a ratio above 0.6 typically implies a reasonably good match. This allows us to quantify the accuracy of the extracted values in a way that tolerates minor textual deviations, such as synonyms or rephrased fragments, while still penalizing semantically incorrect predictions.
 
-This metric is applied field-by-field for each Timesheet attribute, and an overall accuracy score is computed as the average of the individual field scores. This score is further referred to as \emph{end-to-end accuracy}.
-
+This metric is applied field-by-field for each Timesheet attribute, and an overall accuracy score is computed as the average of the individual field scores. This score is further referred to as \emph{end-to-end \gls{AA}}.
 
 \subsection{Optimizing Transcription Requests}
 
@@ -950,7 +963,7 @@ The \texttt{whisper-1} model demonstrated reasonably accurate results for Englis
 
 Given that the application is primarily intended for Czech-speaking users, this presented a potential usability concern. To address this, we evaluated \texttt{gpt-4o-transcribe} , which offered significantly improved performance in Czech, while maintaining strong English transcription capabilities. The model consistently produced well-structured output with fewer grammatical errors across various audio conditions.
 
-However, the \texttt{gpt-4o-transcribe} model would always attempt to clean up the transcription too much and transform unknown words (for example, names of companies) into similar Czech words. The transcription would be overall better and more understandable to the human eye, but upon testing it was found out that this less word-for-word behaviour actually hurts the end-to-end accuracy for conversion to database entries.
+However, the \texttt{gpt-4o-transcribe} model would always attempt to clean up the transcription too much and transform unknown words (for example, names of companies) into similar Czech words. The transcription would be overall better and more understandable to the human eye, but upon testing it was found out that this less word-for-word behaviour actually hurts the end-to-end \gls{AA} for conversion to database entries.
 
 In terms of processing time, both models performed similarly in our tests. 
 
@@ -970,7 +983,7 @@ In terms of processing time, both models performed similarly in our tests.
 \hline
 \textbf{Human readability} & Adequate, occasionally less fluid & Very readable and well-formed \\
 \hline
-\textbf{Accuracy} & Higher due to more literal transcription & Lower due to over-cleaning of transcription \\
+\textbf{\gls{AA}} & Higher due to more literal transcription & Lower due to over-cleaning of transcription \\
 \hline
 \textbf{Processing speed} & Fast & Fast \\
 \hline
@@ -981,7 +994,7 @@ In terms of processing time, both models performed similarly in our tests.
 \label{tab:transcription_models}
 \end{table}
 
-Despite the superior quality of \texttt{gpt-4o-transcribe}, we opted to use \texttt{whisper-1} for the final release due to its lower operational cost and better end-to-end accuracy.
+Despite the superior quality of \texttt{gpt-4o-transcribe}, we opted to use \texttt{whisper-1} for the final release due to its lower operational cost and better end-to-end \gls{AA}.
 
 Overall, model selection for audio-to-text transcription should consider the target user language, audio quality, and cost-performance trade-offs.
 
@@ -993,7 +1006,7 @@ To avoid this, we created separate optimized prompts for English and Czech. Thes
 
 Furthermore, we used specific formatting to improve the model’s response consistency. By carefully choosing appropriate instructions and ensuring that the language metadata matched the transcription language, we were able to optimize the prompts for both languages. This resulted in a significant improvement in the accuracy of the data transformation process, with reduced discrepancies between spoken language and expected results.
 
-For the initial stages of development, the \texttt{gpt-3.5-turbo}\footnote{\url{https://platform.openai.com/docs/models/whisper-1}} model was used. In a later phase of the development cycle, this model was designated as legacy (though it remains accessible via the \gls{API}). Its intended replacement is the \texttt{gpt-4o-mini}\footnote{\url{https://platform.openai.com/docs/models/gpt-4o-transcribe}} model. Preliminary testing with \texttt{gpt-4o-mini} indicated a slight reduction in end-to-end accuracy; however, the overall impact was not significant.
+For the initial stages of development, the \texttt{gpt-3.5-turbo}\footnote{\url{https://platform.openai.com/docs/models/whisper-1}} model was used. In a later phase of the development cycle, this model was designated as legacy (though it remains accessible via the \gls{API}). Its intended replacement is the \texttt{gpt-4o-mini}\footnote{\url{https://platform.openai.com/docs/models/gpt-4o-transcribe}} model. Preliminary testing with \texttt{gpt-4o-mini} indicated a slight reduction in end-to-end \gls{AA}; however, the overall impact was not significant.
 
 A detailed analysis of attribute-level accuracy revealed that the primary discrepancy stemmed from differences in how textual descriptions were generated. This variation is inherently subjective, as descriptions are not selected from predefined categories (unlike attributes such as client or project), but are instead written freely by the annotator of the test data.
 
@@ -1005,7 +1018,7 @@ A detailed analysis of attribute-level accuracy revealed that the primary discre
 \hline
 \textbf{Attribute extraction accuracy} & Slightly higher & Slightly lower \\
 \hline
-\textbf{Ambiguous input} & Conservative; more likely to return "\gls{N/A}" & More likely to guess based on weak hints \\
+\textbf{Ambiguous input} & Conservative; more likely to return \gls{N/A} & More likely to guess based on weak hints \\
 \hline
 \textbf{Description generation} & More consistent & Greater variation in phrasing \\
 \hline
@@ -1044,11 +1057,11 @@ In this project, a range of temperature values was tested using the \texttt{time
             height=7cm,
             grid=both,
             xlabel={Temperature},
-            ylabel={Average Accuracy (\%)},
+            ylabel={\gls{AA} (\%)},
             ymin=70, ymax=85,
             xtick={0.0, 0.25, 0.5, 0.75, 1.0},
             ytick={70, 75, 80, 85},
-            title={Average accuracy over 8 runs with gpt-3.5-turbo},
+            title={\gls{AA} over 8 runs with gpt-3.5-turbo},
             mark size=2pt,
             every axis plot/.append style={thick},
         ]
@@ -1064,15 +1077,15 @@ In this project, a range of temperature values was tested using the \texttt{time
         };
         \end{axis}
     \end{tikzpicture}
-    \caption{Relationship between model temperature and average end-to-end (audio to database entry) accuracy of timesheet extraction.}
+    \caption{Relationship between model temperature and average end-to-end \gls{AA} (audio to database entry) of timesheet extraction.}
     \label{fig:temp_vs_accuracy}
 \end{figure}
 
 Fine-tuning this parameter helped strike a balance between robustness and precision, ensuring that the model could handle varied transcription inputs without deviating too far from the expected timesheet format \textcite{openaiTemp}.
 
-Given the nature of requests made to the endpoints, it was expected the lowest temperature settings at 0.0 to 0.1, i.e. the most deterministic one, would have the best overall results. This was not the case, as can be seen in the Figure \ref{fig:temp_vs_accuracy} and Table \ref{tab:temperature_summary}. Upon investigating the results, the reason is the following: Quite often the user would not mention all of necessary information - very often the activity and/or the project. These are both chosen from a pre-defined long list of options so it's no surprise the user doesn't exactly specify. Now the low requests with low temperature would often produce an "\gls{N/A}" If the attribute was not explicitly mentioned. This is OK behaviour, but in many cases, from a human point of view at the very least, it was possible to guess the correct option based on the description of the task. For example, If the user mentioned in the recording that he was working with databases, it's feasible the project could fit into the "Storage" category. While the higher tempereture requests would differ across multiple runs, the guess would sometimes be correct. Choosing too high of a temperature caused the responses to always try to fit into some option rather than choosing a more generic one. That behaviour would often overflow in choosing seemingly random options just for the sake of choosing one.
+Given the nature of requests made to the endpoints, it was expected the lowest temperature settings at 0.0 to 0.1, i.e. the most deterministic one, would have the best overall results. This was not the case, as can be seen in the Figure \ref{fig:temp_vs_accuracy} and Table \ref{tab:temperature_summary}. Upon investigating the results, the reason is the following: Quite often the user would not mention all of necessary information - very often the activity and/or the project. These are both chosen from a pre-defined long list of options so it's no surprise the user doesn't exactly specify. Now the low requests with low temperature would often produce an \gls{N/A} If the attribute was not explicitly mentioned. This is OK behaviour, but in many cases, from a human point of view at the very least, it was possible to guess the correct option based on the description of the task. For example, If the user mentioned in the recording that he was working with databases, it's feasible the project could fit into the "Storage" category. While the higher tempereture requests would differ across multiple runs, the guess would sometimes be correct. Choosing too high of a temperature caused the responses to always try to fit into some option rather than choosing a more generic one. That behaviour would often overflow in choosing seemingly random options just for the sake of choosing one.
 
-Temperature of around 0.25 was chosen to be the most reliable one - it guessed correctly often enough, but it's guesses weren't too rash or random. This provided the highest overall accuracy of 80.56\% and a reasonable \gls{RSD} of 3.44\%. The results can be seen in Table \ref{tab:temperature_summary}.
+Temperature of around 0.25 was chosen to be the most reliable one - it guessed correctly often enough, but it's guesses weren't too rash or random. This provided the highest overall end-to-end \gls{AA} of 80.56\% and a reasonable \gls{RSD} of 3.44\%. The results can be seen in Table \ref{tab:temperature_summary}.
 
 Interestingly, the lowest deviation was observed at a temperature setting of 0.5. This may be attributed to its proximity to the default value of 0.6, suggesting that the model could be better optimized for this range on OpenAI's side.
 
@@ -1080,7 +1093,7 @@ Interestingly, the lowest deviation was observed at a temperature setting of 0.5
   \centering
   \begin{tabularx}{\textwidth}{lXXX}
     \toprule
-    \textbf{Temperature} & \textbf{Average Accuracy (\%)} & \textbf{Standard Deviation} & \textbf{\gls{RSD} (\%)} \\
+    \textbf{Temperature} & \textbf{\gls{AA} (\%)} & \textbf{\gls{SD}} & \textbf{\gls{RSD} (\%)} \\
     \midrule
     1.00  & 78.30 & 4.51 & 5.76 \\
     0.75  & 77.33 & 4.38 & 5.67 \\
@@ -1089,7 +1102,7 @@ Interestingly, the lowest deviation was observed at a temperature setting of 0.5
     0.00  & 79.55 & 2.38 & 2.99 \\
     \bottomrule
   \end{tabularx}
-  \caption{Summary of average accuracy, standard deviation, and relative standard deviation for various temperature settings.}
+  \caption{Summary of \gls{AA}, \gls{SD}, and \gls{RSD} for various temperature settings.}
   \label{tab:temperature_summary}
 \end{table}
 
@@ -1102,7 +1115,7 @@ Figure \ref{fig:user_prompt_template_en} shows the english version of user promp
 Transform the text given below into a \gls{CSV} row semicolon separated in this exact format: CLIENT;ACTIVITY;PROJECT;TIME SPENT;WORK DESCRIPTION
 
 Instructions for the transformation:
-* Always try to fill out all attributes. If it is not possible to extract from the text, use a generic option if available. If not, use "\gls{N/A}"
+* Always try to fill out all attributes. If it is not possible to extract from the text, use a generic option if available. If not, use "N/A"
 * Use only following values in the CLIENT field: {clients}
 * Use only following values in the ACTIVITY field: {activities}
 * Use only following values in the PROJECT field: {projects}
