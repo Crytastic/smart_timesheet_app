@@ -73,7 +73,7 @@
         In addition to automated transcription, the application provides features for replaying audio recordings, manually editing and managing entries, and exporting data for managerial review. By simplifying the logging process, the solution aims to minimize forgetfulness of employees and improve accuracy of work record while offering employees an efficient way to track their work.
     },
     thanks      = {%
-      I would like to thank doc. Ing. Václav Oujezský, Ph.D., for his guidance and leadership throughout this thesis. My thanks also go to Bc. Ondřej Zelinka, with whom I collaborated as he was working simultaneously on a web version of the front-end. I am also grateful to Ing. Roman Kalous, PhD for his support and cooperation on behalf of the company.
+      I would like to thank doc. Ing. Václav Oujezský, Ph.D., for his guidance and leadership throughout this thesis. My thanks also go to Bc. Ondřej Zelinka, with whom I collaborated as he was working simultaneously on a web version of the front-end. I am also grateful to Ing. Roman Kalous, Ph.D. for his support and cooperation on behalf of the company.
     },
     bib         = example.bib,
     %% Remove the following line to use the JVS 2018 faculty logo.
@@ -128,17 +128,16 @@
   morestring=[b]',
 }
 \lstset{
-  basicstyle      = \ttfamily\small,  % <-- monospace
-  frame           = lines
+  basicstyle      = \ttfamily,
   identifierstyle = \color{black},
-  keywordstyle    = \color{blue}\bfseries,
-  keywordstyle    = {[2]\color{orange}\bfseries}, 
+  keywordstyle    = \color{blue},
+  keywordstyle    = {[2]\color{cyan}},
+  keywordstyle    = {[3]\color{olive}},
   stringstyle     = \color{teal},
   commentstyle    = \itshape\color{magenta},
   breaklines      = true,
-  %columns         = flexible,          % <-- no weird spacing
-  %keepspaces      = true,               % <-- keep spacing in code
-  %showstringspaces= false,              % <-- hide weird markers in spaces
+  showstringspaces=false,
+  frame=lrtb,
 }
 
 \usepackage{floatrow} %% Putting captions above tables
@@ -162,7 +161,7 @@
 %% headings and a table of contents entry, we must add them manually:
 \markright{\textsc{Introduction}}
 \addcontentsline{toc}{chapter}{Introduction}
-All work environments require some form of work records evidence. For smaller companies a simple solution is sufficient. This could range from a paper notebook for employees to write in, to a simple web application or an Excel table. However, many companies have a large number of clients, different projects and employees. There is a wide variety of work logging solutions currently available – ranging from personal time trackers to enterprise-grade software. For generic use cases, work logging is a solved problem. Still, many of these tools fail to address the needs of companies with a large number of clients and field employees. In such cases, workers can handle multiple clients and tasks per day and only log their hours at the end of their shifts. This practice can lead to incomplete or inaccurate records, as employees may forget details or fail to log time accurately, which may later impact client invoicing or internal reporting.
+All workplaces require some form of maintaining records of work performed. For smaller companies a simple solution is often sufficient. This could range from a paper notebook for employees to write in, to a simple web application or an Excel table. However, many companies have a large number of clients, different projects and employees. There is a wide variety of work logging solutions currently available –- ranging from personal time trackers to enterprise-grade software. For generic use cases, work logging is a solved problem. Still, many of these tools fail to address the needs of companies with a large number of clients and field employees. In such cases, workers can handle multiple clients and tasks per day and only log their hours at the end of their shifts. This practice can lead to incomplete or inaccurate records, as employees may forget details or fail to log time accurately, which may later impact client invoicing or internal reporting.
 
 In the past few years, there has been a significant rise of generative \gls{AI} text models and transcription services. \gls{AI} text \acrshort{API}s have become better quality, as well as  much faster and affordable. The thesis will attempt to integrate this technology into a work logging solution to simplify it for employees and concurrently provide more accurate data for employers.
 
@@ -499,9 +498,10 @@ There are in essence two places that persistently store data.
     \label{fig:entity_diagram}
 \end{figure}
 
-Access to both storage systems is restricted on the application side. Additionally, a set of security rules in Firebase ensures that no user can access data that does not belong to them. See below for an example of Firestore security rules
+Access to both storage systems is restricted on the application side. Additionally, a set of security rules in Firebase ensures that no user can access data that does not belong to them, as illustrated in Listing \ref{lst:firestore_rules}.
 
-\begin{lstlisting}[language=Firestore, caption={Firestore Security Rules}, label={lst:firestore_rules}, floatplacement=H, showstringspaces=false]
+\newpage
+\begin{lstlisting}[language=Firestore, caption={Firestore Security Rules}, label={lst:firestore_rules}, floatplacement=H, showstringspaces=false, showstringspaces=false]
 rules_version = '2';
 
 service cloud.firestore {
@@ -605,9 +605,10 @@ The application uses an extended, layered variation of the \gls{MVC} pattern. Si
 
 In some cases not all layers are utilised, particularly in cases in which no data is required, hence missing the model. In other cases there are services which do not have a dedicated controller. This is because it's not a wanted occurence for the developer to directly call these services. In such a case, a more generic controller is provided that calls multiple services internally. This allows for simpler calls in the views, as business logic is unwanted there - and neither are thick boilerplates. See below for further explanation and examples of each layer.
 
+\newpage
 \subsubsection{Model layer}
 
-Model defines the objects and data structures used throughout the app.
+Unlike \gls{MVC}, Model merely defines the objects and data structures used throughout the app. It doesn't carry any logic apart from conversion to and from the database. Listing \ref{lst:client_model} shows how a client is represented in the app.
 
 \begin{lstlisting}[language=Dart, caption={Model layer example on Client class}, label={lst:client_model}, floatplacement=H, showstringspaces=false]
 import 'package:json_annotation/json_annotation.dart';
@@ -642,7 +643,7 @@ class Client {
 
 \subsubsection{Service layer}
 
-Contains the business logic and manages operations such as logging.
+Contains the business logic and manages operations such as logging. Both of these can bee seen Listing \ref{lst:auth_service}.
 
 \begin{lstlisting}[language=Dart, caption={Service layer example on Firebase AuthService class}, label={lst:auth_service}, floatplacement=H, showstringspaces=false]
 class AuthService with WidgetsBindingObserver {
@@ -674,9 +675,10 @@ class AuthService with WidgetsBindingObserver {
 
 \subsubsection{Controller layer}
 
-Is the layer directly called from views. It delegates most operations to its corresponding services. In this project, controllers are referred to as \textbf{providers} due to naming conventions associated with the widespread Provider library \textcite{providerPackage}, which builds upon Flutter's `ChangeNotifier` class \textcite{flutterChangeNotifier}.  
-The controllers manage the application's state and provide it to other components—hence the term *Provider*.
+Is the layer directly called from views. It delegates most operations to its corresponding services. In this project, controllers are referred to as \textbf{providers} due to naming conventions associated with the widespread Provider library \textcite{providerPackage}, which builds upon Flutter's \texttt{ChangeNotifier} class \textcite{flutterChangeNotifier}.  
+The controllers manage the application's state and provide it to other components—hence the term \textit{Provider}. Listing \ref{lst:auth_provider} shows the \gls{API} available to Widgets, as well as how its corresponding service (refer to Listing \ref{lst:auth_service}) is used. This same pattern is used throughout the app.
 
+\newpage
 \begin{lstlisting}[language=Dart, caption={Controller layer example on AuthProvider class}, label={lst:auth_provider}, floatplacement=H, showstringspaces=false]
 class AuthProvider with ChangeNotifier {
   final _authService = GetIt.I<AuthService>();
@@ -712,9 +714,10 @@ class AuthProvider with ChangeNotifier {
 }
 \end{lstlisting}
 
+\newpage
 \subsubsection{View layer}
 
-Defines the user interface, with limited visibility into business logic, typically interacting only with controllers.
+Defines the user interface, with limited visibility into business logic, typically interacting only with controllers. In the case of Flutter, the view layer corresponds directly to Widgets, as can be seen in Listing \ref{lst:login_screen}.
 
 \begin{lstlisting}[language=Dart, caption={View layer example on LoginScreen Widget class}, label={lst:login_screen}, floatplacement=H, showstringspaces=false]
 class LoginScreen extends StatelessWidget {
@@ -746,17 +749,14 @@ class LoginScreen extends StatelessWidget {
 
 \subsection{Project Directory Structure}
 
-Organizing a Flutter project's directory structure is pivotal for maintaining scalability, readability, and ease of collaboration. While Flutter does not enforce a specific directory layout, adopting a consistent approach is essential, especially as the application grows in complexity.
+Organizing a Flutter project's directory structure is pivotal for maintaining scalability and readability. While Flutter does not enforce a specific directory layout, adopting a consistent approach is essential, especially as the application grows in complexity.
 
 \subsubsection{Feature-First Structure}
 
-In a feature-first structure, the application is organized around business features, with each feature acting as a self-contained module.  
+In a feature-first structure, visualized in Listing \ref{lst:project_directory_feature_first}, the application is organized around business features, with each feature acting as a self-contained module.  
 This method is particularly suited to agile teams and large projects.
 
-\begin{figure}[ht]
-  \begin{center}
-    \begin{minipage}{.8\textwidth}
-      \begin{verbatim}
+\begin{lstlisting}[caption={Feature-first directory structure}, label={lst:project_directory_feature_first}, floatplacement=H, showstringspaces=false]
 lib/
 +-- src/
     +-- features/
@@ -767,24 +767,17 @@ lib/
         |   +-- data/
         +-- feature2/
         +-- feature3/
-      \end{verbatim}
-    \end{minipage}
-  \end{center}
-  \caption{Feature-first directory structure}
-  \label{fig:project_directory_feature_first}
-\end{figure}
+\end{lstlisting}
 
 Some of the advantages of this structure are easier navigation, better scalability, and simplified refactoring.  
 However, it can introduce code duplication and challenges around shared services if not carefully managed.
 
+\newpage
 \subsubsection{Layer-first structure}
 
-An alternative approach is the layer-first structure. Here, the application is divided into distinct technical layers, like data, domain, and presentation, independent of features.
+An alternative approach is the layer-first structure, visualized in Listing \ref{lst:project_directory_layer_first} Here, the application is divided into distinct technical layers, like data, domain, and presentation, independent of features.
 
-\begin{figure}[ht]
-  \begin{center}
-    \begin{minipage}{.8\textwidth}
-      \begin{verbatim}
+\begin{lstlisting}[caption={Layer-first directory structure}, label={lst:project_directory_layer_first}, floatplacement=H, showstringspaces=false]
 lib/
 +-- src/
     +-- features/
@@ -799,24 +792,17 @@ lib/
         |   +-- feature3/
         +-- data/
         |   +-- feature2/
-      \end{verbatim}
-    \end{minipage}
-  \end{center}
-  \caption{Layer-first directory structure}
-  \label{fig:project_directory_layer_first}
-\end{figure}
+\end{lstlisting}
 
 Layer-first structures promote separation of concerns and re-usability.  
 However, they can complicate refactoring efforts and might not scale as cleanly for feature-heavy applications.
 
 Detailed comparison I've based my decisions on can be found in Andrea Bizzotto's article \textcite{flutterStructure}.
 
+\newpage
 In this project, a feature-first structure is used, taking the developer management tax in exchange for better long-term maintainability.
 
-\begin{figure}[ht]
-  \begin{center}
-    \begin{minipage}{.8\textwidth}
-      \begin{verbatim}
+\begin{lstlisting}[caption={Voice Record App directory structure}, label={lst:project_directory_timesheet}, floatplacement=H, showstringspaces=false]
 lib/
 +-- src/
     +-- features/
@@ -834,12 +820,7 @@ lib/
     +-- core/
     +-- firebase_options.dart
     +-- main.dart
-      \end{verbatim}
-    \end{minipage}
-  \end{center}
-  \caption{Voice Record App directory structure}
-  \label{fig:project_directory_timesheet}
-\end{figure}
+\end{lstlisting}
 
 \subsection{State Management}
 There are multiple approaches to handling state management in Flutter. In many frameworks, a specific method of state management is prescribed. Because Flutter supports a wide range of platforms, it is not surprising that state management is largely delegated to plugins and third-party libraries \textcite{flutterStateMgmt}.
@@ -852,14 +833,13 @@ Among the available options \textcite{flutterStateMgmt}, three methods are gener
   \item \texttt{Riverpod} package\footnote{Official Riverpod site: \url{https://riverpod.dev/}}
 \end{itemize}
 
-In the Voice Record Application, the \texttt{Provider} package manages states that are or may feasibly be shared across multiple components. The \texttt{ChangeNotifier} class simplifies the process of defining listeners and updating them using \texttt{notifyListeners()}.
+In the Voice Record Application, the \texttt{Provider} package manages states that are or may feasibly be shared across multiple components. The \texttt{ChangeNotifier} class simplifies the process of defining listeners and updating them using \texttt{notifyListeners()}. A simplified version of this approach can be seen in Listing \ref{lst:metadata_provider}.
 
-Meanwhile, \texttt{StatefulWidget}'s \texttt{setState()} is utilized whenever the state is local to a single component, typically when it only affects the current view or user interface. See below for examples on how these state management approaches are used.
+Meanwhile, \texttt{StatefulWidget}'s \texttt{setState()} is utilized whenever the state is local to a single component, typically when it only affects the current view or user interface. See Listing \ref{lst:edit_work_record_screen} to see how this local state management approach is implemented.
 
+\newpage
 \begin{lstlisting}[language=Dart, caption={Provider example for MetadataProvider class}, label={lst:metadata_provider}, floatplacement=H, showstringspaces=false]
-/// Metadata provider serves as a common entry point
-/// for data that is identical to all work records
-/// Thanks to this, we can save many needless and slow calls to Firebase
+/// Metadata provider serves as a common entry point for data that is identical to all work records
 class MetadataProvider with ChangeNotifier {
   final ClientsService _clientsService = ClientsService();
   final ActivitiesService _activitiesService = ActivitiesService();
@@ -879,18 +859,15 @@ class MetadataProvider with ChangeNotifier {
       _hasError = false;
       notifyListeners();
 
-      final clients = await _clientsService.getAllClients();
-      final activities = await _activitiesService.getAllActivities();
-      final projects = await _projectsService.getAllProjects();
-
-      _clients = clients;
-      _activities = activities;
-      _projects = projects;
+      _clients = await _clientsService.getAllClients();
+      _activities = await _activitiesService.getAllActivities();
+      _projects = await _projectsService.getAllProjects();
     }
   }
 }
 \end{lstlisting}
 
+\newpage
 \begin{lstlisting}[language=Dart, caption={Stateful example on EditWorkRecordScreen Widget class}, label={lst:edit_work_record_screen}, floatplacement=H, showstringspaces=false]
 class EditWorkRecordScreen extends StatefulWidget {
   final TimesheetService timesheetService;
@@ -909,7 +886,6 @@ class EditWorkRecordScreen extends StatefulWidget {
 class _EditWorkRecordScreenState extends State<EditWorkRecordScreen> {
   late TextEditingController _descriptionController;
   Client? _selectedClient;
-  late MetadataProvider _metadataProvider;
 
   @override
   void initState() {
@@ -917,19 +893,10 @@ class _EditWorkRecordScreenState extends State<EditWorkRecordScreen> {
     _descriptionController =
         TextEditingController(text: widget.timesheet?.description ?? '');
   }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _metadataProvider = Provider.of<MetadataProvider>(context, listen: true);
-    _selectedClient = _metadataProvider.clients.firstWhereOrNull(
-      (c) => c.id == widget.timesheet?.client,
-    );
-  }
 }
 \end{lstlisting}
 
-
+\newpage
 \section{Audio recording to database entry conversion}
 
 After the user records audio and describes the work he has done, there are several steps to convert that into a work record:
@@ -953,7 +920,7 @@ The suite processes each audio input through transcription, followed by structur
 
 \texttt{SequenceMatcher} operates by finding the longest contiguous matching subsequence between two inputs, excluding so-called “junk” elements\footnote{\texttt{SequenceMatcher} documentation: \url{https://docs.python.org/3/library/difflib.html\#difflib.SequenceMatcher}}. It calculates a similarity ratio ranging from 0 to 1, where values closer to 1 indicate stronger similarity. For instance, a ratio above 0.6 typically implies a reasonably good match. This allows us to quantify the accuracy of the extracted values in a way that tolerates minor textual deviations, such as synonyms or rephrased fragments, while still penalizing semantically incorrect predictions.
 
-This metric is applied field-by-field for each Timesheet attribute, and an overall accuracy score is computed as the average of the individual field scores. This score is further referred to as \emph{end-to-end \gls{AA}}.
+This metric is applied field-by-field for each Timesheet attribute, and an overall accuracy score is computed as the average of the individual field scores. This score is further referred to as \emph{End-to-end \glsdisp{AA}{Average Accuracy}}.
 
 \subsection{Optimizing Transcription Requests}
 
@@ -975,22 +942,22 @@ In terms of processing time, both models performed similarly in our tests.
 \hline
 \textbf{Criterion} & \textbf{whisper-1} & \textbf{gpt-4o-transcribe} \\
 \hline
-\textbf{Czech support} & Occasional grammatical issues & Fluent output at cost of accuracy \\
+\textbf{Czech} & Occasional grammatical issues & Fluent output at cost of accuracy \\
 \hline
-\textbf{English support} & High accuracy & High accuracy \\
+\textbf{English} & High accuracy & High accuracy \\
 \hline
 \textbf{Unusual words} & Preserves original wording & Normalizes unknown words incorrectly \\
 \hline
-\textbf{Human readability} & Adequate, occasionally less fluid & Very readable and well-formed \\
+\textbf{Readability} & Adequate, occasionally less fluid & Very readable and well-formed \\
 \hline
 \textbf{\gls{AA}} & Higher due to more literal transcription & Lower due to over-cleaning of transcription \\
 \hline
-\textbf{Processing speed} & Fast & Fast \\
+\textbf{Speed} & Fast & Fast \\
 \hline
-\textbf{Operational cost} & Lower & Higher \\
+\textbf{Cost} & Lower & Higher \\
 \hline
 \end{tabularx}
-\caption{Comparison of transcription models evaluated for the needs of the Timesheet Application}
+\caption{Comparison of transcription models evaluated for the needs of the Voice Work Record Application}
 \label{tab:transcription_models}
 \end{table}
 
@@ -1106,13 +1073,11 @@ Interestingly, the lowest deviation was observed at a temperature setting of 0.5
   \label{tab:temperature_summary}
 \end{table}
 
-Figure \ref{fig:user_prompt_template_en} shows the english version of user prompt template used in the application. Some parts are naturally dynamic and each request differs. Clients, activites and projects are pre-defined. Text to be processed is provided from response to the audio transcription request.
+\newpage
+Figure \ref{lst:user_prompt_template_en} shows the english version of user prompt template used in the application. Some parts are naturally dynamic and each request differs. Clients, activites and projects are pre-defined. Text to be processed is provided from response to the audio transcription request.
 
-\begin{figure}[H]
-\centering
-\begin{minipage}{\textwidth}
-\begin{lstlisting}
-Transform the text given below into a \gls{CSV} row semicolon separated in this exact format: CLIENT;ACTIVITY;PROJECT;TIME SPENT;WORK DESCRIPTION
+\begin{lstlisting}[caption={English version of the user prompt template used in the application}, label={lst:user_prompt_template_en}, floatplacement=H, showstringspaces=false]
+Transform the text given below into a CSV row semicolon separated in this exact format: CLIENT;ACTIVITY;PROJECT;TIME SPENT;WORK DESCRIPTION
 
 Instructions for the transformation:
 * Always try to fill out all attributes. If it is not possible to extract from the text, use a generic option if available. If not, use "N/A"
@@ -1126,15 +1091,11 @@ Instructions for the transformation:
 
 Text to process: {transcribed_text}
 \end{lstlisting}
-\caption{English version of the user prompt template used in the application}
-\label{fig:user_prompt_template_en}
-\end{minipage}
-\end{figure}
 
 \chapter{Deployment}
 \label{chap:deployment}
 
-In the software development lifecycle, after the application is developed and thoroughly tested, the next step is deployment. This chapter outlines how the Android app, developed as part of this thesis, is prepared for deployment and the technologies used to support the process.
+In the software development life-cycle, after the application is developed and thoroughly tested, the next step is deployment. This chapter outlines how the Android app, developed as part of this thesis, is prepared for deployment and the technologies used to support the process.
 
 The app uses a \gls{CI}/\gls{CD} pipeline built on GitLab, to automate the help with the development process.  While the \gls{CI}/\gls{CD} pipeline automates some continuous integration steps, the actual deployment to Google Play and/or Firebase App Distribution is a manual step.
 
@@ -1178,7 +1139,7 @@ To give a clearer example:
 \end{verbatim}
 
 
-The core \texttt{0.11.0} adheres to the semantic versioning scheme, while the suffix \texttt{+1745075692} serves as build metadata. This metadata, represented as a Unix timestamp, enables differentiation of individual builds down to the level of Git commits, which is particularly helpful for internal testing and continuous integration workflows. A Unix timestamp is a numeric representation of the number of seconds that have elapsed since January 1, 1970 (midnight UTC/GMT), and is commonly used in computing for time tracking \textcite{mdnUnixTime}.
+The core \texttt{0.11.0} adheres to the semantic versioning scheme, while the suffix \texttt{+1745075692} serves as build metadata. This metadata, represented as a Unix timestamp, enables differentiation of individual builds down to the level of Git commits, which is particularly helpful for internal testing and continuous integration workflows. A Unix timestamp is a numeric representation of the number of seconds that have elapsed since January 1, 1970 (midnight \gls{UTC}/\gls{GMT}), and is commonly used in computing for time tracking \textcite{mdnUnixTime}.
 
 The build metadata is automatically appended by a GitLab \gls{CI} pipeline, which injects a timestamp. This automation ensures that each distributed version can be traced back to the exact source state, facilitating debugging, auditing, and reproducibility.
 
@@ -1208,7 +1169,7 @@ This setup ensures that all uncaught Flutter framework errors are reported to Fi
 
 In addition to exception reporting, Crashlytics supports the logging of custom messages. This allows developers to capture useful context about the application’s state, even when errors do not cause a crash. Crashlytics is primarily a convenience tool that simplifies monitoring and post-mortem analysis in production environments - it does not by any means replace common logging practices.
 
-To take advantage of both Crashlytics and common logging practices, an in-app logging system is implemented. It collects diagnostic messages throughout the session and is designed to pass the accumulated logs to Crashlytics automatically in the event of an exceptions error. Other information, such as the user identifier (if one is signed in) is logged as well. See below to see how logging is setup using the singleton pattern.
+To take advantage of both Crashlytics and common logging practices, an in-app logging system is implemented. It collects diagnostic messages throughout the session and is designed to pass the accumulated logs to Crashlytics automatically in the event of an exceptions error. Other information, such as the user identifier (if one is signed in) is logged as well. See Listing \ref{lst:logger_setup} to see how logging is setup using the singleton pattern.
 
 \begin{lstlisting}[language=Dart, caption={Logger setup with custom Crashlytics output}, label={lst:logger_setup}, floatplacement=H, showstringspaces=false]
 import 'package:logger/logger.dart';
@@ -1229,7 +1190,7 @@ class Log extends Logger {
 }
 \end{lstlisting}
 
-A hidden developer screen—accessible by tapping on the app version number (as is common practice), displays all locally collected logs. This allows testers or users to manually inspect and share logs with developers, even if no exception was caught by the Flutter crash handler.
+A hidden developer screen -- accessible by tapping on the app version number (as is common practice), displays all locally collected logs. This allows testers or users to manually inspect and share logs with developers, even if no exception was caught by the Flutter crash handler.
 
 \section{App Distribution}
 
@@ -1263,7 +1224,7 @@ While the original business goal of the project was to create a commercially via
 \chapter{Application Source Code}
 A ZIP archive is provided with this thesis containing a snapshot of the application repository as it stood at the conclusion of this work. The project adheres to a standard Flutter project structure and was developed entirely from scratch. The entire codebase represents my original work.
 
-It is possible to build and run the application separately, but will require the interested to setup and configure the following components:
+It is possible to build and run the application separately, but will require setup and configuration of the following components:
 \begin{itemize}
   \item OpenAI \gls{API} key
   \item Android and/or \gls{iOS} Firebase project
@@ -1271,7 +1232,7 @@ It is possible to build and run the application separately, but will require the
 \end{itemize}
 
 \chapter{Prompt Optimization Testing Script Source Code}
-Additionaly to the application source code, a ZIP archive of the repository is included that contains the Python script used for prompt optimization. The repository also contains annotated audio recordings used during testing. The source code is also available in a public GitHub repository\footnote{
+Additionally to the application source code, a ZIP archive of the repository is included that contains the Python script used for prompt optimization. The repository also contains annotated audio recordings used during testing. The source code is also available in a public GitHub repository\footnote{
 \url{https://github.com/Crytastic/timesheet_models_tester}
 }.
 
