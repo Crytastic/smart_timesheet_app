@@ -138,6 +138,10 @@
 \floatsetup[table]{capposition=top}
 \usepackage[babel]{csquotes} %% Context-sensitive quotation marks
 
+%% Used for defining use cases
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
 \begin{document}
 \printnoidxglossary[type=\acronymtype, title=List of Abbreviations]
 %% The \chapter* command can be used to produce unnumbered chapters:
@@ -151,7 +155,7 @@ All work environments require some form of work records evidence. For smaller co
 
 In the past few years, there has been a significant rise of generative \gls{AI} text models and transcription services. \gls{AI} text \gls{API}s have become better quality, as well as  much faster and affordable. The thesis will attempt to integrate this technology into a work logging solution to simplify it for employees and concurrently provide more accurate data for employers.
 
-One already used and widely adopted approach is to allow users to record audio notes describing their work, which they can review later. However, the current state of such solutions often still requires manual intervention to input the data (such as time and work description) into structured formats.
+One already used and widely adopted approach is to allow users to record audio notes describing their work, which they can review later. The current state of such solutions often still requires manual intervention to input the data (such as time and work description) into structured formats.
 
 This thesis proposes an enhancement to conventional audio-logging systems by integrating automatic speech transcription and converting the transcribed content directly into structured database entries. The objective is to minimize user effort and maximize the accuracy and immediacy of work logging.
 
@@ -401,7 +405,7 @@ The solutions chosen for analysis are the most prominent mobile applications. So
 \begin{itemize}
 \item \textbf{Clockify}: A widely used time-tracking tool that provides manual entry, timers, and integration with various project management tools. It's powerful in terms of reporting capabilities as well and catered more toward individual use. It features very good user experience and overall fleshed out \gls{UI}.
 \item \textbf{Toggl Track}: Offers intuitive time tracking with automation features, but still relies on user interaction to start and stop time logs. It lacks built-in voice transcription for work entry. Some issues with 3rd party authentication were discovered.
-\item \textbf{Hubstaff}: Off the bat Hubstaff does not include any 3rd party authentication and only allows Hubstaff specific user accounts. The user experience is not as clean as other solutions, but it's catered more towards businesses, in a similar way as the intended purpose of the Voice Work Record App. Includes \gls{GPS} tracking and partly automated timesheets, but does not focus on voice-based logging. The setup of business owner and team members is however very strong and a well established design.
+\item \textbf{Hubstaff}: Off the bat Hubstaff does not include any 3rd party authentication and only allows Hubstaff specific user accounts. The user experience is not as clean as other solutions, but it's catered more towards businesses, in a similar way as the intended purpose of the Voice Work Record App. Includes \gls{GPS} tracking and partly automated timesheets, but does not focus on voice-based logging. The setup of business owner and team members is well implemented and an established design.
 \item \textbf{TSheets by QuickBooks}: Similar to Hubstaff the set of features caters towards businesses. Provides detailed time-tracking features and payroll integration but requires manual input or \gls{GPS} tracking, with no emphasis on voice-based automation.
 \end{itemize}
 
@@ -415,7 +419,7 @@ The majority of existing solutions rely on manual input, timers, or \gls{GPS} tr
 
 \section{Overview}
 
-The Voice Work Record Application is designed to provide a scalable and efficient solution for employees to log and manage their work records using audio-based logging and manual entry. The intended business model is intentionally different from typical solutions. Instead of using a subscription model, the software is meant to be distributed as a full package. This approach increases setup time and complexity for businesses, as all backend services the app depends on need to be setup separately. However, it eliminates the need for subscription fees. This also nearly removes the implementation considerations regards setting up for multiple companies, so the simplicity was a factor as well.
+The Voice Work Record Application is designed to provide a scalable and efficient solution for employees to log and manage their work records using audio-based logging and manual entry. The intended business model is intentionally different from typical solutions. Instead of using a subscription model, the software is meant to be distributed as a full package. This approach increases setup time and complexity for businesses, as all backend services the app depends on need to be setup separately. It also eliminates the need for subscription fees. This also nearly removes the implementation considerations regards setting up for multiple companies, so the simplicity was a factor as well.
 
 A fundamental design decision was to offload authentication and user management to Microsoft accounts. This is partly due to a requirements by DevBalance, as their infrastructure is based around Microsoft account. Since the application is expected to be used across different companies, managing user accounts internally would introduce unnecessary complexity. By leveraging Microsoft's identity management services, authentication and access control are handled externally, ensuring a seamless and secure login experience while eliminating the need for manual account management.
 
@@ -423,7 +427,7 @@ The backend of the system is entirely cloud-based, ensuring high availability, r
 
 A key feature of the application is converting audio logs into structured timesheets. This is achieved through external Open \gls{API} endpoints that handle both speech-to-text transcription and text-to-timesheet parsing. Running a lightweight \gls{AI} model directly on mobile devices was considered as an alternative, but this approach was ultimately discarded due to performance constraints, difficulty in maintaining \gls{AI} models across different devices, and inconsistent processing power across smartphones. By utilizing cloud-based \gls{AI} services, the system ensures accurate and scalable transcription while keeping the front-end client relatively thin.
 
-The balance between thin and thick client models has been a crucial point of architectural consideration while coming up with the entire design. While the application adopts many principles of a thin client — minimizing local processing and relying on cloud-based services for compute-intensive tasks like \gls{AI} transcription and timesheet parsing — it is not purely thin in the traditional sense. In today’s mobile-first landscape, most applications exist on a spectrum between thin and thick clients, incorporating elements of both to optimize user experience, performance, and maintainability. Local caching, \gls{UI} rendering, and minimal offline capabilities are still handled on the client side to ensure responsiveness and usability. However, by offloading complex logic to an external server, the system avoids overburdening the client device and ensures consistent behavior across platforms. This hybrid approach enables centralized updates, simplified maintenance, and scalable architecture while retaining enough client-side functionality to support a smooth and interactive user experience \textcite{distributedSystems}.
+The balance between thin and thick client models has been a crucial point of architectural consideration while coming up with the entire design. While the application adopts many principles of a thin client — minimizing local processing and relying on cloud-based services for compute-intensive tasks like \gls{AI} transcription and timesheet parsing — it is not purely thin in the traditional sense. In today’s mobile-first landscape, most applications exist on a spectrum between thin and thick clients, incorporating elements of both to optimize user experience, performance, and maintainability. Local caching, \gls{UI} rendering, and minimal offline capabilities are still handled on the client side to ensure responsiveness and usability. By offloading complex logic to an external server, the system avoids overburdening the client device and ensures consistent behavior across platforms. This hybrid approach enables centralized updates, simplified maintenance, and scalable architecture while retaining enough client-side functionality to support a smooth and interactive user experience \textcite{distributedSystems}.
 
 The primary interface for users is a mobile application, available for both Android and \gls{iOS}. The user experience is designed to be minimalistic and intuitive, prioritizing voice-based interactions and quick data entry. Some \gls{UI} patterns were inspired by the afore-mentioned Clockify, an application with a not too dissimilar goal.  
 
@@ -474,7 +478,7 @@ There are in essence two places that persistently store data.
 \begin{itemize}
     \item \textbf{Firestore Database} — a \gls{NoSQL} database at its core, accessed through Firebase’s \gls{API}, which provides a convenient interface along with built-in caching mechanisms to reduce the number of actual and expensive (both in terms of time and finances) reads and writes to the cloud. The database stores documents for timesheets, activities, projects, clients, and prompts. Among these, only timesheets are really considered live data and are updated very frequently. See \ref{fig:entity_diagram} for details on all entities. Note the relationships are omitted by design, as a \gls{NoSQL} database does not enforce relational constraints or schemas in the traditional sense and keeping the entries valid is up to the implementation.
     
-    \item \textbf{Firebase Storage} — used to store audio recordings. Similar to Firestore, it offers an abstraction layer that allows developers to organize files into folder-like structures. In our case, separated by generated owner IDs.
+    \item \textbf{Firebase Storage} -- used to store audio recordings. Similar to Firestore, it offers an abstraction layer that allows developers to organize files into folder-like structures. In our case, separated by generated owner IDs.
 \end{itemize}
 
 \begin{figure}[ht]
@@ -559,22 +563,34 @@ The Model-View-Controller (\gls{MVC}) pattern is a foundational architectural pa
 
 \gls{MVC} divides the user interface into three distinct roles \textcite{mdnMVC}:
 
-- **Model** — Represents the underlying domain data and business logic. It is a non-visual component and ideally independent of any user interface elements. In many systems, this corresponds to domain models or transaction scripts, provided they contain no \gls{UI}-related logic.
-- **View** — Handles the visual representation of the model. It is responsible for presenting data to the user in various forms, such as GUI elements or HTML pages, but does not itself modify the data.
-- **Controller** — Receives user input, manipulates the model accordingly, and updates the view. It effectively acts as an intermediary between the user's actions and the system's internal state.
+\noindent
+\begin{itemize}
+    \item \textbf{Model} — Represents the underlying domain data and business logic. It is a non-visual component and ideally independent of any user interface elements. In many systems, this corresponds to domain models or transaction scripts, provided they contain no \gls{UI}-related logic.
+    \item \textbf{View} — Handles the visual representation of the model. It is responsible for presenting data to the user in various forms, such as GUI elements or HTML pages, but does not itself modify the data.
+    \item \textbf{Controller} — Receives user input, manipulates the model accordingly, and updates the view. It effectively acts as an intermediary between the user's actions and the system's internal state.
+\end{itemize}
 
 This separation enhances modularity and testability. In particular, the separation of presentation and model is one of the most fundamental heuristics of sound software design. It allows the same business logic to be reused across multiple interface types—such as graphical interfaces, web front ends, or APIs—without altering the model code. Furthermore, models, being non-visual, are significantly easier to test than views, enabling better automated testing and cleaner development practices.
 
 Another key benefit of this separation is directional dependency: the presentation depends on the model, but the model remains completely unaware of the presentation. This simplifies the model’s design and enables greater flexibility when introducing new views or presentation styles.
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{assets/diagrams/mvc.drawio.png}
+    \caption[Model-View-Controller pattern]{Model-View-Controller (\gls{MVC}) pattern illustration.}
+    \label{fig:mvc-pattern}
+\end{figure}
+
 \subsection{Layered Pattern}
 
 The application uses an extended, layered variation of the \gls{MVC} pattern. Since Flutter does not enforce architectural boundaries, maintaining this structure is entirely the developer's responsibility. The key layers are:
 
-- **Model**
-- **Service**
-- **Controller**
-- **View**
+\begin{itemize}
+    \item \textbf{Model}
+    \item \textbf{Service}
+    \item \textbf{Controller}
+    \item \textbf{View}
+\end{itemize}
 
 In some cases not all layers are utilised, particularly in cases in which no data is required, hence missing the model. In other cases there are services which do not have a dedicated controller. This is because it's not a wanted occurence for the developer to directly call these services. In such a case, a more generic controller is provided that calls multiple services internally. This allows for simpler calls in the views, as business logic is unwanted there - and neither are thick boilerplates. See below for further explanation and examples of each layer.
 
@@ -647,7 +663,7 @@ class AuthService with WidgetsBindingObserver {
 
 \subsubsection{Controller layer}
 
-Is the layer directly called from views. It delegates most operations to its corresponding services. In this project, controllers are referred to as **providers** due to naming conventions associated with the widespread Provider library \textcite{providerPackage}, which builds upon Flutter's `ChangeNotifier` class \textcite{flutterChangeNotifier}.  
+Is the layer directly called from views. It delegates most operations to its corresponding services. In this project, controllers are referred to as \textbf{providers} due to naming conventions associated with the widespread Provider library \textcite{providerPackage}, which builds upon Flutter's `ChangeNotifier` class \textcite{flutterChangeNotifier}.  
 The controllers manage the application's state and provide it to other components—hence the term *Provider*.
 
 \begin{lstlisting}[language=Dart, caption={Controller layer example on AuthProvider class}, label={lst:auth_provider}, floatplacement=H, showstringspaces=false]
@@ -779,7 +795,7 @@ lib/
   \label{fig:project_directory_layer_first}
 \end{figure}
 
-Layer-first structures promote separation of concerns and reusability.  
+Layer-first structures promote separation of concerns and re-usability.  
 However, they can complicate refactoring efforts and might not scale as cleanly for feature-heavy applications.
 
 Detailed comparison I've based my decisions on can be found in Andrea Bizzotto's article \textcite{flutterStructure}.
@@ -815,7 +831,7 @@ lib/
 \end{figure}
 
 \subsection{State Management}
-There are multiple approaches to handling state management in Flutter. In many frameworks, a specific method of state management is prescribed. However, because Flutter supports a wide range of platforms, it is not surprising that state management is largely delegated to plugins and third-party libraries \textcite{flutterStateMgmt}.
+There are multiple approaches to handling state management in Flutter. In many frameworks, a specific method of state management is prescribed. Because Flutter supports a wide range of platforms, it is not surprising that state management is largely delegated to plugins and third-party libraries \textcite{flutterStateMgmt}.
 
 Among the available options \textcite{flutterStateMgmt}, three methods are generally considered industry standards:
 
@@ -930,7 +946,7 @@ This metric is applied field-by-field for each Timesheet attribute, and an overa
 
 For our transcription functionality, we evaluated different models available via the OpenAI \gls{API}, specifically \texttt{whisper-1}\footnote{\url{https://platform.openai.com/docs/models/whisper-1}} and \texttt{gpt-4o-transcribe}\footnote{\url{https://platform.openai.com/docs/models/gpt-4o-transcribe}}. The goal was to identify a solution that balances accuracy, language support, and performance for our use case.
 
-The \texttt{whisper-1} model demonstrated reasonably accurate results for English audio transcriptions out of the box. However, its performance with Czech audio was less consistent. While most outputs were legible, grammatical inaccuracies were occasionally present, especially in more complex or noisy recordings. It should be noted that poor audio quality significantly impacted transcription accuracy—though in such cases, even annotating the audio for testing was difficult.
+The \texttt{whisper-1} model demonstrated reasonably accurate results for English audio transcriptions out of the box. Its performance with Czech audio was less consistent. While most outputs were legible, grammatical inaccuracies were occasionally present, especially in more complex or noisy recordings. It should be noted that poor audio quality significantly impacted transcription accuracy—though in such cases, even annotating the audio for testing was difficult.
 
 Given that the application is primarily intended for Czech-speaking users, this presented a potential usability concern. To address this, we evaluated \texttt{gpt-4o-transcribe} , which offered significantly improved performance in Czech, while maintaining strong English transcription capabilities. The model consistently produced well-structured output with fewer grammatical errors across various audio conditions.
 
@@ -1016,7 +1032,7 @@ A significant part of the prompt optimisation effort focused on selecting the ri
 
 In simple terms, temperature controls how creative or conservative the model is when generating text. Lower values (closer to 0.0) make the model more deterministic — it tends to return the most likely and predictable output. Higher values (up to 1.0 or beyond) encourage more randomness and variation, allowing for more diverse or creative completions but also increasing the likelihood of less relevant or inconsistent outputs.
 
-For tasks requiring precise structure and reliability — such as extracting well-defined fields from a transcript — lower temperatures are generally preferred. However, overly low temperatures may also reduce the model's ability to generalize to slightly ambiguous or unconventional input phrasings. Conversely, higher temperatures may help the model interpret more loosely defined prompts, but at the cost of consistency and factual accuracy.
+For tasks requiring precise structure and reliability — such as extracting well-defined fields from a transcript — lower temperatures are generally preferred. Overly low temperatures may also reduce the model's ability to generalize to slightly ambiguous or unconventional input phrasings. Conversely, higher temperatures may help the model interpret more loosely defined prompts, but at the cost of consistency and factual accuracy.
 
 In this project, a range of temperature values was tested using the \texttt{timesheet\_models\_tester} script. These ranged from 1.0 (high randomness) to 0.0 (fully deterministic), with intermediate steps at 0.75, 0.5, and 0.25. This allowed for a systematic evaluation of how temperature impacts both extraction accuracy and response stability.
 
