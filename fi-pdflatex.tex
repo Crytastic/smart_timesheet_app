@@ -140,10 +140,14 @@
   frame=lrtb,
 }
 
-\usepackage{floatrow} %% Putting captions above tables
+\usepackage{float}
+\newfloat{listing}{H}{lol}[section]
+\floatname{listing}{Listing}
+
+%%\usepackage{floatrow} %% Putting captions above tables
 \usepackage{pgfplots}
 \pgfplotsset{compat=1.18}
-\floatsetup[table]{capposition=top}
+%% \floatsetup[table]{capposition=top}
 \usepackage[babel]{csquotes} %% Context-sensitive quotation marks
 
 %% Used for defining use cases
@@ -152,7 +156,9 @@
 
 \usepackage{placeins}
 
+
 \begin{document}
+\lstlistoflistings 
 \printnoidxglossary[type=\acronymtype, title=List of Abbreviations]
 %% The \chapter* command can be used to produce unnumbered chapters:
 \chapter*{Introduction}
@@ -181,9 +187,9 @@ Before building an audio transcription application for time tracking, it’s imp
 
 The goal of this analysis is to create some sort of structure that guides the development of the Voice Work Record Application – further referred to simply as the \textit{the app}. The system requirements were set through discussions with a DevBalance consultant and also this thesis's advisor. The analysis highlights both explicit and implicit needs, as well as potential challenges that may arise during implementation.
 
-\section{Users}
+%%\section{Users}
 
-The primary users of the Voice Work Record Application are field employees. These users frequently switch between tasks and clients throughout the day. Their primary need is a quick, reliable, and intuitive method to log their working hours and task details. They benefit from hands-free audio logging that ensures accuracy and minimizes forgotten details. Of course, the application should not prevent creating and adjusting work records manually -- in many ways it should behave like a normal work-logging solution. It is simply perceived that, for example, employees working in an office for a single client will not benefit from the intended voice-recording approach and would rather record work via a more traditional approach.
+The primary users of the Voice Work Record Application are field employees. These users frequently switch between tasks and clients throughout the day. Their primary need is a quick, reliable, and intuitive method to log their working hours and task details. They benefit from hands-free audio logging that ensures accuracy and minimizes forgotten details. Of course, the application should not prevent creating and adjusting work records manually --- in many ways it should behave like a normal work-logging solution. It is simply perceived that, for example, employees working in an office for a single client will not benefit from the intended voice-recording approach and would rather record work via a more traditional approach.
 
 \section{Functional Requirements}
 
@@ -193,7 +199,7 @@ This section also describes the functional requirements as outlined by DevBalanc
 
 To clearly outline the expected functionality, the requirements are presented in the form of use cases. Each use case describes a specific interaction between the user and the system, defines the pre-requisites, the sequence of steps, and the expected outcome. Some use cases could be decomposed into more detailed sub-cases; the following overview keeps them at a high level to maintain readability.
 
-The core functional requirements of the Voice Work Record Application revolve around efficient, voice-enabled time tracking, cloud-based data storage, secure authentication, and multi-language support. The application must accommodate hands-free logging while ensuring that users can review, edit, and manage their work records with minimal friction. Additionally, data security mechanisms must be in place to guarantee data integrity and user privacy. The system is not meant to be used purely in an offline environment, but it should also not be synchronously dependent on an internet connection – some degree of offline use should be allowed.
+The core functional requirements of the Voice Work Record Application revolve around efficient, voice-enabled time tracking, cloud-based data storage, secure authentication, and multi-language support. The application must accommodate hands-free logging while ensuring that users can review, edit, and manage their work records with minimal friction. Additionally, data security mechanisms must be in place to guarantee data integrity and user privacy. The system is not meant to be used purely in an offline environment, but it should also not be synchronously dependent on an internet connection --- some degree of offline use should be allowed.
 
 \subsection{Voice-to-Text Recording and Storage}
 
@@ -202,9 +208,8 @@ The core functional requirements of the Voice Work Record Application revolve ar
 \noindent \textbf{Description:}  
 Users can record audio descriptions of their work in either Czech or English. The system transcribes the audio into text, uses a trained \gls{AI} model to extract key information, and stores the recording in a cloud-based environment. The extracted data is parsed into a structured database entry, first saved locally and then persistently in the cloud.
 
-\newpage
 \noindent \textbf{Steps:}
-\begin{enumerate}
+\begin{compactenum} 
     \item User navigates to the new recording screen.
     \item User initiates an audio recording in the application.
     \item User verbally describes the work performed, using either Czech or English.
@@ -214,7 +219,7 @@ Users can record audio descriptions of their work in either Czech or English. Th
     \item The extracted data is parsed into a work record.
     \item Work record is uploaded to a cloud-based environment.
     \item The user receives a notification upon completion of the transcription and data entry.
-\end{enumerate}
+\end{compactenum}
 
 \subsection{Adding Work Records Manually}
 
@@ -224,12 +229,12 @@ Users can record audio descriptions of their work in either Czech or English. Th
 Users can manually enter work records if they prefer not to describe the work verbally.
 
 \noindent \textbf{Steps:}
-\begin{enumerate}
+\begin{compactenum}
     \item User navigates to the new recording screen.
     \item User initiates manual work record entry.
     \item User inputs details such as client, activity, project, task description and duration of work.
     \item Upon confirmation, work record is uploaded to a cloud-based environment.
-\end{enumerate}
+\end{compactenum}
 
 \subsection{Reviewing and Editing Work Records}
 
@@ -239,14 +244,14 @@ Users can manually enter work records if they prefer not to describe the work ve
 Users can review and edit their past work records, including both manually entered and transcribed entries.
 
 \noindent \textbf{Steps:}
-\begin{enumerate}
+\begin{compactenum}
     \item User navigates to the screen with past work records.
     \item User selects a work entry to review.
     \item User can replay the original audio recording (if available).
     \item User can see the full transcription of the audio recording (if available).
     \item User can edit the work record. Specifically, the client, activity, project, task description, duration of work. User is not allowed to adjust neither the audio recording or the literal transcription.
     \item Upon confirmation, work record is uploaded to a cloud-based environment.
-\end{enumerate}
+\end{compactenum}
 
 \subsection{Filtering Work Records}
 
@@ -254,21 +259,21 @@ Users can review and edit their past work records, including both manually enter
 
 \noindent \textbf{Description:}  
 Employees can search for and filter work records based on the following criteria:
-\begin{itemize}
+\begin{compactitem}
     \item Date range
     \item Project
     \item Client
     \item Activity
-\end{itemize}
+\end{compactitem}
 
 \noindent \textbf{Steps:}
-\begin{enumerate}
+\begin{compactenum}
     \item User navigates to the screen with past work records.
     \item User pushes the button for filtering options.
     \item User selects criteria to filter the records by.
     \item User selects criteria to group the records by.
     \item Matching work entries are displayed, together with sums of worked hours according to selected group by settings. Work records in different groups are also visually separated to simplify searching for a particular entry. 
-\end{enumerate}
+\end{compactenum}
 
 \subsection{User Authentication and Access Control}
 
@@ -278,15 +283,14 @@ Employees can search for and filter work records based on the following criteria
 Authentication and access control ensure that only authorized users can log in and access their respective data.
 
 \noindent \textbf{Steps:}
-\begin{enumerate}
+\begin{compactenum}
     \item User attempts to log in via Microsoft authentication.
     \item User's credentials are verified through Firebase Authentication.
     \item Employee's email domain is verified.
     \item If the domain is authorized, the employee is granted access to his/her past work records only – not to work records of any other employee.
     \item It is ensured that employees from different domains cannot view or modify each other's records.
-\end{enumerate}
+\end{compactenum}
 
-\newpage
 \subsection{Offline Logging}
 
 \noindent \textbf{Prerequisites:} User is authenticated, no internet connection available
@@ -297,12 +301,12 @@ Users can record work descriptions offline. Once an internet connection is resto
 From the user perspective, the steps are identical to when internet connection is available, hence the simplified steps.
 
 \noindent \textbf{Steps:}
-\begin{enumerate}
+\begin{compactenum}
     \item User records an audio entry while offline.
     \item System stores the recording locally on the device.
     \item In a reasonable time frame, once internet connection is restored, the system automatically uploads and processes the recording.
     \item Work record is uploaded to a cloud-based environment.
-\end{enumerate}
+\end{compactenum}
 
 \subsection{Receiving Notifications}
 
@@ -312,11 +316,11 @@ From the user perspective, the steps are identical to when internet connection i
 Users receive notifications when important events occur, such as the completion of a work record creation (that is by design meant to be an asynchronous operation). Notification allows the user to directly open the work record, inspect it, and confirm its correctness (or immediately fix incorrect attributes).
 
 \noindent \textbf{Steps:}
-\begin{enumerate}
+\begin{compactenum}
     \item Work record creation is completed.
     \item User receives an in-app notification.
     \item User can directly open, inspect and edit the work record.
-\end{enumerate}
+\end{compactenum}
 
 \subsection{Setting User Interface Language}
 
@@ -325,13 +329,12 @@ Users receive notifications when important events occur, such as the completion 
 \noindent \textbf{Description:}  
 Users can switch between Czech and English for the user interface, allowing the application to support a multilingual user base.
 
-\newpage
 \noindent \textbf{Steps:}
-\begin{enumerate}
+\begin{compactenum}
     \item User navigates to the settings menu.
     \item User selects the preferred language (Czech or English).
     \item The user interface updates to the selected language.
-\end{enumerate}
+\end{compactenum}
 
 \subsection{Setting User Interface Theme}
 
@@ -341,14 +344,13 @@ Users can switch between Czech and English for the user interface, allowing the 
 Users can adjust common quality of life preferences, such as the theme of the application.
 
 \noindent \textbf{Steps:}
-\begin{enumerate}
+\begin{compactenum}
     \item User navigates to the settings menu.
     \item User selects the preferred theme (light or dark).
     \item The user interface updates to reflect the selected theme.
-\end{enumerate}
+\end{compactenum}
 
 \section{Non-Functional Requirements}
-
 Non-functional requirements are the qualities of the solution. They consist of the solution limitations or implementation constraints, and external factors such as system reliability \cite{delfinobook2015NonFunctionalRequirements}. These requirements specify qualities such as performance, security, usability, and scalability, ensuring that the application remains reliable, efficient, and user-friendly over time.  
 
 It has been decided fairly early on that the Voice Work Record Application will be at its core a cloud-based solution. One of the requirements being the need for seamless data synchronization and high availability, while ensuring that sensitive work records remain secure and private. With a desktop-optimized web interface being developed concurrently with this mobile interface, it is essential that the user has the option to switch between these interfaces seamlessly.
@@ -363,7 +365,7 @@ While an internet connection is required for normal usage, users must be able to
 \subsection{Usability and Accessibility}  
 The user interface should be designed with simplicity and ease of use in mind, requiring minimal training. Hands-free operation should be a priority, with a very small number of interactions needed to initialize audio recording and create new work records. Simple touch interactions should allow users to log work efficiently without needing extensive manual input.
 
-The system should also provide clear visual feedback to confirm actions. Text should be minimized for core functionality but available for further information on how to use the system - should the user request it.
+The system should also provide clear visual feedback to confirm actions. Text should be minimized for core functionality but available for further information on how to use the system --- should the user request it.
 
 \subsection{Security and Compliance}  
 All user data must be securely stored and transmitted using encryption. The application must ensure to a reasonable degree that users' personal and work-related information is not exposed or misused. A reasonable degree is mentioned due to existing plans to use third-party authentication that might not be \gls{GDPR} compliant (Firebase Authentication, for example, has US only servers).
@@ -405,70 +407,70 @@ The user interface must be responsive and provide a consistent user experience a
 \chapter{Market Analysis}
 
 \section{Introduction}
-The need for efficient time-tracking solutions has led to the development of various tools aimed at helping businesses and employees manage work hours effectively. Many existing solutions rely on manual entry. However, there are still gaps in usability, accuracy, and more of a hands-free operation, particularly for field employees who require a more seamless and automated way to log their time. In this chapter we will take a look at mobile applications that come close to our use case. In doing so, strengths and weaknesses of these solutions will be analyzed to either avoid or use some of those patterns in the Voice Work Record Application.
+The need for efficient time-tracking solutions has led to the development of various tools aimed at helping businesses and employees manage work hours effectively. Many existing solutions rely on manual entry. However, there are still gaps in usability, particularly for field employees who require a more seamless and automated way to log their time. In this chapter we will take a look at mobile applications that come close to our use case. In doing so, strengths and weaknesses of these solutions will be analyzed to either avoid or use some of those patterns in the Voice Work Record Application.
 
 \section{Existing Solutions}
 
-The solutions chosen for analysis are the most prominent mobile applications. Some cater towards business, some more towards individuals. All of the following were used by the developer for a week each to log hours in a day job using Android 15, coincidentally one of the target platforms.
+The solutions chosen for analysis are the most prominent mobile applications. Some cater towards business, some more towards individuals. All of the following were used by the developer for a week each to log hours in a day job using Android 15 (also the main the target platform).
 
 \begin{itemize}
 \item \textbf{Clockify}: A widely used time-tracking tool that provides manual entry, timers, and integration with various project management tools. It's powerful in terms of reporting capabilities as well and catered more toward individual use. It features very good user experience and overall fleshed out \gls{UI}.
-\item \textbf{Toggl Track}: Offers intuitive time tracking with automation features, but still relies on user interaction to start and stop time logs. It lacks built-in voice transcription for work entry. Some issues with 3rd party authentication were discovered.
+\item \textbf{Toggl Track}: Offers intuitive time tracking with automation features, but still relies on user interaction to start and stop time logs. Some issues with 3rd party authentication were discovered.
 \item \textbf{Hubstaff}: Initially, Hubstaff does not support third-party authentication and only allows Hubstaff specific user accounts. The user experience is not as clean as other solutions, but it's catered more towards businesses, in a similar way as the intended purpose of the Voice Work Record App. Includes \gls{GPS} tracking and partly automated timesheets, but does not focus on voice-based logging. The setup of business owner and team members is well implemented and an established design.
 \item \textbf{TSheets by QuickBooks}: Similar to Hubstaff the set of features caters towards businesses. Provides detailed time-tracking features and payroll integration but requires manual input or \gls{GPS} tracking, with no emphasis on voice-based automation.
 \end{itemize}
 
 \section{Strengths and weaknesses of existing solutions}
 
-Most existing solutions provide cloud-based tracking, some even integrations with payroll and project management tools. In addition, these applications are often highly optimized and feature rich, ensuring a great user experience. However, many of their most valuable features are restricted behind paywalls, necessitating costly subscriptions. Moreover, businesses frequently lack control over the application's functionality and long-term availability, making them dependent on third-party providers. Organizations require a time-tracking solution that offers reliability and stability without the risk of unexpected feature limitations, forced upgrades, or service discontinuation. 
+Most existing solutions provide cloud-based work logging, some even integrations with payroll and project management tools. In addition, these applications are often highly optimized and feature rich, ensuring a great user experience. However, many of their most valuable features are restricted behind paywalls, necessitating costly subscriptions. Moreover, businesses frequently lack control over the application's functionality and long-term availability, making them dependent on third-party providers. Organizations require a time-tracking solution that offers reliability and stability without the risk of unexpected feature limitations, forced upgrades, or service discontinuation. 
 
-The majority of existing solutions rely on manual input, timers, or \gls{GPS} tracking, which may be impractical for employees working in dynamic field environments. Although some applications incorporate voice-based logging, these implementations are generally limited to note taking rather than full transcription and structured work entry generation. Consequently, such solutions function more as auxiliary documentation tools rather than complete work-logging systems. According to my personal testing, all of the above work very well for what they are and usually provide a very strong set of features. They simply lack audio transcription. The Voice Work Record Application does not aim to provide the same amount or more features as the above mentioned, it's seen simply as an alternative solution for those whose needs are not met by current, most common approaches.
+The majority of existing solutions rely on manual input, timers, or \gls{GPS} tracking, which may be impractical for employees working in dynamic field environments. Although some applications incorporate voice-based logging, these implementations are generally limited to note taking rather than full transcription and structured work entry generation. Consequently, such solutions function more as auxiliary documentation tools rather than complete work-logging systems. According to the 1 week testing period, all of the above work very well for what they are and provide a strong set of features. They simply lack audio transcription.
+
+The Voice Work Record Application does not aim to provide the same amount or more features as the above mentioned, it's seen simply as an alternative solution for those whose needs are not met by current, most common approaches.
 
 \chapter{Design}
 
 \section{Overview}
 
-The Voice Work Record Application is designed to provide a scalable and efficient solution for employees to log and manage their work records using audio-based logging and manual entry. The intended business model is intentionally different from typical solutions. Instead of using a subscription model, the software is meant to be distributed as a full package. This approach increases setup time and complexity for businesses, as all backend services the app depends on need to be setup separately. It also eliminates the need for subscription fees. This also nearly removes the implementation considerations regards setting up for multiple companies, so the simplicity was a factor as well.
+The Voice Work Record Application is designed to provide a scalable and efficient solution for employees to log and manage their work records using audio-based logging and manual entry. The intended business model is intentionally different from typical solutions. Instead of using a subscription model, the software is meant to be distributed as a full package. This approach increases setup time and complexity for businesses, as all services the app depends on need to be setup separately. It also eliminates the need for subscription fees and offloads the responsibility of handling maintenance costs to the maintainer of the app.
 
-A fundamental design decision was to offload authentication and user management to Microsoft accounts. This is partly due to a requirements by DevBalance, as their infrastructure is based around Microsoft account. Since the application is expected to be used across different companies, managing user accounts internally would introduce unnecessary complexity. By leveraging Microsoft's identity management services, authentication and access control are handled externally, ensuring a seamless and secure login experience while eliminating the need for manual account management.
+A key design decision was to delegate authentication and user management to Microsoft accounts. This is partly due to requirements by DevBalance, as their infrastructure is based around Microsoft accounts. Since the application is expected to be used across different companies, managing user accounts internally would introduce unnecessary complexity. By leveraging Microsoft's identity management services, authentication and access control are handled externally, ensuring a seamless and secure login experience while eliminating the need for manual account management.
 
-The backend of the system is entirely cloud-based, ensuring high availability, real-time synchronization, and most importantly, strong scalability in exchange for possible fees up the road. A \gls{NoSQL} cloud database stores all timesheet\footnote{Timesheet refers to a structured object in the database that does not directly include all data, often only references to other objects or files. From the view of user, there are only work records (or work entries) that include all data} entries. Audio recordings are also uploaded to cloud storage, making them accessible from both mobile and web applications. Various approaches were considered, including self-hosted database solutions such as MongoDB or SQLite with a shared repository layer. While these could provide flexibility in local or hybrid deployments, they introduce challenges such as scalability limitations, synchronization complexity, and increased maintenance overhead. A cloud-first approach was chosen to provide automatic scaling, seamless access across devices, and minimal operational burden.
+The backend of the system is entirely cloud-based, ensuring high availability, real-time synchronization, and most importantly, strong scalability --- albeit with higher potential long-term costs. A \acrshort{NoSQL} cloud database stores all Timesheet\footnote{Timesheet refers to a structured object in the database that does not directly include all data, often only references to other objects or files. From the view of user, there are only work records (or work entries) that include all data} entries. Audio recordings are also uploaded to cloud storage, making them accessible from both mobile and web applications. Various approaches were considered, including self-hosted database solutions such as MongoDB with a shared repository layer. While these could provide flexibility in local or hybrid deployments, they introduce challenges such as scalability limitations, synchronization complexity, and increased maintenance overhead. A cloud approach was chosen to provide automatic scaling, seamless access across devices, and minimal operational burden.
 
-A key feature of the application is converting audio logs into structured timesheets. This is achieved through external Open \gls{API} endpoints that handle both speech-to-text transcription and text-to-timesheet parsing. Running a lightweight \gls{AI} model directly on mobile devices was considered as an alternative, but this approach was ultimately discarded due to performance constraints, difficulty in maintaining \gls{AI} models across different devices, and inconsistent processing power across smartphones. By utilizing cloud-based \gls{AI} services, the system ensures accurate and scalable transcription while keeping the front-end client relatively thin.
+A key feature of the application is converting audio logs into structured Timesheets. This is achieved through external OpenAI \gls{API} endpoints that handle both speech-to-text transcription and text-to-timesheet conversion. Running a lightweight \gls{AI} model directly on mobile devices has been considered as an alternative, but this approach was ultimately discarded due to performance constraints, difficulty in maintaining \gls{AI} models across different devices, and inconsistent processing power across smartphones. By utilizing cloud-based \gls{AI} services, the system ensures accurate and scalable transcription while keeping the front-end client relatively thin.
 
-The balance between thin and thick client models has been a crucial point of architectural consideration while coming up with the entire design. While the application adopts many principles of a thin client — minimizing local processing and relying on cloud-based services for compute-intensive tasks like \gls{AI} transcription and timesheet parsing — it is not purely thin in the traditional sense. In today’s mobile-first landscape, most applications exist on a spectrum between thin and thick clients, incorporating elements of both to optimize user experience, performance, and maintainability. Local caching, \gls{UI} rendering, and minimal offline capabilities are still handled on the client side to ensure responsiveness and usability. By offloading complex logic to an external server, the system avoids overburdening the client device and ensures consistent behavior across platforms. This hybrid approach enables centralized updates, simplified maintenance, and scalable architecture while retaining enough client-side functionality to support a smooth and interactive user experience \cite{distributedSystems}.
+The balance between thin and thick client models has been a crucial point of architectural consideration while coming up with the entire design. While the application adopts many principles of a thin client --- minimizing local processing and relying on cloud-based services for compute-intensive tasks like \gls{AI} transcription and Timesheet parsing --- it is not purely thin in the traditional sense. In today's mobile-first landscape, most applications exist on a spectrum between thin and thick clients, incorporating elements of both to optimize user experience, performance, and maintainability. Local caching, \gls{UI} rendering, and minimal offline capabilities are still handled on the client side to ensure responsiveness and usability. By offloading complex logic to an external server, the system avoids overburdening the client device and ensures consistent behavior across different devices. This hybrid approach enables centralized updates, simplified maintenance, and scalable architecture while retaining enough client-side functionality to support a smooth and interactive user experience \cite{distributedSystems}.
 
-The primary interface for users is a mobile application, available for both Android and \gls{iOS}. The user experience is designed to be minimalistic and intuitive, prioritizing voice-based interactions and quick data entry. Some \gls{UI} patterns were inspired by the afore-mentioned Clockify, an application with a not too dissimilar goal.  
+The primary interface for users is a mobile application, designed for both Android and \gls{iOS}. The \acrshort{UI}/\acrshort{UX} is designed to be minimalist and intuitive (see Section~\ref{chap:ui_design}), prioritizing voice-based interactions and quick data entry. Some \gls{UI} patterns were inspired by the afore-mentioned Clockify, an application with a not too dissimilar goal.
 
-In addition to the mobile app, there is also a web-based application, which provides an alternative way for users to access their timesheet data. The web application was developed independently by Bc. Ondřej Zelinka as a separate implementation. However, since both applications were meant to be interchangeable from the view of the user, the design and core functionalities of the entire system were discussed before and through their implementation, then aligned to ensure consistency between platforms. While both applications were implemented separately, they share many technical details related to backend services, including transcription models, prompts, database structures, and user group management. This ensures that both platforms provide a unified experience and operate on the same fundamental principles.
+In addition to the mobile app, there is also a web-based application\footnote{The web application is not a part of this thesis and has been developed by a fellow student, Bc. Ondřej Zelinka}, which provides an alternative way for users to log and access their Timesheet data. The web application was developed independently by Bc. Ondřej Zelinka as a separate implementation. However, since both applications were meant to be interchangeable from the view of the user, the design and core functionalities of the entire system were discussed before and through their implementation, then aligned to ensure consistency between platforms. While both applications were implemented separately, they share many technical details related to backend services. These shared services include the entire Firebase stack, which provides authentication, document and audio files storage. Furthermore, the OpenAI endpoints and associated prompts are employed as common resources for both applications. This design allows the user to utilize both applications simultaneously with a single account, ensuring a unified experience across platforms. Notably, the \gls{UI}/\gls{UX} designs have been discussed and aligned across both platforms. A shared set of supporting services ensures that both the mobile app and the web interface operate seamlessly, offering a consistent experience. This design allows the user to use both applications interchangeably with a single account, ensuring a unified experience across platforms.
 
-In conclusion, the system was designed with a strong emphasis on improving user experience, scalability, and operational efficiency. By utilizing Microsoft accounts for authentication, the application ensures secure and simplified access management, particularly important given the multi-organization use case. Cloud-based storage for data and audio recordings guarantees high availability, scalability, and seamless real-time synchronization across devices. The integration of external \gls{AI} services for transcription offloads resource-intensive processing to a third party, reducing system complexity without introducing a critical backend service that would add additional maintenance and most importantly, further scalability and availability concerns.
+In conclusion, the system was designed with a strong emphasis on improving user experience, scalability, and operational efficiency. By utilizing Microsoft accounts for authentication, the application ensures secure and simplified access management, particularly important given the multi-organization use case. Cloud-based storage for data and audio recordings guarantees high availability, scalability, and seamless real-time synchronization across devices. The integration of external \gls{AI} services for transcription offloads resource-intensive processing to a third party, reducing system complexity without introducing a critical backend service that would add additional maintenance and availability concerns.
 
 \section{System Architecture}
-
-During the implementation part of the thesis, a web interface\footnote{The web application is not a part of this thesis and has been developed by a fellow student, Bc. Ondřej Zelinka} has been developed concurrently with the mobile application. Although developed as separate projects, they share many common features and functionalities. Notably, the \gls{UI}/\gls{UX} designs have been discussed and aligned across both platforms. A shared set of supporting services ensures that both the mobile app and the web interface operate seamlessly, offering a consistent experience. These shared services include the entire Firebase stack, which provides authentication, data storage, and standardization of timesheet data formats. Furthermore, the OpenAI endpoints and associated prompts are employed as common resources for both applications and saved in Firebase storage. This design allows the user to utilize both applications simultaneously with a single account, ensuring a unified experience across platforms.
 
 The system architecture is designed with a clear focus on scalability, efficiency, and cross-platform functionality. After careful consideration of the system requirements, along with some prototyping, it has been decided that the core functionality will be supported by the following components.
 
 \subsection{System Components Overview}
 
-After careful consideration of the system requirements, along with some prototyping, it has been decided that the core functionality will be supported by the following components.
+After careful consideration of the system requirements and initial prototyping, it was decided that the core functionality would be supported by the following components. Their interactions are illustrated in the component diagram in Figure~\ref{fig:timesheet_app_architecture}.
 
 \begin{itemize}
-    \item \textbf{Android/\gls{iOS} Application} – A mobile application available on both Android and \gls{iOS} platforms, providing users with access to the system's functionalities.
-    \item \textbf{Web Application} – Developed by a fellow student, Bc. Ondřej Zelinka, as a separate project. This web-based platform offers similar functionalities to the mobile application, allowing users to interact with the system via a web browser.
+    \item \textbf{Android/\gls{iOS} Application} --- A mobile application designed for both Android and \gls{iOS} platforms, providing users with access to the system's functionalities.
+    \item \textbf{Web Application} --- Developed by a fellow student, Bc. Ondřej Zelinka, as a separate project. This web-based platform offers similar functionalities to the mobile application, allowing users to interact with the system via a web browser.
     \item \textbf{OpenAI \gls{API}}
-    \begin{itemize}
-        \item \textbf{Speech-to-Text Endpoint} – Used for transcribing audio recordings to text.
-        \item \textbf{Text-to-Timesheet Endpoint} – Converts the transcribed text into a structured timesheet format.
-    \end{itemize}
+    \begin{compactitem}
+        \item \textbf{Speech-to-Text Endpoint} --- Used for transcribing audio recordings to text.
+        \item \textbf{Text-to-Timesheet Endpoint} --- Converts the transcribed text into a structured format by generating Timesheet attributes.
+    \end{compactitem}
     \item \textbf{Firebase Services}
-    \begin{itemize}
-        \item \textbf{Firebase Storage} – Used for storing audio files.
-        \item \textbf{Firestore Database} – A \gls{NoSQL} database used to store static content such as prompts, activities, clients, and projects, as well as dynamic data such as timesheets.
-        \item \textbf{Firebase Authentication} – A service used for managing user authentication across both platforms.
-    \end{itemize}
-    \item \textbf{Azure App} – Provides finer control over login procedures via Microsoft accounts, as this is the primary method of authentication, as required by Devbalance.
+    \begin{compactitem}
+        \item \textbf{Firebase Storage} --- Used for storing audio files.
+        \item \textbf{Firestore Database} --- A \acrshort{NoSQL} database used to store static content such as activities, clients, and projects, as well as dynamic data such as Timesheets.
+        \item \textbf{Firebase Authentication} --- A service used for managing user authentication across both platforms.
+    \end{compactitem}
+    \item \textbf{Azure App Registration} --- Provides finer control over login procedures via Microsoft accounts, as this is the primary method of authentication, as required by DevBalance.
 \end{itemize}
 
 \begin{figure}[ht]
@@ -478,19 +480,18 @@ After careful consideration of the system requirements, along with some prototyp
     \label{fig:timesheet_app_architecture}
 \end{figure}
 
-Several additional services and supporting components are used and further discussed in the Deployment chapter at page \pageref{chap:deployment}.
+Several additional supporting services and components are used and further discussed in the Deployment chapter at page \pageref{chap:deployment}.
 
 \subsection{Entities Overview}
 
 There are in essence two places that persistently store data.
 
 \begin{itemize}
-    \item \textbf{Firestore Database} — a \gls{NoSQL} database at its core, accessed through Firebase’s \gls{API}, which provides a convenient interface along with built-in caching mechanisms to reduce the number of actual and expensive (both in terms of time and finances) reads and writes to the cloud. The database stores documents for timesheets, activities, projects, clients, and prompts. Among these, only timesheets are really considered live data and are updated very frequently. See \ref{fig:entity_diagram} for details on all entities. Note the relationships are omitted by design, as a \gls{NoSQL} database does not enforce relational constraints or schemas in the traditional sense and keeping the entries valid is up to the implementation.
-    
-    \item \textbf{Firebase Storage} -- used to store audio recordings. Similar to Firestore, it offers an abstraction layer that allows developers to organize files into folder-like structures. In our case, separated by generated owner IDs.
+    \item \textbf{Firestore Database} --- a \acrshort{NoSQL} database at its core, accessed through Firebase's \gls{API}, which provides a convenient interface along with built-in caching mechanisms to reduce the number of actual and expensive (both in terms of time and finances) reads and writes to the cloud. The database stores documents for Timesheets, activities, projects, clients. Among these, only Timesheets are really considered live data and are updated very frequently. See Figure~\ref{fig:entity_diagram} for details on all entities. Note the relationships are omitted by design, as a \acrshort{NoSQL} database does not enforce relational constraints or schemas in the traditional sense and keeping the entries valid is up to the implementation.
+    \item \textbf{Firebase Storage} --- used to store audio recordings. Similar to Firestore, it offers an abstraction layer that allows developers to organize files into folder-like structures. In our case, separated by generated user IDs.
 \end{itemize}
 
-\begin{figure}[ht]
+\begin{figure}[!t]
     \centering
     \includegraphics[width=\textwidth]{assets/diagrams/entity-relationship-diagram.drawio.png}
     \caption{Persistent entities in Firestore Database}
@@ -505,30 +506,35 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /{document=**} {
+	match /clients {
+      allow read, write: if request.auth != null;
+    }
+    
+    match /activities {
+      allow read, write: if request.auth != null;
+    }
+    
+    match /projects {
       allow read, write: if request.auth != null;
     }
 
-    match /timeSheets/{timesheetId} {
-      allow read, write: if request.auth.uid == resource.data.ownerId;
+    match /timesheets/{timesheetId} {
+      allow read, write: if request.auth != null && request.auth.uid == resource.data.ownerId;
     }
   }
 }
 \end{lstlisting}
 
 \chapter{Technologies used}
-
 The choice of technologies directly supports the functional and non-functional requirements, enabling efficient development and a seamless user experience. The key technologies used in the application include Flutter framework for building the front-end application and Firebase for persistent storage, authentication, logging and app distribution.
 
 \section{Flutter}
-
 Flutter is a \gls{UI} framework developed by Google that allows for the development of natively compiled applications for mobile, web, and desktop from a single codebase \cite{flutterGithub}. The Voice Work Record Application uses Flutter to create cross-platform applications primarily for Android and \gls{iOS}, though the framework allows to expand on this should the need arise.
 
-The programming language of choice is Dart, which provides strong typing, asynchronous programming, and fast performance. Dart is not the strongest languages (read as "richest set of features") available – for example, there is no support for true multiple inheritance, unchecked exceptions, macros or any kind of compile-time metaprogramming really. Function and operator overloading is also very limited. Some of these might be an attempt to simplify the language for readability, but most of it is a trade-off, that would compilation into a wide range of different devices. I believe a programming language with a richer set of features would just give too many vectors and possible issues when trying to compile to different languages.
+The programming language of choice is Dart, which provides strong typing, asynchronous programming, and fast performance. Dart is not the strongest of languages (read as "richest set of features") available --- for example, there is no support for true multiple inheritance, unchecked exceptions, macros or really any kind of compile-time metaprogramming. Function and operator overloading is also very limited. Some of these choices may aim to simplify the language for readability, but most represent trade-offs made to enable compilation across a wide range of devices. A richer set of features may introduce additional complexity and potential issues when targeting multiple platforms.
 
-By using Flutter, the application is able to maintain consistent functionality and high performance across different platforms.
+By using Flutter, the application is able to maintain consistent functionality and high performance across different platforms. The core advantage of Flutter are following:
 
-The core advantage of Flutter are following:
 \begin{itemize}
     \item \textbf{Development speed:} Is unparalleled due to how simple building \gls{UI} is and how well the hot reload feature works. It allows developers to instantly see changes in the code reflected in the application without needing to restart the app.
     \item \textbf{Unified language for \gls{UI} and logic:} Dart is used consistently across both the user interface and business logic layers. While Dart may not be the most powerful language for computationally intensive backend tasks, this is not a limitation in our case, as such workloads are handled by third-party services. This uniformity simplifies both the learning curve and code readability.
@@ -536,25 +542,20 @@ The core advantage of Flutter are following:
 \end{itemize}
 
 \section{Firebase}
-
 Firebase is a comprehensive platform for building web and mobile applications, offered by Google. It's well optimized for usage with Flutter and provides a set of tools that simplifies backend development, handling key tasks such as data storage, authentication, and crash reporting.
 
 \subsection{Firestore}
+Firestore\footnote{Firestore documentation: https://firebase.google.com/docs/firestore} is a \acrshort{NoSQL} cloud database that is used in the Voice Work Record Application to store work records and user data. Firestore allows for scalable and flexible storage, offering real-time synchronization of data across all devices. This is crucial for ensuring that the data is always up-to-date across different devices, especially in non-ideal network conditions.
 
-Firestore\footnote{Firestore documentation: https://firebase.google.com/docs/firestore} is a \gls{NoSQL} cloud database that is used in the Voice Work Record Application to store work records and user data. Firestore allows for scalable and flexible storage, offering real-time synchronization of data across all devices. This is crucial for ensuring that the data is always up-to-date across different devices, especially when working offline or in poor network conditions.
-
-Data in Firestore is stored in collections of documents. Each document contains fields, where data is stored as key-value pairs.
+Data in Firestore in native configuration is stored in collections of documents. Each document contains fields, where data is stored as key-value pairs.
 
 \subsection{Firebase Storage}
-
-Firebase Storage\footnote{Storage documentation: https://firebase.google.com/docs/storage} is used for storing and serving large files, such as voice recordings. The Voice Work Record Application uses Firebase Storage to securely store audio files that users upload as part of their work records. The integration of Firebase Storage ensures that these files are available for download and playback in a fast and secure manner.
+Firebase Storage\footnote{Storage documentation: https://firebase.google.com/docs/storage} is used for storing and serving larger files\footnote{Average audio file size during testing was around 200 \acrshort{KB}}, such as voice recordings. The Voice Work Record Application uses Firebase Storage to securely store audio files that users upload as part of their work records. The integration of Firebase Storage ensures that these files are available for download and playback in a fast and secure manner.
 
 \subsection{Crashlytics}
-
-Crashlytics\footnote{Crashlytics documentation: https://firebase.google.com/docs/crashlytics} is a powerful crash reporting tool integrated into the Voice Work Record Application to track, report, and fix crashes in real-time. Crashlytics provides detailed reports about the nature and frequency of crashes, allowing developers to quickly identify and resolve critical issues, improving the app's stability.
+Crashlytics\footnote{Crashlytics documentation: https://firebase.google.com/docs/crashlytics} is a powerful crash reporting tool integrated into the app to track, report, and fix crashes in real-time. Crashlytics provides detailed reports about the nature and frequency of crashes, allowing developers to quickly identify and resolve critical issues, improving the app's stability.
 
 \subsection{Firebase Authentication}
-
 Firebase Authentication\footnote{Authentication documentation: https://firebase.google.com/docs/auth} is used to manage user sign-in and authentication within the application. The Voice Work Record Application utilizes Microsoft authentication to allow users to sign in securely using their Microsoft credentials. This simplifies the authentication process and ensures that user accounts are managed efficiently.
 
 Firebase Authentication supports a wide range of identity providers, including email/password login, social media logins, and custom authentication methods. The flexibility of Firebase Authentication allows for easy integration of additional identity providers if required in the future.
@@ -562,29 +563,26 @@ Firebase Authentication supports a wide range of identity providers, including e
 \chapter{Implementation}
 
 \section{Software Architecture}
+Flutter by default does not impose strict guidelines on how code should be structured, nor does it mandate the separation of application layers. Flutter uses Dart as its primary programming language, and what would traditionally be a separate view model --- often implemented in a different language --- is represented here simply as a special class called a ``Widget''. This approach is both an advantage and a disadvantage: it enables rapid development and keeps the technology stack minimal, but it also allows, and in some cases even encourages, poor software architecture practices.
 
-Flutter by default does not impose strict guidelines on how code should be structured, nor does it mandate the separation of application layers. Flutter uses Dart as its primary programming language, and what would traditionally be a separate view model—often implemented in a different language—is represented here simply as a special class called a `Widget`. This approach is both an advantage and a disadvantage: it enables rapid development and keeps the technology stack minimal, but it also allows, and in some cases even encourages, poor software architecture practices.
-
-Unlike many other platforms, it is entirely possible to implement the entire business logic and all views of an application in a single `.dart` file. As a result, it is crucial for developers to be disciplined and to establish a coherent software architecture early in the development cycle.
+Unlike many other platforms, it is entirely possible to implement the entire business logic and all views of an application in a single ``.dart'' file. As a result, it is crucial for developers to be disciplined and to establish a coherent software architecture early in the development cycle.
 
 \subsection{MVC Pattern}
 
-The Model-View-Controller (\gls{MVC}) pattern is a foundational architectural pattern for user interface design, originally developed by Trygve Reenskaug for the Smalltalk platform in the late 1970s and later popularized across numerous frameworks and platforms \cite{fowlerPEAA}.
-
-\gls{MVC} divides the user interface into three distinct roles \cite{mdnMVC}:
+The Model-View-Controller (\gls{MVC}) pattern is a foundational architectural pattern for user interface design, originally developed by Trygve Reenskaug for the Smalltalk platform in the late 1970s and later popularized across numerous frameworks and platforms \cite{fowlerPEAA}. \gls{MVC} divides the user interface into three distinct roles \cite{mdnMVC}:
 
 \noindent
-\begin{itemize}
-    \item \textbf{Model} — Represents the underlying domain data and business logic. It is a non-visual component and ideally independent of any user interface elements. In many systems, this corresponds to domain models or transaction scripts, provided they contain no \gls{UI}-related logic.
-    \item \textbf{View} — Handles the visual representation of the model. It is responsible for presenting data to the user in various forms, such as \gls{GUI} elements or \gls{HTML} pages, but does not itself modify the data.
-    \item \textbf{Controller} — Receives user input, manipulates the model accordingly, and updates the view. It effectively acts as an intermediary between the user's actions and the system's internal state.
-\end{itemize}
+\begin{compactitem}
+    \item \textbf{Model} --- Represents the underlying domain data and business logic. It is a non-visual component and ideally independent of any user interface elements. In many systems, this corresponds to domain models or transaction scripts, provided they contain no \gls{UI}-related logic.
+    \item \textbf{View} --- Handles the visual representation of the model. It is responsible for presenting data to the user in various forms, such as \gls{GUI} elements or \gls{HTML} pages, but does not itself modify the data.
+    \item \textbf{Controller} --- Receives user input, manipulates the model accordingly, and updates the view. It effectively acts as an intermediary between the user's actions and the system's internal state.
+\end{compactitem}
 
-This separation enhances modularity and testability. In particular, the separation of presentation and model is one of the most fundamental heuristics of sound software design. It allows the same business logic to be reused across multiple interface types—such as graphical interfaces, web front ends, or APIs—without altering the model code. Furthermore, models, being non-visual, are significantly easier to test than views, enabling better automated testing and cleaner development practices.
+This separation enhances modularity and testability. In particular, the separation of presentation and model is one of the most fundamental heuristics of sound software design. It allows the same business logic to be reused across multiple interface types—such as graphical interfaces, web front ends, or APIs --- without altering the model code. Furthermore, models, being non-visual, are significantly easier to test than views, enabling better automated testing and cleaner development practices.
 
 Another key benefit of this separation is directional dependency: the presentation depends on the model, but the model remains completely unaware of the presentation. This simplifies the model’s design and enables greater flexibility when introducing new views or presentation styles.
 
-\begin{figure}[H]
+\begin{figure}[!hb]
     \centering
     \includegraphics[width=0.6\textwidth]{assets/diagrams/mvc.drawio.png}
     \caption[Model-View-Controller pattern]{Model-View-Controller (\gls{MVC}) pattern illustration.}
@@ -592,24 +590,27 @@ Another key benefit of this separation is directional dependency: the presentati
 \end{figure}
 
 \subsection{Layered Pattern}
-
 The application uses an extended, layered variation of the \gls{MVC} pattern. Since Flutter does not enforce architectural boundaries, maintaining this structure is entirely the developer's responsibility. The key layers are:
 
-\begin{itemize}
-    \item \textbf{Model}
-    \item \textbf{Service}
-    \item \textbf{Controller}
-    \item \textbf{View}
-\end{itemize}
+\begin{compactitem}
+    \item Model
+    \item Service
+    \item Controller
+    \item View
+\end{compactitem}
 
-In some cases not all layers are utilised, particularly in cases in which no data is required, hence missing the model. In other cases there are services which do not have a dedicated controller. This is because it's not a wanted occurence for the developer to directly call these services. In such a case, a more generic controller is provided that calls multiple services internally. This allows for simpler calls in the views, as business logic is unwanted there - and neither are thick boilerplates. See below for further explanation and examples of each layer.
+In some cases not all layers are utilised, particularly in cases in which no data is required, hence missing the model. In other cases there are services which do not have a dedicated controller. This is because it's not a wanted occurence for the developer to directly call these services. In such a case, a more generic controller is provided that calls multiple services internally. This allows for simpler calls in the views, as business logic is unwanted there --- and neither are thick boilerplates. See below for further explanation and examples of each layer.
 
-\newpage
 \subsubsection{Model layer}
+Unlike \gls{MVC}, Model merely defines the objects and data structures used throughout the app. It doesn't carry any logic apart from conversion to and from the database. Listing~\ref{lst:client_model} shows how a client is represented in the app.
 
-Unlike \gls{MVC}, Model merely defines the objects and data structures used throughout the app. It doesn't carry any logic apart from conversion to and from the database. Listing \ref{lst:client_model} shows how a client is represented in the app.
+\subsubsection{Service layer}
 
-\begin{lstlisting}[language=Dart, caption={Model layer example on Client class}, label={lst:client_model}, floatplacement=H, showstringspaces=false]
+Contains the business logic and manages operations such as logging. Both of these can bee seen Listing \ref{lst:auth_service}.
+
+\begin{listing}[H]
+\centering
+\begin{lstlisting}[language=Dart, caption={Model layer example on Client class}, label={lst:client_model}, floatplacement=H, showstringspaces=false, breakatwhitespace=true]
 import 'package:json_annotation/json_annotation.dart';
 
 part 'client.g.dart';
@@ -639,11 +640,10 @@ class Client {
   Map<String, dynamic> toJson() => _$ClientToJson(this);
 }
 \end{lstlisting}
+\end{listing}
 
-\subsubsection{Service layer}
-
-Contains the business logic and manages operations such as logging. Both of these can bee seen Listing \ref{lst:auth_service}.
-
+\begin{listing}
+    
 \begin{lstlisting}[language=Dart, caption={Service layer example on Firebase AuthService class}, label={lst:auth_service}, floatplacement=H, showstringspaces=false]
 class AuthService with WidgetsBindingObserver {
   FirebaseAuth get instance => FirebaseAuth.instance;
@@ -671,13 +671,13 @@ class AuthService with WidgetsBindingObserver {
   }
 }
 \end{lstlisting}
+\end{listing}
+
 
 \subsubsection{Controller layer}
-
 Is the layer directly called from views. It delegates most operations to its corresponding services. In this project, controllers are referred to as \textbf{providers} due to naming conventions associated with the widespread Provider library \cite{providerPackage}, which builds upon Flutter's \texttt{ChangeNotifier} class \cite{flutterChangeNotifier}.  
 The controllers manage the application's state and provide it to other components—hence the term \textit{Provider}. Listing \ref{lst:auth_provider} shows the \gls{API} available to Widgets, as well as how its corresponding service (refer to Listing \ref{lst:auth_service}) is used. This same pattern is used throughout the app.
 
-\newpage
 \begin{lstlisting}[language=Dart, caption={Controller layer example on AuthProvider class}, label={lst:auth_provider}, floatplacement=H, showstringspaces=false]
 class AuthProvider with ChangeNotifier {
   final _authService = GetIt.I<AuthService>();
@@ -713,9 +713,8 @@ class AuthProvider with ChangeNotifier {
 }
 \end{lstlisting}
 
-\newpage
-\subsubsection{View layer}
 
+\subsubsection{View layer}
 Defines the user interface, with limited visibility into business logic, typically interacting only with controllers. In the case of Flutter, the view layer corresponds directly to Widgets, as can be seen in Listing \ref{lst:login_screen}.
 
 \begin{lstlisting}[language=Dart, caption={View layer example on LoginScreen Widget class}, label={lst:login_screen}, floatplacement=H, showstringspaces=false]
@@ -747,15 +746,15 @@ class LoginScreen extends StatelessWidget {
 \end{lstlisting}
 
 \subsection{Project Directory Structure}
-
 Organizing a Flutter project's directory structure is pivotal for maintaining scalability and readability. While Flutter does not enforce a specific directory layout, adopting a consistent approach is essential, especially as the application grows in complexity.
 
-\subsubsection{Feature-First Structure}
-
-In a feature-first structure, visualized in Listing \ref{lst:project_directory_feature_first}, the application is organized around business features, with each feature acting as a self-contained module.  
+%%\subsubsection{Feature-First Structure}
+In a \textbf{feature-first structure}, visualized in Listing \ref{lst:project_directory_feature_first}, the application is organized around business features, with each feature acting as a self-contained module.  
 This method is particularly suited to agile teams and large projects.
 
-\begin{lstlisting}[caption={Feature-first directory structure}, label={lst:project_directory_feature_first}, floatplacement=H, showstringspaces=false]
+\begin{listing}
+  
+\begin{lstlisting}[caption={Feature-first directory structure}, label={lst:project_directory_feature_first}, floatplacement=H, showstringspaces=false, breaklines=false]
 lib/
 +-- src/
     +-- features/
@@ -767,15 +766,16 @@ lib/
         +-- feature2/
         +-- feature3/
 \end{lstlisting}
+\end{listing}
 
 Some of the advantages of this structure are easier navigation, better scalability, and simplified refactoring.  
 However, it can introduce code duplication and challenges around shared services if not carefully managed.
 
-\newpage
-\subsubsection{Layer-first structure}
+%%\subsubsection{Layer-first structure}
+An alternative approach is the \textbf{layer-first structure}, visualized in Listing \ref{lst:project_directory_layer_first} Here, the application is divided into distinct technical layers, like data, domain, and presentation, independent of features.
 
-An alternative approach is the layer-first structure, visualized in Listing \ref{lst:project_directory_layer_first} Here, the application is divided into distinct technical layers, like data, domain, and presentation, independent of features.
-
+\begin{listing}[H]
+\centering
 \begin{lstlisting}[caption={Layer-first directory structure}, label={lst:project_directory_layer_first}, floatplacement=H, showstringspaces=false]
 lib/
 +-- src/
@@ -792,15 +792,9 @@ lib/
         +-- data/
         |   +-- feature2/
 \end{lstlisting}
+\end{listing}
 
-Layer-first structures promote separation of concerns and re-usability.  
-However, they can complicate refactoring efforts and might not scale as cleanly for feature-heavy applications.
-
-Detailed comparison I've based my decisions on can be found in Andrea Bizzotto's article \cite{flutterStructure}.
-
-\newpage
-In this project, a feature-first structure is used, taking the developer management tax in exchange for better long-term maintainability.
-
+\begin{listing}[H]
 \begin{lstlisting}[caption={Voice Record App directory structure}, label={lst:project_directory_timesheet}, floatplacement=H, showstringspaces=false]
 lib/
 +-- src/
@@ -820,17 +814,20 @@ lib/
     +-- firebase_options.dart
     +-- main.dart
 \end{lstlisting}
+\end{listing}
+
+Layer-first structures promote separation of concerns and also re-usability. However, they can complicate refactoring efforts and might not scale as cleanly for feature-heavy applications. Detailed comparison I've based my decisions on can be found in Andrea Bizzotto's article \cite{flutterStructure}. In this project, a feature-first structure is used, taking the developer management tax in exchange for better long-term maintainability.
+
 
 \subsection{State Management}
-There are multiple approaches to handling state management in Flutter. In many frameworks, a specific method of state management is prescribed. Because Flutter supports a wide range of platforms, it is not surprising that state management is largely delegated to plugins and third-party libraries \cite{flutterStateMgmt}.
+There are multiple approaches to handling state management in Flutter. In many frameworks, a specific method of state management is prescribed. Because Flutter supports a wide range of platforms, it is not surprising that state management is largely delegated to plugins and third-party libraries~\cite{flutterStateMgmt}. Among the available options~\cite{flutterStateMgmt}, three methods are generally considered industry standards:
 
-Among the available options \cite{flutterStateMgmt}, three methods are generally considered industry standards:
-
-\begin{itemize}
+\begin{compactitem}
+    
   \item \texttt{StatefulWidget}'s \texttt{setState} method\footnote{Official \texttt{StatefulWidget} documentation: \url{https://api.flutter.dev/flutter/widgets/StatefulWidget-class.html}}
   \item \texttt{Provider} package\footnote{Provider package on pub.dev: \url{https://pub.dev/packages/provider}}
   \item \texttt{Riverpod} package\footnote{Official Riverpod site: \url{https://riverpod.dev/}}
-\end{itemize}
+\end{compactitem}
 
 In the Voice Record Application, the \texttt{Provider} package manages states that are or may feasibly be shared across multiple components. The \texttt{ChangeNotifier} class simplifies the process of defining listeners and updating them using \texttt{notifyListeners()}. A simplified version of this approach can be seen in Listing \ref{lst:metadata_provider}.
 
@@ -897,47 +894,48 @@ class _EditWorkRecordScreenState extends State<EditWorkRecordScreen> {
 
 \newpage
 \section{UI/UX Design}
+\label{chap:ui_design}
 
 As Luke Wroblewski explains in \textit{Mobile First}~\cite[p.~50]{wroblewski2011mobile}, there are four primary interaction types that mobile experiences should be designed to support:
 
-\begin{itemize}
-  \item \textit{Lookup/Find (urgent info, local)}: I need an answer to something now — frequently related to my current location in the world.
+\begin{compactitem}
+    
+  \item \textit{Lookup/Find (urgent info, local)}: I need an answer to something now --- frequently related to my current location in the world.
   \item \textit{Explore/Play (bored, local)}: I have some time to kill and just want a few idle time distractions.
   \item \textit{Check In/Status (repeat/micro-tasking)}: Something important to me keeps changing or updating, and I want to stay on top of it.
   \item \textit{Edit/Create (urgent change/micro-tasking)}: I need to get something done now that can’t wait.
-\end{itemize}
+\end{compactitem}
 
-For the Voice Work Record App, the final interaction type, \textit{Edit/Create}, is the most applicable. The first principle of the app’s design is therefore to make the creation and editing of work records as quick and seamless as possible. This supports the common user scenario of needing to log work hours urgently. To support this, the recording screen \gls{UI} is intentionally minimalist and immediately accessible -- it is the first interface the user sees upon launching the application, as shown in Figure~\ref{fig:recording_screen}. The most frequently used buttons are positioned within areas considered easily reachable, as outlined by Wroblewski~\cite[p.~73]{wroblewski2011mobile}. Less frequently used controls—such as navigation to work records (Figure~\ref{fig:records_screen}) or user preferences (Figure~\ref{fig:settings_screen})—are placed in less accessible regions of the screen.
+For the Voice Work Record App, the final interaction type, \textit{Edit/Create}, is the most applicable. The first principle of the app’s design is therefore to make the creation and editing of work records as quick and seamless as possible. This supports the common user scenario of needing to log work hours urgently. To support this, the recording screen \gls{UI} is intentionally minimalist and immediately accessible --- it is the first interface the user sees upon launching the application, as shown in Figure~\ref{fig:recording_screen}. The most frequently used buttons are positioned within areas considered easily reachable, as outlined by Wroblewski~\cite[p.~73]{wroblewski2011mobile}. Less frequently used controls --- such as navigation to work records (Figure~\ref{fig:records_screen}) or user preferences (Figure~\ref{fig:settings_screen}) --- are placed in less accessible regions of the screen.
 
-The second principle is Content Over Navigation, also emphasized by Wroblewski~\cite[p.~52]{wroblewski2011mobile}. On mobile, users want immediate access to the content that serves their goal, not a list of menu options or a full sitemap. So the menu is naturally hidden and nearly all the space is used to show as much information about the work records as possible -- See Figures \ref{fig:records_screen} and \ref{fig:edit_record}.
+The second principle is Content Over Navigation, also emphasized by Wroblewski~\cite[p.~52]{wroblewski2011mobile}. On mobile, users want immediate access to the content that serves their goal, not a list of menu options or a full sitemap. So the menu is naturally hidden and nearly all the space is used to show as much information about the work records as possible --- See Figures \ref{fig:records_screen} and \ref{fig:edit_record}.
 
 \section{Audio recording to database entry conversion}
 
 After the user records audio and describes the work he has done, there are several steps to convert that into a work record:
-\begin{enumerate}
-  \item Save audio to Firebase Storage
-  \item Transcribe the audio into text
-  \item Convert transcribed text into a structured format suitable for parsing -- Relevant information needs to be extracted, such as client, project, time duration and a concise work description.
-  \item Parse structured text into a Timesheet
-  \item Create a work record and save to Firestore Database
-\end{enumerate}
+\begin{compactenum}
+  
+  \item Save audio to Firebase Storage.
+  \item Transcribe the audio into text.
+  \item Convert transcribed text into a structured format suitable for parsing --- Relevant information needs to be extracted, such as client, project, time duration and a concise work description.
+  \item Parse structured text into a Timesheet.
+  \item Create a work record and save to Firestore Database.
+\end{compactenum}
 
-While each individual step is relatively straightforward and can be performed with a reasonable degree of reliability, each one also introduces potential sources of error—such as inaccurate transcription, improper text conversion, or failures during parsing. Cumulatively, these issues can significantly compromise the quality of the final output. A more systematic approach is required to ensure the overall reliability of the process.
+While each individual step is relatively straightforward and can be performed with a reasonable degree of reliability, each one also introduces potential sources of error --- such as inaccurate transcription, improper text conversion, or failures during parsing. Cumulatively, these issues can significantly compromise the quality of the final output. A more systematic approach is required to ensure the overall reliability of the process.
 
 \subsection{How conversion is evaluated}
-
 To address this challenge systematically, a Python-based testing suite called \texttt{timesheet\_models\_tester} was developed. Take note this is not the primary result of the thesis, rather an optimization tool. Nevertheless, the code is provided as an attachment. This script automates the process of evaluating prompt effectiveness by comparing model-generated outputs with annotated ground-truth data. Each test case consists of an audio file and a corresponding expected output (annotations), which together define what the ideal model response should be.
 
-The audio recordings used are recorded by different people using different microphones. The length and quality of the recordings differ greatly, as does the level of detail provided. Some go quite in depth and are explicit on what project the work has been part of, some do not mention it at all. Most do have the information for which client the work has been done and how long the employee has worked for—these two attributes are key to creating a work record, as in a real world scenario, these will determine how much money the client should pay. The incompleteness is by design—as it was found out during testing, it's quite a common occurrence for the user to forget to mention some critical piece of information.
+The audio recordings used are recorded by different people using different microphones. The length and quality of the recordings differ greatly, as does the level of detail provided. Some go quite in depth and are explicit on what project the work has been part of, some do not mention it at all. Most do have the information for which client the work has been done and how long the employee has worked for --- these two attributes are key to creating a work record, as in a real world scenario, these will determine how much money the client should pay. The incompleteness is by design --- as it was found out during testing, it's quite a common occurrence for the user to forget to mention some critical piece of information.
 
 The suite processes each audio input through transcription, followed by structured prompt-based extraction. The model's responses are then compared to the expected results using the \texttt{SequenceMatcher} class from Python’s standard \texttt{difflib} module \cite{pythonDifflib}. This class computes a similarity score between sequences, which is particularly useful for evaluating how closely the model's output matches the annotated ground truth.
 
-\texttt{SequenceMatcher} operates by finding the longest contiguous matching subsequence between two inputs, excluding so-called “junk” elements\footnote{\texttt{SequenceMatcher} documentation: \url{https://docs.python.org/3/library/difflib.html\#difflib.SequenceMatcher}}. It calculates a similarity ratio ranging from 0 to 1, where values closer to 1 indicate stronger similarity. For instance, a ratio above 0.6 typically implies a reasonably good match. This allows us to quantify the accuracy of the extracted values in a way that tolerates minor textual deviations, such as synonyms or rephrased fragments, while still penalizing semantically incorrect predictions.
+\texttt{SequenceMatcher} operates by finding the longest contiguous matching subsequence between two inputs, excluding so-called ``junk'' elements\footnote{\texttt{SequenceMatcher} documentation: \url{https://docs.python.org/3/library/difflib.html\#difflib.SequenceMatcher}}. It calculates a similarity ratio ranging from $0$ to $1$, where values closer to $1$ indicate stronger similarity. For instance, a ratio above $0.6$ typically implies a reasonably good match. This allows us to quantify the accuracy of the extracted values in a way that tolerates minor textual deviations, such as synonyms or rephrased fragments, while still penalizing semantically incorrect predictions.
 
 This metric is applied field-by-field for each Timesheet attribute, and an overall accuracy score is computed as the average of the individual field scores. This score is further referred to as \emph{End-to-end \glsdisp{AA}{Average Accuracy}}.
 
 \subsection{Optimizing Transcription Requests}
-
 For our transcription functionality, we evaluated different models available via the OpenAI \gls{API}, specifically \texttt{whisper-1}\footnote{\url{https://platform.openai.com/docs/models/whisper-1}} and \texttt{gpt-4o-transcribe}\footnote{\url{https://platform.openai.com/docs/models/gpt-4o-transcribe}}. The goal was to identify a solution that balances accuracy, language support, and performance for our use case.
 
 The \texttt{whisper-1} model demonstrated reasonably accurate results for English audio transcriptions out of the box. Its performance with Czech audio was less consistent. While most outputs were legible, grammatical inaccuracies were occasionally present, especially in more complex or noisy recordings. It should be noted that poor audio quality significantly impacted transcription accuracy—though in such cases, even annotating the audio for testing was difficult.
@@ -1018,19 +1016,19 @@ Given that prompt and temperature optimization had already been completed for \t
 
 \subsubsection{Prompt optimization}
 
-During the development of the timesheet transcription and extraction system, particular attention was paid to prompt optimization. While transcription using OpenAI's \texttt{whisper-1} model produced usable results from the start, extracting structured information from the transcription — specifically client, project, activity, duration, and description — required more nuanced tuning of prompts \cite{openaiPrompt}.
+During the development of the timesheet transcription and extraction system, particular attention was paid to prompt optimization. While transcription using OpenAI's \texttt{whisper-1} model produced usable results from the start, extracting structured information from the transcription --- specifically client, project, activity, duration, and description --- required more nuanced tuning of prompts \cite{openaiPrompt}.
 
 \subsubsection{Temperature optimization}
 
 A significant part of the prompt optimisation effort focused on selecting the right temperature setting. Temperature is a crucial parameter in the behavior of large language models, including those provided by OpenAI. It directly influences the randomness or determinism of the model's responses.
 
-In simple terms, temperature controls how creative or conservative the model is when generating text. Lower values (closer to 0.0) make the model more deterministic — it tends to return the most likely and predictable output. Higher values (up to 1.0 or beyond) encourage more randomness and variation, allowing for more diverse or creative completions but also increasing the likelihood of less relevant or inconsistent outputs.
+In simple terms, temperature controls how creative or conservative the model is when generating text. Lower values (closer to $0.0$) make the model more deterministic --- it tends to return the most likely and predictable output. Higher values (up to $1.0$ or beyond) encourage more randomness and variation, allowing for more diverse or creative completions but also increasing the likelihood of less relevant or inconsistent outputs.
 
-For tasks requiring precise structure and reliability — such as extracting well-defined fields from a transcript — lower temperatures are generally preferred. Overly low temperatures may also reduce the model's ability to generalize to slightly ambiguous or unconventional input phrasings. Conversely, higher temperatures may help the model interpret more loosely defined prompts, but at the cost of consistency and factual accuracy.
+For tasks requiring precise structure and reliability --- such as extracting well-defined fields from a transcript --- lower temperatures are generally preferred. Overly low temperatures may also reduce the model's ability to generalize to slightly ambiguous or unconventional input phrasings. Conversely, higher temperatures may help the model interpret more loosely defined prompts, but at the cost of consistency and factual accuracy.
 
-In this project, a range of temperature values was tested using the \texttt{timesheet\_models\_tester} script. These ranged from 1.0 (high randomness) to 0.0 (fully deterministic), with intermediate steps at 0.75, 0.5, and 0.25. This allowed for a systematic evaluation of how temperature impacts both extraction accuracy and response stability.
+In this project, a range of temperature values was tested using the \texttt{timesheet\_models\_tester} script. These ranged from $1.0$ (high randomness) to $0.0$ (fully deterministic), with intermediate steps at $0.75$, $0.5$, and $0.25$. This allowed for a systematic evaluation of how temperature impacts both extraction accuracy and response stability.
 
-\begin{figure}[ht]
+\begin{figure}[!h]
     \centering
     \begin{tikzpicture}
         \begin{axis}[
@@ -1064,13 +1062,11 @@ In this project, a range of temperature values was tested using the \texttt{time
 
 Fine-tuning this parameter helped strike a balance between robustness and precision, ensuring that the model could handle varied transcription inputs without deviating too far from the expected timesheet format \cite{openaiTemp}.
 
-Given the nature of requests made to the endpoints, it was expected the lowest temperature settings at 0.0 to 0.1, i.e. the most deterministic one, would have the best overall results. This was not the case, as can be seen in the Figure \ref{fig:temp_vs_accuracy} and Table \ref{tab:temperature_summary}. Upon investigating the results, the reason is the following: Quite often the user would not mention all of necessary information - very often the activity and/or the project. These are both chosen from a pre-defined long list of options so it's no surprise the user doesn't exactly specify. Now the low requests with low temperature would often produce an \gls{N/A} If the attribute was not explicitly mentioned. This is OK behaviour, but in many cases, from a human point of view at the very least, it was possible to guess the correct option based on the description of the task. For example, If the user mentioned in the recording that he was working with databases, it's feasible the project could fit into the "Storage" category. While the higher tempereture requests would differ across multiple runs, the guess would sometimes be correct. Choosing too high of a temperature caused the responses to always try to fit into some option rather than choosing a more generic one. That behaviour would often overflow in choosing seemingly random options just for the sake of choosing one.
+Given the nature of requests made to the endpoints, it was expected the lowest temperature settings at $0.0$ to $0.1$, i.e. the most deterministic one, would have the best overall results. This was not the case, as can be seen in the Figure \ref{fig:temp_vs_accuracy} and Table \ref{tab:temperature_summary}. Upon investigating the results, the reason is the following: Quite often the user would not mention all of necessary information - very often the activity and/or the project. These are both chosen from a pre-defined long list of options so it's no surprise the user doesn't exactly specify. Now the low requests with low temperature would often produce an \gls{N/A} If the attribute was not explicitly mentioned. This is OK behaviour, but in many cases, from a human point of view at the very least, it was possible to guess the correct option based on the description of the task. For example, If the user mentioned in the recording that he was working with databases, it's feasible the project could fit into the ``Storage'' category. While the higher temperature requests would differ across multiple runs, the guess would sometimes be correct. Choosing too high of a temperature caused the responses to always try to fit into some option rather than choosing a more generic one. That behaviour would often overflow in choosing seemingly random options just for the sake of choosing one.
 
-Temperature of around 0.25 was chosen to be the most reliable one - it guessed correctly often enough, but it's guesses weren't too rash or random. This provided the highest overall end-to-end \gls{AA} of 80.56\% and a reasonable \gls{RSD} of 3.44\%. The results can be seen in Table \ref{tab:temperature_summary}.
+Temperature of around 0.25 was chosen to be the most reliable one --- it guessed correctly often enough, but it's guesses weren't too rash or random. This provided the highest overall end-to-end \gls{AA} of $80.56$\,\% and a reasonable \gls{RSD} of $3.44$\,\%. The results can be seen in Table \ref{tab:temperature_summary}.
 
-Interestingly, the lowest deviation was observed at a temperature setting of 0.5. This may be attributed to its proximity to the default value of 0.6, suggesting that the model could be better optimized for this range on OpenAI's side.
-
-\begin{table}[H]
+\begin{table}[h!]
   \centering
   \begin{tabularx}{\textwidth}{lXXX}
     \toprule
@@ -1087,9 +1083,8 @@ Interestingly, the lowest deviation was observed at a temperature setting of 0.5
   \label{tab:temperature_summary}
 \end{table}
 
-\newpage
-Figure \ref{lst:user_prompt_template_en} shows the english version of user prompt template used in the application. Some parts are naturally dynamic and each request differs. Clients, activites and projects are pre-defined. Text to be processed is provided from response to the audio transcription request.
-
+\begin{listing}[H]
+    
 \begin{lstlisting}[caption={English version of the user prompt template used in the application}, label={lst:user_prompt_template_en}, floatplacement=ht, showstringspaces=false]
 Transform the text given below into a CSV row semicolon separated in this exact format: CLIENT;ACTIVITY;PROJECT;TIME SPENT;WORK DESCRIPTION
 
@@ -1105,6 +1100,13 @@ Instructions for the transformation:
 
 Text to process: {transcribed_text}
 \end{lstlisting}
+\end{listing}
+
+Interestingly, the lowest deviation was observed at a temperature setting of $0.5$. This may be attributed to its proximity to the default value of $0.6$, suggesting that the model could be better optimized for this range on OpenAI's side.
+
+Figure~\ref{lst:user_prompt_template_en} shows the english version of user prompt template used in the application. Some parts are naturally dynamic and each request differs. Clients, activities and projects are pre-defined. Text to be processed is provided from response to the audio transcription request.
+
+
 
 \chapter{Deployment}
 \label{chap:deployment}
@@ -1119,12 +1121,13 @@ In modern software development, \textbf{Continuous Integration (\gls{CI})} and \
 
 For this project, the \gls{CI}/\gls{CD} pipeline is managed via \textbf{GitLab} and automates several stages of the development process:
 
-\begin{itemize}
+\begin{compactitem}
+
   \item \textbf{Lint}: Ensures code quality and style guidelines are followed.
   \item \textbf{Version control}: Automatically updates version information in the \texttt{pubspec.yaml} file.
   \item \textbf{Test}: Runs unit tests to verify functionality and catch errors early.
   \item \textbf{Build}: Compiles the Android app into a release \gls{APK}.
-\end{itemize}
+\end{compactitem}
 
 Although deployment to \textbf{Google Play} and \textbf{Firebase App Distribution} is not fully automated, the pipeline prepares the app for deployment by automating the build, testing, and versioning processes. Once the build is completed, \gls{APK} from build artefacts can be used to release the new version.
 
@@ -1134,30 +1137,19 @@ Versioning plays a crucial role in the management and delivery of software, part
 
 In the development of the smart timesheet app, we adopted the semantic versioning standard, a widely recognized system designed to convey meaning about the underlying code with each version identifier \cite{semver}. The standard uses the format \texttt{MAJOR.MINOR.PATCH}, where:
 
-\begin{itemize}
+\begin{compactitem}
   \item \texttt{MAJOR} version increases indicate incompatible \gls{API} changes,
-  \item \texttt{MINOR} version increases add functionality in a backward-compatible manner, and
+  \item \texttt{MINOR} version increases add functionality in a backward compatible manner, and
   \item \texttt{PATCH} version increases represent backward-compatible bug fixes.
-\end{itemize}
+\end{compactitem}
 
-In our project, version numbers follow the following pattern:
+In our project, version numbers follow the following pattern:\\\texttt{MAJOR.MINOR.PATCH+BUILD\_METADATA}. 
 
-\begin{verbatim}
-MAJOR.MINOR.PATCH+BUILD_METADATA
-\end{verbatim}
-
-To give a clearer example:
-
-\begin{verbatim}
-0.11.0+1745075692
-\end{verbatim}
-
-
-The core \texttt{0.11.0} adheres to the semantic versioning scheme, while the suffix \texttt{+1745075692} serves as build metadata. This metadata, represented as a Unix timestamp, enables differentiation of individual builds down to the level of Git commits, which is particularly helpful for internal testing and continuous integration workflows. A Unix timestamp is a numeric representation of the number of seconds that have elapsed since January 1, 1970 (midnight \gls{UTC}/\gls{GMT}), and is commonly used in computing for time tracking \cite{mdnUnixTime}.
+To give a clearer example: \texttt{0.11.0+1745075692}. The core \texttt{0.11.0} adheres to the semantic versioning scheme, while the suffix \texttt{+1745075692} serves as build metadata. This metadata, represented as a Unix timestamp, enables differentiation of individual builds down to the level of Git commits, which is particularly helpful for internal testing and continuous integration workflows. A Unix timestamp is a numeric representation of the number of seconds that have elapsed since January 1, 1970 (midnight \gls{UTC}/\gls{GMT}), and is commonly used in computing for time tracking \cite{mdnUnixTime}.
 
 The build metadata is automatically appended by a GitLab \gls{CI} pipeline, which injects a timestamp. This automation ensures that each distributed version can be traced back to the exact source state, facilitating debugging, auditing, and reproducibility.
 
-Development leading up to the final delivery of this thesis is considered work-in-progress. The first stable release — version \texttt{1.0.0} — is planned to coincide with the project's completion and will signify a stable, production-ready build \cite{semver}.
+Development leading up to the final delivery of this thesis is considered work-in-progress. The first stable release --- version \texttt{1.0.0} --- is planned to coincide with the project's completion and will signify a stable, production-ready build \cite{semver}.
 
 \section{Crashlytics}
 
@@ -1204,7 +1196,7 @@ class Log extends Logger {
 }
 \end{lstlisting}
 
-A hidden developer screen -- accessible by tapping on the app version number (as is common practice), displays all locally collected logs. This allows testers or users to manually inspect and share logs with developers, even if no exception was caught by the Flutter crash handler.
+A hidden developer screen --- accessible by tapping on the app version number (as is common practice), displays all locally collected logs. This allows testers or users to manually inspect and share logs with developers, even if no exception was caught by the Flutter crash handler.
 
 \section{App Distribution}
 
