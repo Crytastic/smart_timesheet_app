@@ -546,18 +546,18 @@ By using Flutter, the application is able to maintain consistent functionality a
 Firebase is a comprehensive platform for building web and mobile applications, offered by Google. It's well optimized for usage with Flutter and provides a set of tools that simplifies backend development, handling key tasks such as data storage, authentication, and crash reporting.
 
 \subsection{Firestore}
-Firestore\footnote{Firestore documentation: https://firebase.google.com/docs/firestore} is a \acrshort{NoSQL} cloud database that is used in the Voice Work Record Application to store work records and user data. Firestore allows for scalable and flexible storage, offering real-time synchronization of data across all devices. This is crucial for ensuring that the data is always up-to-date across different devices, especially in non-ideal network conditions.
+Firestore\footnote{Firestore documentation: \url{https://firebase.google.com/docs/firestore}} is a \acrshort{NoSQL} cloud database that is used in the Voice Work Record Application to store work records and user data. Firestore allows for scalable and flexible storage, offering real-time synchronization of data across all devices. This is crucial for ensuring that the data is always up-to-date across different devices, especially in non-ideal network conditions.
 
 Data in Firestore in native configuration is stored in collections of documents. Each document contains fields, where data is stored as key-value pairs.
 
 \subsection{Firebase Storage}
-Firebase Storage\footnote{Storage documentation: https://firebase.google.com/docs/storage} is used for storing and serving larger files\footnote{Average audio file size during testing was around 200 \acrshort{KB}}, such as voice recordings. The Voice Work Record Application uses Firebase Storage to securely store audio files that users upload as part of their work records. The integration of Firebase Storage ensures that these files are available for download and playback in a fast and secure manner.
+Firebase Storage\footnote{Storage documentation: \url{https://firebase.google.com/docs/storage}} is used for storing and serving larger files\footnote{Average audio file size during testing was around 200 \acrshort{KB}}, such as voice recordings. The Voice Work Record Application uses Firebase Storage to securely store audio files that users upload as part of their work records. The integration of Firebase Storage ensures that these files are available for download and playback in a fast and secure manner.
 
 \subsection{Crashlytics}
-Crashlytics\footnote{Crashlytics documentation: https://firebase.google.com/docs/crashlytics} is a powerful crash reporting tool integrated into the app to track, report, and fix crashes in real-time. Crashlytics provides detailed reports about the nature and frequency of crashes, allowing developers to quickly identify and resolve critical issues, improving the app's stability.
+Crashlytics\footnote{Crashlytics documentation: \url{https://firebase.google.com/docs/crashlytics}} is a powerful crash reporting tool integrated into the app to track, report, and fix crashes in real-time. Crashlytics provides detailed reports about the nature and frequency of crashes, allowing developers to quickly identify and resolve critical issues, improving the app's stability.
 
 \subsection{Firebase Authentication}
-Firebase Authentication\footnote{Authentication documentation: https://firebase.google.com/docs/auth} is used to manage user sign-in and authentication within the application. The Voice Work Record Application utilizes Microsoft authentication to allow users to sign in securely using their Microsoft credentials. This simplifies the authentication process and ensures that user accounts are managed efficiently.
+Firebase Authentication\footnote{Authentication documentation: \url{https://firebase.google.com/docs/auth}} is used to manage user sign-in and authentication within the application. The Voice Work Record Application utilizes Microsoft authentication to allow users to sign in securely using their Microsoft credentials. This simplifies the authentication process and ensures that user accounts are managed efficiently.
 
 Firebase Authentication supports a wide range of identity providers, including email/password login, social media logins, and custom authentication methods. The flexibility of Firebase Authentication allows for easy integration of additional identity providers if required in the future.
 
@@ -978,7 +978,7 @@ Despite the superior quality of \texttt{gpt-4o-transcribe}, we opted to use \tex
 
 Overall, model selection for audio-to-text transcription should consider the target user language, audio quality, and cost-performance trade-offs.
 
-\subsection{Optimizing Text-to-Timesheet prompts}
+\subsection{Optimizing Text-to-Timesheet Requests}
 
 In the app, prompt engineering was critical to accurately transform transcribed audio into structured Timesheet data. The challenge of supporting multiple languages, particularly English and Czech, required careful handling of transcription metadata. If the spoken language and metadata did not match, the model would attempt to extract Timesheet attributes and translate at the same time, leading to suboptimal results.
 
